@@ -101,5 +101,6 @@ ENV/
 # mypy
 .mypy_cache/
 
-# PyCharm
+# IDE settings
+.vscode/
 .idea/
