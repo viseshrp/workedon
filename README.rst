@@ -14,13 +14,7 @@ workedon
         :alt: Documentation Status
 
 
-
-
 CLI tool for daily work logging
-
-
-* Free software: MIT license
-* Documentation: https://workedon.readthedocs.io.
 
 
 Features
