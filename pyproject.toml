@@ -18,6 +18,12 @@ pytest = ">=6.2.5"
 flake8 = ">=4.0.1"
 pyinvoke = ">=1.0.4"
 safety = ">=1.10.3"
+black = [
+    {version = ">=21.9b0", python = ">=3.6.2"}
+]
+pylint = [
+    {version = ">=2.11.1", python = "~=3.6"}
+]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
