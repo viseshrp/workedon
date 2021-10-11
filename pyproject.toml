@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "workedon"
+version = "0.1.0"
+description = "CLI tool for daily work logging"
+authors = ["viseshrp <viseshrprasad@gmail.com>"]
+readme = "README.rst"
+
+[tool.poetry.dependencies]
+python = ">=3.6"
+appdirs = ">=1.4.4"
+typer = {extras = ["all"], version = ">=0.4.0"}
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
