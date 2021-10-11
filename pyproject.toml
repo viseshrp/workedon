@@ -5,6 +5,9 @@ description = "CLI tool for daily work logging"
 authors = ["viseshrp <viseshrprasad@gmail.com>"]
 readme = "README.rst"
 
+[tool.poetry.scripts]
+workedon = "workedon.__main__:main"
+
 [tool.poetry.dependencies]
 python = ">=3.6"
 appdirs = ">=1.4.4"
