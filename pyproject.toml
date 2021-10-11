@@ -10,19 +10,19 @@ workedon = "workedon.__main__:main"
 
 [tool.poetry.dependencies]
 python = ">=3.6"
-typer = {extras = ["all"], version = "^0.4.0"}
+typer = { extras = ["all"], version = "^0.4.0" }
 platformdirs = "^2.4.0"
 
 [tool.poetry.dev-dependencies]
-pytest = ">=6.2.5"
-flake8 = ">=4.0.1"
-pyinvoke = ">=1.0.4"
-safety = ">=1.10.3"
+pytest = "*"
+flake8 = "*"
+pyinvoke = "*"
+safety = "*"
 black = [
-    {version = ">=21.9b0", python = ">=3.6.2"}
+    { version = "*", python = ">=3.6.2" }
 ]
 pylint = [
-    {version = ">=2.11.1", python = "~=3.6"}
+    { version = "*", python = "~=3.6" }
 ]
 
 [build-system]
