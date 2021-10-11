@@ -24,6 +24,7 @@ black = [
 pylint = [
     { version = "*", python = "~=3.6" }
 ]
+ipdb = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
