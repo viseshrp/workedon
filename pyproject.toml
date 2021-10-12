@@ -10,7 +10,7 @@ workedon = "workedon.__main__:main"
 
 [tool.poetry.dependencies]
 python = "^3.6.2"
-platformdirs = "^2.4.0"
+click = "^8.0.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
