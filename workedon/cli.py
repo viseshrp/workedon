@@ -10,8 +10,7 @@ from . import __version__
 @click.version_option(__version__, "-v", "--version")
 def main(args=None):
     """Console script for workedon."""
-    click.echo("Replace this message by putting your code into " "workedon.cli.main")
-    click.echo("See click documentation at https://click.palletsprojects.com/")
+    click.echo("This project is in the works 💻 Coming soon to a terminal near you 👼")
     return 0
 
 
