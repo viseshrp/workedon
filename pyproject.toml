@@ -11,6 +11,7 @@ workedon = "workedon.__main__:main"
 [tool.poetry.dependencies]
 python = "^3.6.2"
 click = "^8.0.3"
+dateparser = "^1.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
