@@ -13,8 +13,14 @@ class WonException(Exception):
 
     detail = "An error occurred."
 
+    def __init__(self, extra_detail=None):
+        super().__init__()
+        self.extra_detail = extra_detail
+
     def __str__(self):
-        return str(self.detail)
+        if self.extra_detail:
+            return f"{self.detail} :: {self.extra_detail}"
+        return self.detail
 
 
 class DateTimeInFutureError(WonException):
@@ -30,6 +36,20 @@ class InvalidDateTimeError(WonException):
     Exception raised if the given datetime is in the future
     """
 
-    detail = (
-        "The provided date/time is invalid. Please refer the docs for valid phrases."
-    )
+    detail = "The provided date/time is invalid. Please refer the docs for valid phrases."
+
+
+class CannotCreateSettingsError(WonException):
+    """
+    Exception raised if settings file could not be created
+    """
+
+    detail = "Unable to create settings file."
+
+
+class CannotLoadSettingsError(WonException):
+    """
+    Exception raised if settings file could not be loaded
+    """
+
+    detail = "Unable to load settings file."

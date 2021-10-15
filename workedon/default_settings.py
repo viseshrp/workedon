@@ -1,7 +1,3 @@
-from . import __version__
-
-VERSION = __version__
-
 TIME_ZONE = "UTC"
 
 DEFAULT_HOUR = "09"
