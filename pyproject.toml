@@ -18,9 +18,6 @@ pytest = "*"
 flake8 = "*"
 pyinvoke = "*"
 safety = "*"
-black = [
-    { version = "*", python = ">=3.6.2", allow-prereleases = true }
-]
 pylint = [
     { version = "*", python = "~=3.6" }
 ]
