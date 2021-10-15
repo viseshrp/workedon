@@ -105,3 +105,4 @@ ENV/
 .vscode/
 .idea/
 poetry.lock
+.DS_Store
