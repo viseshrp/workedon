@@ -23,8 +23,9 @@ Credits
 -------
 * Click_, for making writing CLI tools a complete pleasure.
 * dateparser_, for an amazing date parser.
-* jrnl_, for some inspiration.
+* jrnl_ and `fck`_ for some inspiration.
 
 .. _Click: https://click.palletsprojects.com
 .. _dateparser: https://github.com/scrapinghub/dateparser
 .. _jrnl: https://github.com/jrnl-org/jrnl
+.. _fck: https://github.com/nvbn/thefuck
