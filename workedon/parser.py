@@ -1,12 +1,12 @@
 from dateparser import DateDataParser
 
+from .conf import settings
 from .exceptions import InvalidDateTimeError, DateTimeInFutureError
-from .default_settings import DEFAULT_HOUR, DEFAULT_MINUTE, DATE_PARSER
 
 
 class InputParser:
     def __init__(self):
-        self._date_parser = DateDataParser(languages=["en"], settings=DATE_PARSER)
+        self._date_parser = DateDataParser(languages=["en"], settings=settings.DATE_PARSER)
 
     def _as_datetime(self, date_time):
         dt_obj = self._date_parser.get_date_data(date_time)
@@ -26,9 +26,9 @@ class InputParser:
                 raise InvalidDateTimeError
             # add default hour, minute if absent
             if parsed_dt.hour == 0:
-                parsed_dt = parsed_dt.replace(hour=int(DEFAULT_HOUR))
+                parsed_dt = parsed_dt.replace(hour=int(settings.DEFAULT_HOUR))
             if parsed_dt.minute == 0:
-                parsed_dt = parsed_dt.replace(minute=int(DEFAULT_MINUTE))
+                parsed_dt = parsed_dt.replace(minute=int(settings.DEFAULT_MINUTE))
             # disallow future dt
             if parsed_dt > self._as_datetime("now"):
                 raise DateTimeInFutureError
@@ -36,3 +36,6 @@ class InputParser:
             parsed_dt = self._as_datetime("now")
 
         return work, parsed_dt
+
+
+parser = InputParser()

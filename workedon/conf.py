@@ -31,13 +31,13 @@ class Settings(dict):
             settings_file.write(SETTINGS_HEADER)
             for setting in dir(default_settings):
                 if setting.isupper():
-                    settings_file.write(f"# {setting} = {getattr(default_settings, setting)}\n")
+                    settings_file.write(f'# {setting} = "{getattr(default_settings, setting)}"\n')
 
     def configure(self, user_settings=None):
         """
         Configuration
         """
-        settings_module = None
+        user_settings_module = None
         # create module
         if not self.settings_file.is_file():
             try:
@@ -47,7 +47,7 @@ class Settings(dict):
         else:
             # load user settings module
             try:
-                settings_module = SourceFileLoader(
+                user_settings_module = SourceFileLoader(
                     self.settings_file.name,
                     str(self.settings_file.resolve())  # abs path
                 ).load_module()
@@ -59,7 +59,7 @@ class Settings(dict):
             if setting.isupper():
                 # get defaults for fallback
                 default = getattr(default_settings, setting)
-                self[setting] = getattr(settings_module, setting, default)
+                self[setting] = getattr(user_settings_module, setting, default)
 
         # merge settings from current user-options/env vars
         if user_settings:
