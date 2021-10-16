@@ -13,19 +13,18 @@ workedon
         :target: https://workedon.readthedocs.io/en/latest/?version=latest
         :alt: Documentation Status
 
-
-CLI tool for daily work logging
-
+CLI tool for daily work logging.
 
 Features
 --------
-
 * TODO
 
 Credits
 -------
+* Click_, for making writing CLI tools a complete pleasure.
+* dateparser_, for an amazing date parser.
+* jrnl_, for some inspiration.
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+.. _Click: https://click.palletsprojects.com
+.. _dateparser: https://github.com/scrapinghub/dateparser
+.. _jrnl: https://github.com/jrnl-org/jrnl
