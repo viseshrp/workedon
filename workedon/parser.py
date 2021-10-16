@@ -5,8 +5,15 @@ from .exceptions import InvalidDateTimeError, DateTimeInFutureError
 
 
 class InputParser:
+    DATE_PARSER_SETTINGS = {
+        "STRICT_PARSING": False,
+        "NORMALIZE": True,
+        "RETURN_AS_TIMEZONE_AWARE": True,
+        "PREFER_DATES_FROM": "past",
+    }
+
     def __init__(self):
-        self._date_parser = DateDataParser(languages=["en"], settings=settings.DATE_PARSER)
+        self._date_parser = DateDataParser(languages=["en"], settings=self.DATE_PARSER_SETTINGS)
 
     def _as_datetime(self, date_time):
         dt_obj = self._date_parser.get_date_data(date_time)
