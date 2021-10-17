@@ -53,3 +53,12 @@ class CannotLoadSettingsError(WonException):
     """
 
     detail = "Unable to load settings file."
+
+
+class CannotSaveWorkError(WonException):
+    """
+    Exception raised if settings file could not be loaded
+    """
+
+    detail = "Unable to save your work."
+

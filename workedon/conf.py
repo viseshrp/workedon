@@ -2,6 +2,7 @@ from importlib.machinery import SourceFileLoader
 from pathlib import Path
 
 from platformdirs import user_config_dir
+from tzlocal import get_localzone
 
 from . import __name__
 from . import default_settings
@@ -10,9 +11,13 @@ from .exceptions import CannotCreateSettingsError, CannotLoadSettingsError
 
 
 class Settings(dict):
+    # lower case settings are internal-only
+    # upper case settings are user-configurable
     def __init__(self):
         super().__init__()
         self.settings_file = Path(user_config_dir(__name__)) / "wonfile.py"
+        self.user_tz = str(get_localzone())  # for user display
+        self.internal_tz = "UTC"  # for internal storage and manipulation
 
     def __getattr__(self, item):
         return self.get(item)

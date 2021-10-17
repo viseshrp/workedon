@@ -1,26 +1,31 @@
 """Main module."""
 import uuid
 
-from .default_settings import DATE_FORMAT, TIME_FORMAT
+from .db import DBManager
+from .exceptions import CannotSaveWorkError
 from .parser import parser
+from .utils import pretty_print_work
 
 
 class Work:
-    def __init__(self, work, date_time):
-        self.id = None  # pk
-        self.uuid = uuid.uuid4()
+    db = DBManager()
+
+    def __init__(self, work, created):
+        self.uuid = str(uuid.uuid4())
         self.work = work
-        self.date_time = date_time
+        self.created = created
 
     def save(self):
-        print(str(self))
+        try:
+            self.db.create(uuid=self.uuid, work=self.work, created=self.created)
+        except Exception as e:
+            raise CannotSaveWorkError(extra_detail=str(e))
 
-    def __str__(self):
-        return f"[{self.date_time.strftime(f'{DATE_FORMAT} {TIME_FORMAT}')}] {self.work}"
 
-
+@pretty_print_work
 def save_work(work):
     work_desc = " ".join(work)
-    work, dt = parser.parse(work_desc)
-    w = Work(work, dt)
+    text, dt = parser.parse(work_desc)
+    w = Work(text, dt)
     w.save()
+    return w

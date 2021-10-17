@@ -31,7 +31,7 @@ def main(work):
             # save
             save_work(work)
     except Exception as e:
-        raise click.ClickException(str(e))
+        raise click.ClickException(click.style(str(e), fg='bright_red'))
 
 
 if __name__ == "__main__":
