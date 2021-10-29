@@ -10,31 +10,34 @@ from . import __name__
 
 
 class DBManager:
-    table_name = 'work'
-    field_map = {
+    TABLE_NAME = 'work'
+    FIELD_MAP = {
         "uuid": uuid.UUID,
         "work": str,
         "created": datetime.datetime
     }
-    pk_field = "uuid"
+    PK_FIELD = "uuid"
 
     def __init__(self):
-        db_file = Path(user_data_dir(__name__, roaming=True)) / "wondb.sqlite"
-        # make parent dir.
-        db_file.parent.mkdir(parents=True, exist_ok=True)
-        self.db_loc = str(db_file.resolve())
+        self.db_file = Path(user_data_dir(__name__, roaming=True)) / "wondb.sqlite"
         # init db (will create if not found)
-        db = Database(self.db_loc)
+        db = self._get_or_create_db()
         # create table if needed
-        if not db[self.table_name].exists():
-            fields = self.field_map.keys()
-            db[self.table_name].create(
-                self.field_map,
-                pk=self.pk_field,
+        if not db[self.TABLE_NAME].exists():
+            fields = self.FIELD_MAP.keys()
+            db[self.TABLE_NAME].create(
+                self.FIELD_MAP,
+                pk=self.PK_FIELD,
                 not_null=set(fields),
                 column_order=list(fields)
             )
-        self.table = db[self.table_name]
+        self.table = db[self.TABLE_NAME]
+
+    def _get_or_create_db(self):
+        if not self.db_file.is_file():
+            # create parent dirs
+            self.db_file.parent.mkdir(parents=True, exist_ok=True)
+        return Database(self.db_file)
 
     def create(self, **kwargs):
-        return self.table.insert(kwargs)
+        self.table.insert(kwargs)

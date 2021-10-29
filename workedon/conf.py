@@ -59,7 +59,7 @@ class Settings(dict):
             except Exception as e:
                 raise CannotLoadSettingsError(extra_detail=str(e))
 
-        # get attrs & save to the current object
+        # save to the current object
         for setting in dir(default_settings):
             if setting.isupper():
                 # get defaults for fallback
