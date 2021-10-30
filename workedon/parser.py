@@ -12,6 +12,7 @@ else:
 
 
 class InputParser:
+    LANGUAGES = ["en"]
     DATE_PARSER_SETTINGS = {
         "STRICT_PARSING": False,
         "NORMALIZE": True,
@@ -20,32 +21,34 @@ class InputParser:
     }
 
     def __init__(self):
-        self._date_parser = DateDataParser(languages=["en"], settings=self.DATE_PARSER_SETTINGS)
+        self._date_parser = DateDataParser(languages=self.LANGUAGES, settings=self.DATE_PARSER_SETTINGS)
 
     def _as_datetime(self, date_time):
         dt_obj = self._date_parser.get_date_data(date_time)
         if dt_obj:
             return dt_obj["date_obj"]
 
-    def parse(self, work_desc):
-        if "@" in work_desc:
-            # split at the last @
-            work, _, date_time = work_desc.rpartition("@")
-        else:
-            work, date_time = (work_desc, "")
-        work, date_time = (work.strip(), date_time.strip())
-        if date_time:
-            parsed_dt = self._as_datetime(date_time)
+    def parse_datetime(self, date_time):
+        dt = date_time.strip()
+        if dt:
+            parsed_dt = self._as_datetime(dt)
             if not parsed_dt:
                 raise InvalidDateTimeError
-            # disallow future dt
             if parsed_dt > self._as_datetime("now"):
                 raise DateTimeInFutureError
         else:
             parsed_dt = self._as_datetime("now")
         # convert to internal time for storage
         parsed_dt = parsed_dt.astimezone(zoneinfo.ZoneInfo(settings.internal_tz))
-        return work, parsed_dt
+        return parsed_dt
+
+    def parse(self, work_desc):
+        if "@" in work_desc:
+            work, _, date_time = work_desc.rpartition("@")
+        else:
+            work, date_time = (work_desc, "")
+        work, date_time = (work.strip(), self.parse_datetime(date_time))
+        return work, date_time
 
 
 parser = InputParser()

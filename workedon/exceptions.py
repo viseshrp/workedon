@@ -28,7 +28,7 @@ class DateTimeInFutureError(WonException):
     Exception raised if the given datetime is in the future
     """
 
-    detail = "The provided date/time is in the future."
+    detail = "The provided date/time is in the future"
 
 
 class InvalidDateTimeError(WonException):
@@ -36,7 +36,7 @@ class InvalidDateTimeError(WonException):
     Exception raised if the given datetime is in the future
     """
 
-    detail = "The provided date/time is invalid. Please refer the docs for valid phrases."
+    detail = "The provided date/time is invalid. Please refer the docs for valid phrases"
 
 
 class CannotCreateSettingsError(WonException):
@@ -44,7 +44,7 @@ class CannotCreateSettingsError(WonException):
     Exception raised if settings file could not be created
     """
 
-    detail = "Unable to create settings file."
+    detail = "Unable to create settings file"
 
 
 class CannotLoadSettingsError(WonException):
@@ -52,7 +52,7 @@ class CannotLoadSettingsError(WonException):
     Exception raised if settings file could not be loaded
     """
 
-    detail = "Unable to load settings file."
+    detail = "Unable to load settings file"
 
 
 class CannotSaveWorkError(WonException):
@@ -60,5 +60,5 @@ class CannotSaveWorkError(WonException):
     Exception raised if settings file could not be loaded
     """
 
-    detail = "Unable to save your work."
+    detail = "Unable to save your work"
 

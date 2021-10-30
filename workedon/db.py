@@ -1,6 +1,5 @@
 """Main module."""
 import datetime
-import uuid
 from pathlib import Path
 
 from platformdirs import user_data_dir
@@ -12,7 +11,7 @@ from . import __name__
 class DBManager:
     TABLE_NAME = 'work'
     FIELD_MAP = {
-        "uuid": uuid.UUID,
+        "uuid": str,
         "work": str,
         "created": datetime.datetime
     }
