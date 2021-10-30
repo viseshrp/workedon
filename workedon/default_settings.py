@@ -1,7 +1,3 @@
-DEFAULT_HOUR = "09"
-
-DEFAULT_MINUTE = "00"
-
 DATE_FORMAT = "%m-%d-%Y"
 
 TIME_FORMAT = "%H:%M"
