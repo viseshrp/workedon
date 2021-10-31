@@ -13,6 +13,7 @@ class DBManager:
     FIELD_MAP = {
         "uuid": str,
         "work": str,
+        "timestamp": datetime.datetime,
         "created": datetime.datetime
     }
     PK_FIELD = "uuid"
@@ -22,20 +23,21 @@ class DBManager:
         # init db (will create if not found)
         db = self._get_or_create_db()
         # create table if needed
-        if not db[self.TABLE_NAME].exists():
+        if not db.table(self.TABLE_NAME).exists():
             fields = self.FIELD_MAP.keys()
-            db[self.TABLE_NAME].create(
+            db.table(self.TABLE_NAME).create(
                 self.FIELD_MAP,
                 pk=self.PK_FIELD,
                 not_null=set(fields),
                 column_order=list(fields)
             )
-        self.table = db[self.TABLE_NAME]
+        self.table = db.table(self.TABLE_NAME, alter=True)
 
     def _get_or_create_db(self):
         if not self.db_file.is_file():
             # create parent dirs
             self.db_file.parent.mkdir(parents=True, exist_ok=True)
+        # get or create db file
         return Database(self.db_file)
 
     def create(self, **kwargs):
