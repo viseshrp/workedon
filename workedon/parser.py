@@ -1,14 +1,6 @@
-import sys
-
 from dateparser import DateDataParser
 
-from .conf import settings
 from .exceptions import InvalidDateTimeError, DateTimeInFutureError
-
-if sys.version_info >= (3, 9):
-    import zoneinfo
-else:
-    from backports import zoneinfo
 
 
 class InputParser:
@@ -38,8 +30,6 @@ class InputParser:
                 raise DateTimeInFutureError
         else:
             parsed_dt = self._as_datetime("now")
-        # convert to internal time for storage
-        parsed_dt = parsed_dt.astimezone(zoneinfo.ZoneInfo(settings.internal_tz))
         return parsed_dt
 
     def parse(self, work_desc):
