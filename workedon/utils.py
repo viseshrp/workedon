@@ -22,7 +22,7 @@ def get_unique_hash():
     return hashlib.sha1(unique_id).hexdigest()
 
 
-def click_handler(func):
+def command_handler(func):
     @wraps(func)
     def handle(*args, **kwargs):
         try:
