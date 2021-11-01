@@ -1,6 +1,6 @@
 from dateparser import DateDataParser
 
-from .exceptions import InvalidDateTimeError, DateTimeInFutureError
+from .exceptions import InvalidDateTimeError, DateTimeInFutureError, InvalidWorkError
 
 
 class InputParser:
@@ -37,7 +37,10 @@ class InputParser:
             work, _, date_time = work_desc.rpartition("@")
         else:
             work, date_time = (work_desc, "")
-        work, date_time = (work.strip(), self.parse_datetime(date_time))
+        work = work.strip()
+        if not work:
+            raise InvalidWorkError
+        date_time = self.parse_datetime(date_time)
         return work, date_time
 
 

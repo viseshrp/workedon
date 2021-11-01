@@ -31,6 +31,14 @@ class DateTimeInFutureError(WonException):
     detail = "The provided date/time is in the future"
 
 
+class InvalidWorkError(WonException):
+    """
+    Exception raised if the work text is empty
+    """
+
+    detail = "The provided work text is empty"
+
+
 class InvalidDateTimeError(WonException):
     """
     Exception raised if the given datetime is in the future
