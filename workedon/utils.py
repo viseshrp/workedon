@@ -1,25 +1,30 @@
 import hashlib
-import sys
 import uuid
+from datetime import datetime
 from functools import wraps
 
 import click
 
 from .conf import settings
 
-if sys.version_info >= (3, 9):
-    import zoneinfo
-else:
+try:
     from backports import zoneinfo
+except ImportError:
+    import zoneinfo
+
+
+def get_unique_hash():
+    unique_id = str(uuid.uuid4()).encode('utf-8')
+    return hashlib.sha1(unique_id).hexdigest()
 
 
 def to_internal_tz(date_time):
     return date_time.astimezone(zoneinfo.ZoneInfo(settings.internal_tz))
 
 
-def get_unique_hash():
-    unique_id = str(uuid.uuid4()).encode('utf-8')
-    return hashlib.sha1(unique_id).hexdigest()
+def now():
+    user_time = datetime.now(zoneinfo.ZoneInfo(settings.user_tz))
+    return to_internal_tz(user_time)
 
 
 def command_handler(func):
