@@ -5,7 +5,7 @@ from click_default_group import DefaultGroup
 
 from . import __version__
 from .utils import command_handler
-from .workedon import save_work
+from .workedon import save_work, fetch_work
 
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
@@ -21,7 +21,7 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
     "--version"
 )
 def main():
-    """CLI Utility for daily work logging"""
+    """CLI utility for daily work logging"""
     pass
 
 
@@ -39,6 +39,33 @@ def stuff(work):
     Save your work
     """
     save_work(work)
+
+
+@main.command()
+@click.option(
+    "-f",
+    "--from",
+    "start_date",
+    required=False,
+    default="",
+    type=click.STRING,
+    help="start date-time to filter with"
+)
+@click.option(
+    "-t",
+    "--to",
+    "end_date",
+    required=False,
+    default="",
+    type=click.STRING,
+    help="end date-time to filter with"
+)
+@command_handler
+def what(start_date, end_date):
+    """
+    Fetch your saved work
+    """
+    fetch_work(start_date, end_date)
 
 
 if __name__ == "__main__":

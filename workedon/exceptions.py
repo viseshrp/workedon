@@ -41,7 +41,7 @@ class InvalidWorkError(WonException):
 
 class InvalidDateTimeError(WonException):
     """
-    Exception raised if the given datetime is in the future
+    Exception raised if the given datetime string is invalid
     """
 
     detail = "The provided date/time is invalid. Please refer the docs for valid phrases"
@@ -65,8 +65,23 @@ class CannotLoadSettingsError(WonException):
 
 class CannotSaveWorkError(WonException):
     """
-    Exception raised if settings file could not be loaded
+    Exception raised if work could not be saved
     """
 
     detail = "Unable to save your work"
 
+
+class CannotFetchWorkError(WonException):
+    """
+    Exception raised if work could not be fetched
+    """
+
+    detail = "Unable to fetch your work"
+
+
+class StartDateAbsentError(WonException):
+    """
+    Exception raised if start date is not provided
+    """
+
+    detail = "Please provide a start date/time"

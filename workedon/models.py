@@ -1,11 +1,14 @@
 import contextlib
+from datetime import datetime
 from pathlib import Path
 
+import click
 from peewee import Model, CharField, DateTimeField, TextField, SqliteDatabase
 from platformdirs import user_data_dir
 
-from .utils import get_unique_hash, now
 from . import __name__ as app_name
+from .conf import settings
+from .utils import get_unique_hash, now, get_default_time
 
 try:
     from backports import zoneinfo
@@ -13,7 +16,10 @@ except ImportError:
     import zoneinfo
 
 
-def setup_db():
+def create_db():
+    """
+    Create the database and return the connection
+    """
     db_file = Path(user_data_dir(app_name, roaming=True)) / "wondb.sqlite"
     if not db_file.is_file():
         # create parent dirs
@@ -22,11 +28,15 @@ def setup_db():
     return SqliteDatabase(db_file)
 
 
-db = setup_db()
+db = create_db()
 
 
 @contextlib.contextmanager
 def init_db():
+    """
+    Context manager to init
+    and close the database
+    """
     if db.is_closed():
         db.connect()
     if not Work.table_exists():
@@ -36,11 +46,25 @@ def init_db():
 
 
 class Work(Model):
+    """
+    Model that represents a Work item
+    """
     uuid = CharField(primary_key=True, null=False, default=get_unique_hash)
-    created = DateTimeField(null=False, default=now)
+    created = DateTimeField(null=False, formats=[settings.internal_dt_format], default=get_default_time)
     work = TextField(null=False)
-    timestamp = DateTimeField(null=False, index=True)
+    timestamp = DateTimeField(null=False, formats=[settings.internal_dt_format], index=True, default=get_default_time)
 
     class Meta:
         database = db
         table_name = "work"
+
+    def __str__(self):
+        """
+        Format the object for display.
+        Uses a git log like structure.
+        """
+        user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.user_tz))
+        time = user_time.strftime(settings.DATETIME_FORMAT)
+        return f'\n{click.style(f"id: {self.uuid}", fg="green")}' \
+               f'\n{click.style(f"Date: {time}")}' \
+               f'\n\n\t{click.style(f"{self.work}", bold=True, fg="white")}\n'

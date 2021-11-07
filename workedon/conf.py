@@ -18,6 +18,7 @@ class Settings(dict):
         self.settings_file = Path(user_config_dir(__name__)) / "wonfile.py"
         self.user_tz = str(get_localzone())  # for user display
         self.internal_tz = "UTC"  # for internal storage and manipulation
+        self.internal_dt_format = "%Y-%m-%d %H:%M:%S%z"
 
     def __getattr__(self, item):
         return self.get(item)
