@@ -22,14 +22,13 @@ class InputParser:
 
     def parse_datetime(self, date_time):
         dt = date_time.strip()
-        if dt:
-            parsed_dt = self._as_datetime(dt)
-            if not parsed_dt:
-                raise InvalidDateTimeError
-            if parsed_dt > self._as_datetime("now"):
-                raise DateTimeInFutureError
-        else:
-            parsed_dt = self._as_datetime("now")
+        if not dt:
+            return None
+        parsed_dt = self._as_datetime(dt)
+        if not parsed_dt:
+            raise InvalidDateTimeError
+        if parsed_dt > self._as_datetime("now"):
+            raise DateTimeInFutureError
         return parsed_dt
 
     def parse(self, work_desc):
