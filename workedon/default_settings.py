@@ -1,4 +1,4 @@
-DATE_FORMAT = "%m-%d-%Y"
+DATE_FORMAT = "%Y-%m-%d"
 
 TIME_FORMAT = "%H:%M"
 
