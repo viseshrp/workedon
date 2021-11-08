@@ -54,7 +54,7 @@ def _get_date_range(start_date, end_date, period):
         # past week is the default
         if period == "yesterday":
             start = parser.parse_datetime("12am yesterday")
-            end = parser.parse_datetime("12am today")
+            end = parser.parse_datetime("12am today") - datetime.timedelta(seconds=1)
         elif period == "today":
             start = parser.parse_datetime("12am today")
         elif period == "day":  # past 24 hours
