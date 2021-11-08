@@ -1,5 +1,4 @@
 import contextlib
-from datetime import datetime
 from pathlib import Path
 
 import click
@@ -8,7 +7,7 @@ from platformdirs import user_data_dir
 
 from . import __name__ as app_name
 from .conf import settings
-from .utils import get_unique_hash, now, get_default_time
+from .utils import get_unique_hash, get_default_time
 
 try:
     from backports import zoneinfo
