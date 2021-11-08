@@ -3,6 +3,8 @@ import uuid
 from datetime import datetime
 from functools import wraps
 
+import click
+
 from .conf import settings
 
 try:
@@ -46,6 +48,7 @@ def command_handler(func):
     Common decorator that handles
     command runs
     """
+
     @wraps(func)
     def handle(*args, **kwargs):
         try:
@@ -53,6 +56,6 @@ def command_handler(func):
             settings.configure()
             func(*args, **kwargs)
         except Exception as e:
-            raise e
+            raise click.ClickException(click.style(str(e), fg='bright_red'))
 
     return handle
