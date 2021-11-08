@@ -18,6 +18,7 @@ tzlocal = "^3.0"
 ]
 click-default-group = "^1.2.2"
 peewee = "^3.14.8"
+platformdirs = "^2.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
