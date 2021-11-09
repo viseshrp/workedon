@@ -12,7 +12,6 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 @click.group(
     cls=DefaultGroup,
-    default_if_no_args=True,
     context_settings=CONTEXT_SETTINGS,
 )
 @click.version_option(
@@ -21,7 +20,23 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
     "--version"
 )
 def main():
-    """CLI utility for daily work logging"""
+    """
+    CLI utility for daily work logging.
+
+    \b
+    Example usages:
+    1. Saving work:
+    workedon studying for the SAT @ June 2010
+    workedon pissing my wife off @ 2pm yesterday
+    workedon painting the garage
+
+    \b
+    2. Fetching work:
+    workedon what
+    workedon what --from "2pm yesterday" --to "9am today"
+    workedon what --today
+    workedon what --past-month
+    """
     pass
 
 
@@ -36,7 +51,7 @@ def main():
 @command_handler
 def stuff(work):
     """
-    Save your work
+    Alternate way to save your work.
     """
     save_work(work)
 
@@ -111,7 +126,7 @@ def stuff(work):
 @command_handler
 def what(start_date, end_date, period):
     """
-    Fetch your saved work
+    Fetch your saved work.
     """
     fetch_work(start_date, end_date, period)
 
