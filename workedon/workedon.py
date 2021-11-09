@@ -76,21 +76,26 @@ def _get_date_range(start_date, end_date, period):
     return to_internal_dt(start), to_internal_dt(end)
 
 
-def fetch_work(start_date, end_date, period):
+def fetch_work(count, start_date, end_date, period):
     """
     Fetch saved work filtered based on user input
     """
-    start, end = _get_date_range(start_date, end_date, period)
     try:
+        if count:
+            work_set = Work.select().limit(count)
+        else:
+            start, end = _get_date_range(start_date, end_date, period)
+            work_set = Work.select().where((Work.timestamp >= start) & (Work.timestamp <= end))
+        # order by timestamp descending
+        work_set = work_set.order_by(Work.timestamp.desc())
+        # fetch from db now.
         with init_db():
-            works = Work.select().where((Work.timestamp >= start) & (Work.timestamp <= end)).order_by(
-                Work.timestamp.desc())
-            count = works.count()
+            count = work_set.count()
             if count > 1:
-                gen = works.iterator()
+                gen = work_set.iterator()
                 click.echo_via_pager(_generate_work(gen))
             elif count == 1:
-                click.echo(works[0])
+                click.echo(work_set[0])
             else:
                 click.echo("Nothing to show, slacker.")
     except Exception as e:

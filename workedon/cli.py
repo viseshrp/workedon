@@ -58,6 +58,13 @@ def stuff(work):
 
 @main.command()
 @click.option(
+    "-n",
+    "--count",
+    required=False,
+    type=click.INT,
+    help="Number of entries to return"
+)
+@click.option(
     "-f",
     "--from",
     "start_date",
@@ -124,11 +131,11 @@ def stuff(work):
     help="Fetch work done today"
 )
 @command_handler
-def what(start_date, end_date, period):
+def what(count, start_date, end_date, period):
     """
     Fetch your saved work.
     """
-    fetch_work(start_date, end_date, period)
+    fetch_work(count, start_date, end_date, period)
 
 
 if __name__ == "__main__":
