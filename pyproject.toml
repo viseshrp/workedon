@@ -24,9 +24,7 @@ pytest = "*"
 flake8 = "*"
 pyinvoke = "*"
 safety = "*"
-pylint = [
-    { version = "*", python = "~=3.6" }
-]
+pylint = { version = "*", python = "~=3.6" }
 ipdb = "*"
 
 [build-system]
