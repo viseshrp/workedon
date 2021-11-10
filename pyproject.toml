@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "workedon"
-version = "0.2.3"
+version = "0.2.4"
 description = "CLI tool for daily work logging"
 authors = ["viseshrp <viseshrprasad@gmail.com>"]
 readme = "README.rst"
