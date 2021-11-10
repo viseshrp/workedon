@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "workedon"
-version = "0.2.2"
+version = "0.2.3"
 description = "CLI tool for daily work logging"
 authors = ["viseshrp <viseshrprasad@gmail.com>"]
 readme = "README.rst"
@@ -9,15 +9,15 @@ readme = "README.rst"
 workedon = "workedon.__main__:main"
 
 [tool.poetry.dependencies]
-python = "^3.6"
-click = "^8.0.3"
-dateparser = "^1.1.0"
-tzlocal = "^3.0"
-"backports.zoneinfo" = { version = "^0.2.1", python = "<3.9" }
-click-default-group = "^1.2.2"
-peewee = "^3.14.8"
-platformdirs = "^2.4.0"
-importlib-metadata = {version = "^1.0", python = "<3.8"}
+python = ">=3.6"
+click = ">=8.0.3"
+dateparser = ">=1.1.0"
+tzlocal = "3.0"
+"backports.zoneinfo" = { version = ">=0.2.1", python = "<3.9" }
+click-default-group = ">=1.2.2"
+peewee = ">=3.14.8"
+platformdirs = ">=2.4.0"
+importlib-metadata = {version = ">=1.0", python = "<3.8"}
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
