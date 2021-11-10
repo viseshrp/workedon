@@ -49,7 +49,7 @@ def main():
     type=click.STRING,
 )
 @command_handler
-def stuff(work):
+def workedon(work):
     """
     Alternate way to save your work.
     """

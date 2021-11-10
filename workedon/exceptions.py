@@ -36,7 +36,7 @@ class InvalidWorkError(WonException):
     Exception raised if the work text is empty
     """
 
-    detail = "The provided work text is empty"
+    detail = "The provided work text is invalid"
 
 
 class InvalidDateTimeError(WonException):
