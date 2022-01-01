@@ -4,6 +4,11 @@ version = "0.2.4"
 description = "CLI tool for daily work logging"
 authors = ["viseshrp <viseshrprasad@gmail.com>"]
 readme = "README.rst"
+license = "MIT"
+homepage = "https://github.com/viseshrp/workedon"
+repository = "https://github.com/viseshrp/workedon"
+documentation = "https://github.com/viseshrp/workedon"
+keywords = ["work", "journal", "workedon", "worklog"]
 
 [tool.poetry.scripts]
 workedon = "workedon.__main__:main"
@@ -17,7 +22,6 @@ tzlocal = "3.0"
 click-default-group = ">=1.2.2"
 peewee = ">=3.14.8"
 platformdirs = ">=2.4.0"
-importlib-metadata = {version = ">=1.0", python = "<3.8"}
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
