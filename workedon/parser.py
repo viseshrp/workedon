@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from dateparser import DateDataParser
 
 from .exceptions import InvalidDateTimeError, DateTimeInFutureError, InvalidWorkError
@@ -10,6 +12,7 @@ class InputParser:
         "NORMALIZE": True,
         "RETURN_AS_TIMEZONE_AWARE": True,
         "PREFER_DATES_FROM": "past",
+        "RELATIVE_BASE": datetime.now(),
     }
 
     def __init__(self):
