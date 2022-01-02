@@ -24,7 +24,7 @@ def create_db():
         # create parent dirs
         db_file.parent.mkdir(parents=True, exist_ok=True)
         db_file.touch()
-    return SqliteDatabase(db_file)
+    return SqliteDatabase(str(db_file))
 
 
 db = create_db()
