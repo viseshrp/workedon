@@ -85,7 +85,9 @@ def fetch_work(count, start_date, end_date, period):
             work_set = Work.select().limit(count)
         else:
             start, end = _get_date_range(start_date, end_date, period)
-            work_set = Work.select().where((Work.timestamp >= start) & (Work.timestamp <= end))
+            work_set = Work.select().where(
+                (Work.timestamp >= start) & (Work.timestamp <= end)
+            )
         # order by timestamp descending
         work_set = work_set.order_by(Work.timestamp.desc())
         # fetch from db now.

@@ -44,7 +44,9 @@ class InvalidDateTimeError(WonException):
     Exception raised if the given datetime string is invalid
     """
 
-    detail = "The provided date/time is invalid. Please refer the docs for valid phrases"
+    detail = (
+        "The provided date/time is invalid. Please refer the docs for valid phrases"
+    )
 
 
 class CannotCreateSettingsError(WonException):

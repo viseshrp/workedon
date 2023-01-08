@@ -17,7 +17,7 @@ def get_unique_hash():
     """
     Generate a hash similar to git's commit id
     """
-    unique_id = str(uuid.uuid4()).encode('utf-8')
+    unique_id = str(uuid.uuid4()).encode("utf-8")
     return hashlib.sha1(unique_id).hexdigest()
 
 
@@ -26,7 +26,9 @@ def to_internal_dt(date_time):
     Convert input datetime to internal timezone
     and removes microsecond component.
     """
-    return date_time.astimezone(zoneinfo.ZoneInfo(settings.internal_tz)).replace(microsecond=0)
+    return date_time.astimezone(zoneinfo.ZoneInfo(settings.internal_tz)).replace(
+        microsecond=0
+    )
 
 
 def now():
@@ -53,9 +55,10 @@ def command_handler(func):
     def handle(*args, **kwargs):
         try:
             from .conf import settings
+
             settings.configure()
             func(*args, **kwargs)
         except Exception as e:
-            raise click.ClickException(click.style(str(e), fg='bright_red'))
+            raise click.ClickException(click.style(str(e), fg="bright_red"))
 
     return handle

@@ -37,7 +37,9 @@ class Settings(dict):
             settings_file.write(SETTINGS_HEADER)
             for setting in dir(default_settings):
                 if setting.isupper():
-                    settings_file.write(f'# {setting} = "{getattr(default_settings, setting)}"\n')
+                    settings_file.write(
+                        f'# {setting} = "{getattr(default_settings, setting)}"\n'
+                    )
 
     def configure(self, user_settings=None):
         """
@@ -55,7 +57,7 @@ class Settings(dict):
             try:
                 user_settings_module = SourceFileLoader(
                     self.settings_file.name,
-                    str(self.settings_file.resolve())  # abs path
+                    str(self.settings_file.resolve()),  # abs path
                 ).load_module()
             except Exception as e:
                 raise CannotLoadSettingsError(extra_detail=str(e))

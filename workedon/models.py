@@ -48,10 +48,18 @@ class Work(Model):
     """
     Model that represents a Work item
     """
+
     uuid = CharField(primary_key=True, null=False, default=get_unique_hash)
-    created = DateTimeField(null=False, formats=[settings.internal_dt_format], default=get_default_time)
+    created = DateTimeField(
+        null=False, formats=[settings.internal_dt_format], default=get_default_time
+    )
     work = TextField(null=False)
-    timestamp = DateTimeField(null=False, formats=[settings.internal_dt_format], index=True, default=get_default_time)
+    timestamp = DateTimeField(
+        null=False,
+        formats=[settings.internal_dt_format],
+        index=True,
+        default=get_default_time,
+    )
 
     class Meta:
         database = db
@@ -64,6 +72,8 @@ class Work(Model):
         """
         user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.user_tz))
         time = user_time.strftime(settings.DATETIME_FORMAT)
-        return f'\n{click.style(f"id: {self.uuid}", fg="green")}' \
-               f'\n{click.style(f"Date: {time}")}' \
-               f'\n\n\t{click.style(f"{self.work}", bold=True, fg="white")}\n'
+        return (
+            f'\n{click.style(f"id: {self.uuid}", fg="green")}'
+            f'\n{click.style(f"Date: {time}")}'
+            f'\n\n\t{click.style(f"{self.work}", bold=True, fg="white")}\n'
+        )

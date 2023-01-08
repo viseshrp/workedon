@@ -16,7 +16,9 @@ class InputParser:
     }
 
     def __init__(self):
-        self._date_parser = DateDataParser(languages=self.LANGUAGES, settings=self.DATE_PARSER_SETTINGS)
+        self._date_parser = DateDataParser(
+            languages=self.LANGUAGES, settings=self.DATE_PARSER_SETTINGS
+        )
 
     def _as_datetime(self, date_time):
         dt_obj = self._date_parser.get_date_data(date_time)

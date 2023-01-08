@@ -14,11 +14,7 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
     cls=DefaultGroup,
     context_settings=CONTEXT_SETTINGS,
 )
-@click.version_option(
-    __version__,
-    "-v",
-    "--version"
-)
+@click.version_option(__version__, "-v", "--version")
 def main():
     """
     CLI utility for daily work logging.
@@ -58,11 +54,7 @@ def workedon(work):
 
 @main.command()
 @click.option(
-    "-n",
-    "--count",
-    required=False,
-    type=click.INT,
-    help="Number of entries to return"
+    "-n", "--count", required=False, type=click.INT, help="Number of entries to return"
 )
 @click.option(
     "-f",
@@ -71,7 +63,7 @@ def workedon(work):
     required=False,
     default="",
     type=click.STRING,
-    help="start date-time to filter with"
+    help="start date-time to filter with",
 )
 @click.option(
     "-t",
@@ -80,7 +72,7 @@ def workedon(work):
     required=False,
     default="",
     type=click.STRING,
-    help="end date-time to filter with"
+    help="end date-time to filter with",
 )
 @click.option(
     "-d",
@@ -88,7 +80,7 @@ def workedon(work):
     "period",
     flag_value="day",
     is_flag=True,
-    help="Fetch work done in the past 24 hours"
+    help="Fetch work done in the past 24 hours",
 )
 @click.option(
     "-w",
@@ -96,7 +88,7 @@ def workedon(work):
     "period",
     flag_value="week",
     is_flag=True,
-    help="Fetch work done in the past week"
+    help="Fetch work done in the past week",
 )
 @click.option(
     "-m",
@@ -104,7 +96,7 @@ def workedon(work):
     "period",
     flag_value="month",
     is_flag=True,
-    help="Fetch work done in the past month"
+    help="Fetch work done in the past month",
 )
 @click.option(
     "-y",
@@ -112,7 +104,7 @@ def workedon(work):
     "period",
     flag_value="year",
     is_flag=True,
-    help="Fetch work done in the past year"
+    help="Fetch work done in the past year",
 )
 @click.option(
     "-e",
@@ -120,7 +112,7 @@ def workedon(work):
     "period",
     flag_value="yesterday",
     is_flag=True,
-    help="Fetch work done yesterday"
+    help="Fetch work done yesterday",
 )
 @click.option(
     "-o",
@@ -128,7 +120,7 @@ def workedon(work):
     "period",
     flag_value="today",
     is_flag=True,
-    help="Fetch work done today"
+    help="Fetch work done today",
 )
 @command_handler
 def what(count, start_date, end_date, period):
