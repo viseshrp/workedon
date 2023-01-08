@@ -1,5 +1,7 @@
 """Console script for workedon."""
 
+import warnings
+
 import click
 from click_default_group import DefaultGroup
 
@@ -7,6 +9,7 @@ from . import __version__
 from .utils import command_handler
 from .workedon import save_work, fetch_work
 
+warnings.filterwarnings("ignore")
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 
