@@ -31,7 +31,7 @@ Python 3.7+
 Features
 --------
 
-* Find information on a package on PyPI
+* Save by date or fetch work saved by date.
 
     Examples:
 
