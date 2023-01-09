@@ -2,10 +2,12 @@
 History
 =======
 
-0.3.3 (2023-01-08)
+0.3.3 (2023-01-09)
 ------------------
 
 * add --delete/-d for deletion
+* add --on to fetch work done on a particular date/day
+* add --last/-s to fetch the last entered work log
 
 0.3.2 (2023-01-08)
 ------------------
