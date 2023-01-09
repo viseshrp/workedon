@@ -76,23 +76,29 @@ def _get_date_range(start_date, end_date, period):
     return to_internal_dt(start), to_internal_dt(end)
 
 
-def fetch_work(count, start_date, end_date, period):
+def fetch_work(count, start_date, end_date, period, delete):
     """
     Fetch saved work filtered based on user input
     """
+    if count:
+        work_set = Work.select().limit(count)
+    else:
+        start, end = _get_date_range(start_date, end_date, period)
+        work_set = Work.select().where(
+            (Work.timestamp >= start) & (Work.timestamp <= end)
+        )
+    # order by timestamp descending
+    work_set = work_set.order_by(Work.timestamp.desc())
     try:
-        if count:
-            work_set = Work.select().limit(count)
-        else:
-            start, end = _get_date_range(start_date, end_date, period)
-            work_set = Work.select().where(
-                (Work.timestamp >= start) & (Work.timestamp <= end)
-            )
-        # order by timestamp descending
-        work_set = work_set.order_by(Work.timestamp.desc())
         # fetch from db now.
         with init_db():
             count = work_set.count()
+            if delete:
+                if click.confirm(f"Continue deleting {count} log(s)?"):
+                    click.echo("Deleting...")
+                    deleted = Work.delete().where(Work.uuid.in_(work_set)).execute()
+                    click.echo(f"{deleted} log(s) deleted successfully.")
+                return
             if count > 1:
                 gen = work_set.iterator()
                 click.echo_via_pager(_generate_work(gen))

@@ -125,12 +125,21 @@ def workedon(work):
     is_flag=True,
     help="Fetch work done today",
 )
+@click.option(
+    "-d",
+    "--delete",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Delete fetched work",
+)
 @command_handler
-def what(count, start_date, end_date, period):
+def what(count, start_date, end_date, period, delete):
     """
     Fetch your saved work.
     """
-    fetch_work(count, start_date, end_date, period)
+    fetch_work(count, start_date, end_date, period, delete)
 
 
 if __name__ == "__main__":
