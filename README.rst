@@ -11,7 +11,7 @@ workedon
         :alt: Downloads
 
 
-CLI tool to get package info from PyPI and/or manipulate requirements.
+CLI utility for daily work logging.
 
 
 Installation
