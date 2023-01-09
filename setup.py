@@ -5,13 +5,13 @@ from io import open
 from setuptools import setup, find_packages
 
 REQUIREMENTS = [
-    "click==8.1.3",
-    "dateparser==1.1.5",
-    "tzlocal==4.2",
-    "backports.zoneinfo==0.2.1;python_version < '3.9'",
-    "click-default-group==1.2.2",
-    "peewee==3.15.4",
-    "platformdirs==2.6.2",
+    "click>=8.0.0",
+    "dateparser>=1.1.0",
+    "tzlocal>=3.0",
+    "backports.zoneinfo>=0.2.1;python_version < '3.9'",
+    "click-default-group>=1.2.2",
+    "peewee>=3.15.0",
+    "platformdirs>=2.6.0",
 ]
 
 curr_dir = os.path.abspath(os.path.dirname(__file__))
