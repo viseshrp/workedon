@@ -60,7 +60,7 @@ def workedon(work):
     "-n", "--count", required=False, type=click.INT, help="Number of entries to return"
 )
 @click.option(
-    "-l",
+    "-s",
     "--last",
     is_flag=True,
     required=False,
