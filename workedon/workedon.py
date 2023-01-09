@@ -80,7 +80,9 @@ def fetch_work(count, start_date, end_date, period, delete):
     """
     Fetch saved work filtered based on user input
     """
-    if count:
+    if count is not None:
+        if count == 0:
+            raise CannotFetchWorkError(extra_detail="count must be non-zero")
         work_set = Work.select().limit(count)
     else:
         start, end = _get_date_range(start_date, end_date, period)

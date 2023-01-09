@@ -60,13 +60,22 @@ def workedon(work):
     "-n", "--count", required=False, type=click.INT, help="Number of entries to return"
 )
 @click.option(
+    "-l",
+    "--last",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Fetch the last entered work log",
+)
+@click.option(
     "-f",
     "--from",
     "start_date",
     required=False,
     default="",
     type=click.STRING,
-    help="start date-time to filter with",
+    help="Start date-time to filter with",
 )
 @click.option(
     "-t",
@@ -75,7 +84,7 @@ def workedon(work):
     required=False,
     default="",
     type=click.STRING,
-    help="end date-time to filter with",
+    help="End date-time to filter with",
 )
 @click.option(
     "-d",
@@ -135,10 +144,12 @@ def workedon(work):
     help="Delete fetched work",
 )
 @command_handler
-def what(count, start_date, end_date, period, delete):
+def what(count, last, start_date, end_date, period, delete):
     """
     Fetch your saved work.
     """
+    if count is None and last:
+        count = 1
     fetch_work(count, start_date, end_date, period, delete)
 
 
