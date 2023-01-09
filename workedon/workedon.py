@@ -21,7 +21,7 @@ def save_work(work):
     """
     Save work from user input
     """
-    work_desc = " ".join(work)
+    work_desc = " ".join(work).strip()
     text, dt = parser.parse(work_desc)
     data = {"work": text}
     if dt:

@@ -42,6 +42,7 @@ class InputParser:
         else:
             work, date_time = (work_desc, "")
         work = work.strip()
+        date_time = date_time.strip()
         if not work:
             raise InvalidWorkError
         date_time = self.parse_datetime(date_time)
