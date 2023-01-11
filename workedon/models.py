@@ -19,7 +19,7 @@ def create_db():
     """
     Create the database and return the connection
     """
-    db_file = Path(user_data_dir(app_name, roaming=True)) / "wondb.sqlite"
+    db_file = Path(user_data_dir(app_name, roaming=True)) / "wondb.sqlite3"
     if not db_file.is_file():
         # create parent dirs
         db_file.parent.mkdir(parents=True, exist_ok=True)
