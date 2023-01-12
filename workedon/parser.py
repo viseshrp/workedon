@@ -31,7 +31,7 @@ class InputParser:
         parsed_dt = self._as_datetime(dt)
         if not parsed_dt:
             raise InvalidDateTimeError
-        if parsed_dt > self._as_datetime("now"):
+        if parsed_dt > now():
             raise DateTimeInFutureError
         return parsed_dt
 
