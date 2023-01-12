@@ -6,6 +6,7 @@ from setuptools import setup, find_packages
 
 REQUIREMENTS = [
     "click>=8.0.0",
+    "colorama>=0.4.4"
     "dateparser>=1.1.0",
     "tzlocal>=3.0",
     "backports.zoneinfo>=0.2.1;python_version < '3.9'",
