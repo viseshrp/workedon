@@ -106,3 +106,4 @@ ENV/
 .idea/
 poetry.lock
 .DS_Store
+*.sqlite3
