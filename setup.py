@@ -6,8 +6,8 @@ from setuptools import setup, find_packages
 
 REQUIREMENTS = [
     "click>=8.1.1",
-    "colorama>=0.4.4"
-    "dateparser>=1.1.3",
+    "colorama>=0.4.4",
+    "dateparser>=1.1.4",
     "tzlocal>=4.0",
     "backports.zoneinfo>=0.2.1;python_version < '3.9'",
     "click-default-group>=1.2.2",
