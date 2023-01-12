@@ -106,7 +106,7 @@ def fetch_work(count, start_date, end_date, period, on, delete):
                 return
             if count > 1:
                 gen = work_set.iterator()
-                click.echo_via_pager(_generate_work(gen), True)
+                click.echo_via_pager(_generate_work(gen))
             elif count == 1:
                 click.echo(work_set[0])
             else:
