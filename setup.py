@@ -23,24 +23,27 @@ def get_file_text(file_name):
         return in_file.read()
 
 
-_version = {}
-_version_file = os.path.join(curr_dir, "workedon", "__init__.py")
-with open(_version_file) as fp:
-    exec(fp.read(), _version)
-version = _version["__version__"]
+_init = {}
+_init_file = os.path.join(curr_dir, "workedon", "__init__.py")
+with open(_init_file) as fp:
+    exec(fp.read(), _init)
+name = _init["__name__"]
+version = _init["__version__"]
+author = _init["__author__"]
+email = _init["__email__"]
 
 setup(
-    name="workedon",
+    name=name,
     version=version,
     description="CLI tool for daily work logging.",
     long_description=get_file_text("README.rst")
     + "\n\n"
     + get_file_text("CHANGELOG.rst"),
     long_description_content_type="text/x-rst",
-    author="Visesh Prasad",
-    author_email="visesh@live.com",
-    maintainer="Visesh Prasad",
-    maintainer_email="visesh@live.com",
+    author=author,
+    author_email=email,
+    maintainer=author,
+    maintainer_email=email,
     license="MIT license",
     packages=find_packages(include=["workedon"]),
     include_package_data=True,
