@@ -2,6 +2,13 @@
 History
 =======
 
+0.4.0 (2023-01-11)
+------------------
+
+* Breaking: rename database to wondb.sqlite3
+* force colored output on windows
+* use tz aware RELATIVE_BASE
+
 0.3.3 (2023-01-09)
 ------------------
 
