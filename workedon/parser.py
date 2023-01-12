@@ -1,8 +1,7 @@
-from datetime import datetime
-
 from dateparser import DateDataParser
 
 from .exceptions import InvalidDateTimeError, DateTimeInFutureError, InvalidWorkError
+from .utils import now
 
 
 class InputParser:
@@ -12,7 +11,7 @@ class InputParser:
         "NORMALIZE": True,
         "RETURN_AS_TIMEZONE_AWARE": True,
         "PREFER_DATES_FROM": "past",
-        "RELATIVE_BASE": datetime.now(),
+        "RELATIVE_BASE": now(),
     }
 
     def __init__(self):
