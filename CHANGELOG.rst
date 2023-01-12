@@ -2,6 +2,12 @@
 History
 =======
 
+0.4.1 (2023-01-12)
+------------------
+
+* ask for deletion only if there's something
+* use tz aware now() for comparison
+
 0.4.0 (2023-01-11)
 ------------------
 
