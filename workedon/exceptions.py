@@ -23,12 +23,20 @@ class WonException(Exception):
         return self.detail
 
 
-class DateTimeInFutureError(WonException):
+class CannotCreateSettingsError(WonException):
     """
-    Exception raised if the given datetime is in the future
+    Exception raised if settings file could not be created
     """
 
-    detail = "The provided date/time is in the future"
+    detail = "Unable to create settings file"
+
+
+class CannotLoadSettingsError(WonException):
+    """
+    Exception raised if settings file could not be loaded
+    """
+
+    detail = "Unable to load settings file"
 
 
 class InvalidWorkError(WonException):
@@ -49,20 +57,28 @@ class InvalidDateTimeError(WonException):
     )
 
 
-class CannotCreateSettingsError(WonException):
+class DateTimeInFutureError(WonException):
     """
-    Exception raised if settings file could not be created
-    """
-
-    detail = "Unable to create settings file"
-
-
-class CannotLoadSettingsError(WonException):
-    """
-    Exception raised if settings file could not be loaded
+    Exception raised if the given datetime is in the future
     """
 
-    detail = "Unable to load settings file"
+    detail = "The provided date/time is in the future"
+
+
+class StartDateAbsentError(WonException):
+    """
+    Exception raised if start date is not provided
+    """
+
+    detail = "Please provide a start date/time"
+
+
+class StartDateGreaterError(WonException):
+    """
+    Exception raised if start date is greater than end date
+    """
+
+    detail = "The provided start date/time is greater than the end date/time"
 
 
 class CannotSaveWorkError(WonException):
@@ -79,19 +95,3 @@ class CannotFetchWorkError(WonException):
     """
 
     detail = "Unable to fetch your work"
-
-
-class StartDateAbsentError(WonException):
-    """
-    Exception raised if start date is not provided
-    """
-
-    detail = "Please provide a start date/time"
-
-
-class StartDateGreaterError(WonException):
-    """
-    Exception raised if start date is greater than end date
-    """
-
-    detail = "The provided start date is greater than the end date"
