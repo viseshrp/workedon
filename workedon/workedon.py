@@ -4,7 +4,12 @@ import datetime
 import click
 from peewee import chunked
 
-from .exceptions import CannotSaveWorkError, CannotFetchWorkError, StartDateAbsentError
+from .exceptions import (
+    CannotSaveWorkError,
+    CannotFetchWorkError,
+    StartDateAbsentError,
+    StartDateGreaterError,
+)
 from .models import Work, init_db
 from .parser import parser
 from .utils import now, to_internal_dt
@@ -75,6 +80,9 @@ def _get_date_range(start_date, end_date, period, on):
             start = parser.parse_datetime(start_date)
         if end_date:
             end = parser.parse_datetime(end_date)
+
+    if start_date > end_date:
+        raise StartDateGreaterError
 
     return to_internal_dt(start), to_internal_dt(end)
 

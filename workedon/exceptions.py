@@ -87,3 +87,11 @@ class StartDateAbsentError(WonException):
     """
 
     detail = "Please provide a start date/time"
+
+
+class StartDateGreaterError(WonException):
+    """
+    Exception raised if start date is greater than end date
+    """
+
+    detail = "The provided start date is greater than the end date"
