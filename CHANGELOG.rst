@@ -2,6 +2,11 @@
 History
 =======
 
+0.4.4 (2023-01-13)
+------------------
+
+* raise if start date is greater than end date
+
 0.4.3 (2023-01-12)
 ------------------
 
