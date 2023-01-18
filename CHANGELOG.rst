@@ -2,6 +2,13 @@
 History
 =======
 
+0.5.2 (2023-01-18)
+------------------
+
+* remove recording seconds for simple querying
+* add --no-page to avoid paging
+* improve deleting
+
 0.5.1 (2023-01-18)
 ------------------
 
