@@ -51,7 +51,7 @@ def _generate_work(result):
             yield work
 
 
-def _get_date_range(start_date, end_date, period, on):
+def _get_date_range(start_date, end_date, period, on, at):
     curr_dt = now()
     # past week is the default
     start = curr_dt - datetime.timedelta(days=7)
@@ -68,6 +68,10 @@ def _get_date_range(start_date, end_date, period, on):
             start = parser.parse_datetime("1 month ago")
         elif period == "year":  # past year
             start = parser.parse_datetime("1 year ago")
+    elif at:
+        at_time = parser.parse_datetime(at)
+        start = at_time
+        end = at_time
     elif on:
         start = parser.parse_datetime(on)
         end = start + datetime.timedelta(hours=24) - datetime.timedelta(seconds=1)
@@ -87,7 +91,7 @@ def _get_date_range(start_date, end_date, period, on):
     return to_internal_dt(start), to_internal_dt(end)
 
 
-def fetch_work(count, start_date, end_date, period, on, delete):
+def fetch_work(count, start_date, end_date, period, on, at, delete):
     """
     Fetch saved work filtered based on user input
     """
@@ -96,7 +100,7 @@ def fetch_work(count, start_date, end_date, period, on, delete):
             raise CannotFetchWorkError(extra_detail="count must be non-zero")
         work_set = Work.select().limit(count)
     else:
-        start, end = _get_date_range(start_date, end_date, period, on)
+        start, end = _get_date_range(start_date, end_date, period, on, at)
         work_set = Work.select().where(
             (Work.timestamp >= start) & (Work.timestamp <= end)
         )

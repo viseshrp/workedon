@@ -141,6 +141,12 @@ def workedon(work):
     help="Fetch work done on a particular date/day",
 )
 @click.option(
+    "--at",
+    required=False,
+    type=click.STRING,
+    help="Fetch work done at a particular time on a particular date/day",
+)
+@click.option(
     "-d",
     "--delete",
     is_flag=True,
@@ -150,13 +156,13 @@ def workedon(work):
     help="Delete fetched work",
 )
 @command_handler
-def what(count, last, start_date, end_date, period, on, delete):
+def what(count, last, start_date, end_date, period, on, at, delete):
     """
     Fetch your saved work.
     """
     if count is None and last:
         count = 1
-    fetch_work(count, start_date, end_date, period, on, delete)
+    fetch_work(count, start_date, end_date, period, on, at, delete)
 
 
 if __name__ == "__main__":
