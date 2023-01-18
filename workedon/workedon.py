@@ -81,7 +81,7 @@ def _get_date_range(start_date, end_date, period, on):
         if end_date:
             end = parser.parse_datetime(end_date)
 
-    if start_date > end_date:
+    if start > end:
         raise StartDateGreaterError
 
     return to_internal_dt(start), to_internal_dt(end)
