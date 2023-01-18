@@ -2,6 +2,12 @@
 History
 =======
 
+0.5.1 (2023-01-18)
+------------------
+
+* fix start > end check
+* add --at to fetch work done at a particular time on a particular date/day
+
 0.5.0 (2023-01-14)
 ------------------
 
