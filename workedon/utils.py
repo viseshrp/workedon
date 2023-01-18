@@ -26,8 +26,10 @@ def to_internal_dt(date_time):
     Convert input datetime to internal timezone
     and removes microsecond component.
     """
-    return date_time.astimezone(zoneinfo.ZoneInfo(settings.internal_tz)).replace(
-        microsecond=0
+    return (
+        date_time.astimezone(zoneinfo.ZoneInfo(settings.internal_tz))
+        .replace(second=0)
+        .replace(microsecond=0)
     )
 
 
