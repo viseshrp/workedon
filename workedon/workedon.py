@@ -110,10 +110,13 @@ def fetch_work(count, start_date, end_date, period, on, at, delete, no_page):
         with init_db():
             count = work_set.count()
             if delete:
-                if count > 0 and click.confirm(f"Continue deleting {count} log(s)?"):
-                    click.echo("Deleting...")
-                    deleted = Work.delete().where(Work.uuid.in_(work_set)).execute()
-                    click.echo(f"{deleted} log(s) deleted successfully.")
+                if count > 0:
+                    if click.confirm(f"Continue deleting {count} log(s)?"):
+                        click.echo("Deleting...")
+                        deleted = Work.delete().where(Work.uuid.in_(work_set)).execute()
+                        click.echo(f"{deleted} log(s) deleted successfully.")
+                else:
+                    click.echo("Nothing to delete.")
                 return
             if count == 1:
                 click.echo(work_set[0])
