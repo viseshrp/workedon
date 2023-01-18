@@ -155,14 +155,22 @@ def workedon(work):
     show_default=True,
     help="Delete fetched work",
 )
+@click.option(
+    "--no-page",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Don't page the output",
+)
 @command_handler
-def what(count, last, start_date, end_date, period, on, at, delete):
+def what(count, last, start_date, end_date, period, on, at, delete, no_page):
     """
     Fetch your saved work.
     """
     if count is None and last:
         count = 1
-    fetch_work(count, start_date, end_date, period, on, at, delete)
+    fetch_work(count, start_date, end_date, period, on, at, delete, no_page)
 
 
 if __name__ == "__main__":

@@ -43,8 +43,7 @@ def save_work(work):
 def _generate_work(result):
     """
     Fetch work in chunks, loop
-    and yield one at a time for
-    display.
+    and yield.
     """
     for work_set in chunked(result, WORK_CHUNK_SIZE):
         for work in work_set:
@@ -91,7 +90,7 @@ def _get_date_range(start_date, end_date, period, on, at):
     return to_internal_dt(start), to_internal_dt(end)
 
 
-def fetch_work(count, start_date, end_date, period, on, at, delete):
+def fetch_work(count, start_date, end_date, period, on, at, delete, no_page):
     """
     Fetch saved work filtered based on user input
     """
@@ -116,11 +115,15 @@ def fetch_work(count, start_date, end_date, period, on, at, delete):
                     deleted = Work.delete().where(Work.uuid.in_(work_set)).execute()
                     click.echo(f"{deleted} log(s) deleted successfully.")
                 return
-            if count > 1:
-                gen = work_set.iterator()
-                click.echo_via_pager(_generate_work(gen))
-            elif count == 1:
+            if count == 1:
                 click.echo(work_set[0])
+            elif count > 1:
+                if no_page:
+                    for work in work_set:
+                        click.echo(work)
+                else:
+                    gen = work_set.iterator()
+                    click.echo_via_pager(_generate_work(gen))
             else:
                 click.echo("Nothing to show, slacker.")
     except Exception as e:
