@@ -104,9 +104,7 @@ def fetch_work(count, start_date, end_date, period, on, at, delete, no_page, rev
             (Work.timestamp >= start) & (Work.timestamp <= end)
         )
     # descending by default
-    sort_order = Work.timestamp.desc()
-    if reverse:
-        sort_order = Work.timestamp.asc()
+    sort_order = Work.timestamp.asc() if reverse else Work.timestamp.desc()
     work_set = work_set.order_by(sort_order)
     # fetch from db now.
     try:
