@@ -24,7 +24,7 @@ def get_unique_hash():
 def to_internal_dt(date_time):
     """
     Convert input datetime to internal timezone
-    and removes microsecond component.
+    and remove the second and microsecond components.
     """
     return (
         date_time.astimezone(zoneinfo.ZoneInfo(settings.internal_tz))

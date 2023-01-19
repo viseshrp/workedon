@@ -90,7 +90,7 @@ def _get_date_range(start_date, end_date, period, on, at):
     return to_internal_dt(start), to_internal_dt(end)
 
 
-def fetch_work(count, start_date, end_date, period, on, at, delete, no_page):
+def fetch_work(count, start_date, end_date, period, on, at, delete, no_page, reverse):
     """
     Fetch saved work filtered based on user input
     """
@@ -103,10 +103,13 @@ def fetch_work(count, start_date, end_date, period, on, at, delete, no_page):
         work_set = Work.select().where(
             (Work.timestamp >= start) & (Work.timestamp <= end)
         )
-    # order by timestamp descending
-    work_set = work_set.order_by(Work.timestamp.desc())
+    # descending by default
+    sort_order = Work.timestamp.desc()
+    if reverse:
+        sort_order = Work.timestamp.asc()
+    work_set = work_set.order_by(sort_order)
+    # fetch from db now.
     try:
-        # fetch from db now.
         with init_db():
             count = work_set.count()
             if delete:

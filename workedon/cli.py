@@ -57,7 +57,16 @@ def workedon(work):
 
 @main.command()
 @click.option(
-    "-n", "--count", required=False, type=click.INT, help="Number of entries to return"
+    "-r",
+    "--reverse",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Reverse order while sorting.",
+)
+@click.option(
+    "-n", "--count", required=False, type=click.INT, help="Number of entries to return."
 )
 @click.option(
     "-s",
@@ -66,7 +75,7 @@ def workedon(work):
     required=False,
     default=False,
     show_default=True,
-    help="Fetch the last entered work log",
+    help="Fetch the last entered work log.",
 )
 @click.option(
     "-f",
@@ -75,7 +84,7 @@ def workedon(work):
     required=False,
     default="",
     type=click.STRING,
-    help="Start date-time to filter with",
+    help="Start date-time to filter with.",
 )
 @click.option(
     "-t",
@@ -84,7 +93,7 @@ def workedon(work):
     required=False,
     default="",
     type=click.STRING,
-    help="End date-time to filter with",
+    help="End date-time to filter with.",
 )
 @click.option(
     "-d",
@@ -92,7 +101,7 @@ def workedon(work):
     "period",
     flag_value="day",
     is_flag=True,
-    help="Fetch work done in the past 24 hours",
+    help="Fetch work done in the past 24 hours.",
 )
 @click.option(
     "-w",
@@ -100,7 +109,7 @@ def workedon(work):
     "period",
     flag_value="week",
     is_flag=True,
-    help="Fetch work done in the past week",
+    help="Fetch work done in the past week.",
 )
 @click.option(
     "-m",
@@ -108,7 +117,7 @@ def workedon(work):
     "period",
     flag_value="month",
     is_flag=True,
-    help="Fetch work done in the past month",
+    help="Fetch work done in the past month.",
 )
 @click.option(
     "-y",
@@ -116,7 +125,7 @@ def workedon(work):
     "period",
     flag_value="year",
     is_flag=True,
-    help="Fetch work done in the past year",
+    help="Fetch work done in the past year.",
 )
 @click.option(
     "-e",
@@ -124,7 +133,7 @@ def workedon(work):
     "period",
     flag_value="yesterday",
     is_flag=True,
-    help="Fetch work done yesterday",
+    help="Fetch work done yesterday.",
 )
 @click.option(
     "-o",
@@ -132,19 +141,19 @@ def workedon(work):
     "period",
     flag_value="today",
     is_flag=True,
-    help="Fetch work done today",
+    help="Fetch work done today.",
 )
 @click.option(
     "--on",
     required=False,
     type=click.STRING,
-    help="Fetch work done on a particular date/day",
+    help="Fetch work done on a particular date/day.",
 )
 @click.option(
     "--at",
     required=False,
     type=click.STRING,
-    help="Fetch work done at a particular time on a particular date/day",
+    help="Fetch work done at a particular time on a particular date/day.",
 )
 @click.option(
     "-d",
@@ -153,7 +162,7 @@ def workedon(work):
     required=False,
     default=False,
     show_default=True,
-    help="Delete fetched work",
+    help="Delete fetched work.",
 )
 @click.option(
     "--no-page",
@@ -161,16 +170,16 @@ def workedon(work):
     required=False,
     default=False,
     show_default=True,
-    help="Don't page the output",
+    help="Don't page the output.",
 )
 @command_handler
-def what(count, last, start_date, end_date, period, on, at, delete, no_page):
+def what(count, last, start_date, end_date, period, on, at, delete, no_page, reverse):
     """
     Fetch your saved work.
     """
     if count is None and last:
         count = 1
-    fetch_work(count, start_date, end_date, period, on, at, delete, no_page)
+    fetch_work(count, start_date, end_date, period, on, at, delete, no_page, reverse)
 
 
 if __name__ == "__main__":
