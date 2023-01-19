@@ -165,6 +165,7 @@ def workedon(work):
     help="Delete fetched work.",
 )
 @click.option(
+    "-g",
     "--no-page",
     is_flag=True,
     required=False,
