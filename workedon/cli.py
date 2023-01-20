@@ -6,7 +6,7 @@ import click
 from click_default_group import DefaultGroup
 
 from . import __version__
-from .utils import command_handler
+from .utils import load_settings
 from .workedon import save_work, fetch_work
 
 warnings.filterwarnings("ignore")
@@ -47,7 +47,7 @@ def main():
     required=False,
     type=click.STRING,
 )
-@command_handler
+@load_settings
 def workedon(work):
     """
     Alternate way to save your work.
@@ -173,7 +173,7 @@ def workedon(work):
     show_default=True,
     help="Don't page the output.",
 )
-@command_handler
+@load_settings
 def what(count, last, start_date, end_date, period, on, at, delete, no_page, reverse):
     """
     Fetch your saved work.

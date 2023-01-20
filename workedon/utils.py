@@ -47,14 +47,14 @@ def get_default_time():
     return to_internal_dt(now())
 
 
-def command_handler(func):
+def load_settings(func):
     """
-    Common decorator that handles
-    command runs
+    Loads settings before a
+    command is run.
     """
 
     @wraps(func)
-    def handle(*args, **kwargs):
+    def handler(*args, **kwargs):
         try:
             from .conf import settings
 
@@ -63,4 +63,4 @@ def command_handler(func):
         except Exception as e:
             raise click.ClickException(click.style(str(e), fg="bright_red"))
 
-    return handle
+    return handler
