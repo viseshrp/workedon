@@ -6,6 +6,14 @@ workedon
 .. image:: https://img.shields.io/pypi/v/workedon.svg
         :target: https://pypi.python.org/pypi/workedon
 
+.. image:: https://img.shields.io/pypi/pyversions/workedon.svg?logo=python&logoColor=white
+        :target: https://pypi.org/project/workedon/
+        :alt: Python versions
+
+.. image:: https://img.shields.io/badge/license-MIT-blue.svg
+        :target: https://github.com/viseshrp/workedon/blob/develop/LICENSE
+        :alt: License
+
 .. image:: https://pepy.tech/badge/workedon
         :target: https://pepy.tech/project/workedon
         :alt: Downloads
