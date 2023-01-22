@@ -43,7 +43,7 @@ setup(
     maintainer=author,
     maintainer_email=email,
     license="MIT license",
-    packages=find_packages(include=["workedon"]),
+    packages=find_packages(include=["workedon"], exclude=["tests", "tests.*"]),
     include_package_data=True,
     zip_safe=False,
     classifiers=[
@@ -69,10 +69,6 @@ setup(
     },
     python_requires=">=3.7",
     keywords="workedon work worklog log journal",
-    test_suite="tests",
-    tests_require=[
-        "pytest",
-    ],
     install_requires=REQUIREMENTS,
     entry_points={
         "console_scripts": [
