@@ -75,7 +75,7 @@ def workedon(work):
     required=False,
     default=False,
     show_default=True,
-    help="Fetch the last entered work log.",
+    help="Fetch the last thing you worked on",
 )
 @click.option(
     "-f",
