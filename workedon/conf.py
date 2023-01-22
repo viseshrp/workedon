@@ -4,8 +4,7 @@ from pathlib import Path
 from platformdirs import user_config_dir
 from tzlocal import get_localzone
 
-from . import __name__
-from . import default_settings
+from . import __name__, default_settings
 from .constants import SETTINGS_HEADER
 from .exceptions import CannotCreateSettingsError, CannotLoadSettingsError
 
@@ -37,9 +36,7 @@ class Settings(dict):
             settings_file.write(SETTINGS_HEADER)
             for setting in dir(default_settings):
                 if setting.isupper():
-                    settings_file.write(
-                        f'# {setting} = "{getattr(default_settings, setting)}"\n'
-                    )
+                    settings_file.write(f'# {setting} = "{getattr(default_settings, setting)}"\n')
 
     def configure(self, user_settings=None):
         """

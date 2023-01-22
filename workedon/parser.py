@@ -1,6 +1,6 @@
 from dateparser import DateDataParser
 
-from .exceptions import InvalidDateTimeError, DateTimeInFutureError, InvalidWorkError
+from .exceptions import DateTimeInFutureError, InvalidDateTimeError, InvalidWorkError
 from .utils import now
 
 

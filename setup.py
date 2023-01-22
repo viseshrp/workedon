@@ -1,8 +1,8 @@
 """The setup script."""
-import os
 from io import open
+import os
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 REQUIREMENTS = [
     "click>=8.1.1",
@@ -36,9 +36,7 @@ setup(
     name=name,
     version=version,
     description="CLI tool for daily work logging.",
-    long_description=get_file_text("README.rst")
-    + "\n\n"
-    + get_file_text("CHANGELOG.rst"),
+    long_description=get_file_text("README.rst") + "\n\n" + get_file_text("CHANGELOG.rst"),
     long_description_content_type="text/x-rst",
     author=author,
     author_email=email,

@@ -7,7 +7,7 @@ from click_default_group import DefaultGroup
 
 from . import __version__
 from .utils import load_settings
-from .workedon import save_work, fetch_work
+from .workedon import fetch_work, save_work
 
 warnings.filterwarnings("ignore")
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
@@ -65,9 +65,7 @@ def workedon(work):
     show_default=True,
     help="Reverse order while sorting.",
 )
-@click.option(
-    "-n", "--count", required=False, type=click.INT, help="Number of entries to return."
-)
+@click.option("-n", "--count", required=False, type=click.INT, help="Number of entries to return.")
 @click.option(
     "-s",
     "--last",

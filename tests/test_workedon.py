@@ -2,12 +2,10 @@
 
 """Tests for `workedon` package."""
 
+from click.testing import CliRunner
 import pytest
 
-from click.testing import CliRunner
-
-from workedon import workedon
-from workedon import cli
+from workedon import cli, workedon
 
 
 @pytest.fixture

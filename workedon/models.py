@@ -2,12 +2,12 @@ import contextlib
 from pathlib import Path
 
 import click
-from peewee import Model, CharField, DateTimeField, TextField, SqliteDatabase
+from peewee import CharField, DateTimeField, Model, SqliteDatabase, TextField
 from platformdirs import user_data_dir
 
 from . import __name__ as app_name
 from .conf import settings
-from .utils import get_unique_hash, get_default_time
+from .utils import get_default_time, get_unique_hash
 
 try:
     from backports import zoneinfo

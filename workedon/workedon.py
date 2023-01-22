@@ -5,8 +5,8 @@ import click
 from peewee import chunked
 
 from .exceptions import (
-    CannotSaveWorkError,
     CannotFetchWorkError,
+    CannotSaveWorkError,
     StartDateAbsentError,
     StartDateGreaterError,
 )
@@ -100,9 +100,7 @@ def fetch_work(count, start_date, end_date, period, on, at, delete, no_page, rev
         work_set = Work.select().limit(count)
     else:
         start, end = _get_date_range(start_date, end_date, period, on, at)
-        work_set = Work.select().where(
-            (Work.timestamp >= start) & (Work.timestamp <= end)
-        )
+        work_set = Work.select().where((Work.timestamp >= start) & (Work.timestamp <= end))
     # descending by default
     sort_order = Work.timestamp.asc() if reverse else Work.timestamp.desc()
     work_set = work_set.order_by(sort_order)

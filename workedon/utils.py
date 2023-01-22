@@ -1,7 +1,7 @@
-import hashlib
-import uuid
 from datetime import datetime
 from functools import wraps
+import hashlib
+import uuid
 
 import click
 
