@@ -1,0 +1,65 @@
+repos:
+  - repo: local
+    hooks:
+      - id: check-yaml
+        name: check-yaml
+        entry: check-yaml
+        language: system
+        types: [ yaml ]
+      - id: check-case-conflict
+        name: check-case-conflict
+        entry: check-case-conflict
+        language: system
+      - id: debug-statements
+        name: debug-statements
+        entry: debug-statement-hook
+        language: system
+        types: [ python ]
+      - id: black
+        name: black
+        entry: black
+        language: system
+        types: [ python ]
+        require_serial: true
+        args: [ # black ignores files in .gitignore by default
+            --line-length, "100",
+            --target-version, "py37",
+            workedon, tests
+        ]
+      - id: isort
+        name: isort
+        entry: isort
+        language: system
+        types: [ python ]
+        require_serial: true
+        args: [
+            --profile, black,
+            --skip-gitignore,
+            --force-sort-within-sections,
+            --line-length, "100",
+            --section-default, THIRDPARTY,
+            --filter-files,
+            --project, workedon, tests
+        ]
+      - id: flake8
+        name: flake8
+        entry: flake8
+        language: system
+        types: [ python ]
+        require_serial: true
+      - id: codespell
+        name: codespell
+        entry: codespell
+        language: system
+      - id: bandit
+        name: bandit
+        entry: bandit
+        language: system
+        types: [ python ]
+        require_serial: true
+        args: [
+            -lll,
+            -n, "3",
+            -r,
+            -x, "venv/*,setup.py,tests/*"
+        ]
