@@ -34,3 +34,5 @@ ignore =
   B950
   # Module imported but unused
   F401
+  # manually surrounded by quotes, consider using the `!r` conversion flag
+  B907
