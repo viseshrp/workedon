@@ -72,14 +72,6 @@ See all options with:
     $ workedon what --help
 
 
-Settings
----------
-
-* DATE_FORMAT
-* TIME_FORMAT
-* DATETIME_FORMAT
-
-
 Credits
 -------
 * Click_, for making writing CLI tools a complete pleasure.
