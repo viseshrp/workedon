@@ -2,6 +2,14 @@
 History
 =======
 
+0.5.4 (2023-01-22)
+------------------
+
+* add -g as alternative for no-page
+* fix help text
+* update README
+* hashlib: set usedforsecurity
+
 0.5.3 (2023-01-18)
 ------------------
 
