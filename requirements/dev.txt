@@ -3,3 +3,7 @@ ipdb>=0.13.11
 black[d]>=22.12.0
 litecli>=1.9.0
 whatsonpypi
+
+-r lint.txt
+-r test.txt
+-r build.txt

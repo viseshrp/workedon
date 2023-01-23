@@ -6,10 +6,6 @@ env:
   FORCE_COLOR: 1
   PRE_COMMIT_COLOR: "always"
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -37,6 +33,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
