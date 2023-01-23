@@ -20,4 +20,4 @@ def test_cli_main(runner):
     assert result.exit_code == 0
     help_result = runner.invoke(__main__.main, ["--help"])
     assert help_result.exit_code == 0
-    assert "--help  Show this message and exit." in help_result.output
+    assert "--help     Show this message and exit." in help_result.output

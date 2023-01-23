@@ -61,10 +61,11 @@ setup(
     ],
     url="https://github.com/viseshrp/workedon",
     project_urls={
-        "Documentation": "https://github.com/viseshrp/workedon",
+        "Documentation": "https://github.com/viseshrp/workedon#readme",
         "Changelog": "https://github.com/viseshrp/workedon/blob/main/CHANGELOG.rst",
         "Bug Tracker": "https://github.com/viseshrp/workedon/issues",
         "Source Code": "https://github.com/viseshrp/workedon",
+        "CI": "https://github.com/viseshrp/workedon/actions",
     },
     python_requires=">=3.7",
     keywords="workedon work worklog log journal",
