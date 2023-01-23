@@ -1,5 +1,4 @@
 """The setup script."""
-from io import open
 import os
 
 from setuptools import find_packages, setup
@@ -19,7 +18,7 @@ curr_dir = os.path.abspath(os.path.dirname(__file__))
 
 
 def get_file_text(file_name):
-    with open(os.path.join(curr_dir, file_name), "r", encoding="utf-8") as in_file:
+    with open(os.path.join(curr_dir, file_name), encoding="utf-8") as in_file:
         return in_file.read()
 
 
