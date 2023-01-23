@@ -30,7 +30,7 @@ repos:
         name: isort
         entry: isort
         language: system
-        types: [ python ]
+        types_or: [cython, pyi, python]
         require_serial: true
         args: [
             --profile, black,
@@ -63,3 +63,8 @@ repos:
             -r,
             -x, "venv/*,setup.py,tests/*"
         ]
+      - id: trailing-whitespace
+        name: Trim Trailing Whitespace
+        entry: trailing-whitespace-fixer
+        language: system
+        types: [text]
