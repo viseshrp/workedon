@@ -154,7 +154,6 @@ def workedon(work):
     help="Fetch work done at a particular time on a particular date/day.",
 )
 @click.option(
-    "-d",
     "--delete",
     is_flag=True,
     required=False,
