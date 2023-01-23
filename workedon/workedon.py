@@ -46,8 +46,7 @@ def _generate_work(result):
     and yield.
     """
     for work_set in chunked(result, WORK_CHUNK_SIZE):
-        for work in work_set:
-            yield work
+        yield from work_set
 
 
 def _get_date_range(start_date, end_date, period, on, at):
