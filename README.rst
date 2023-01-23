@@ -79,10 +79,11 @@ Settings
 Credits
 -------
 * Click_, for making writing CLI tools a complete pleasure.
-* dateparser_, for an amazing date parser.
-* jrnl_ and `fck`_ for some inspiration.
+* dateparser_, for an amazing date parser. This project would not be possible without it.
+* jrnl_, fck_ and sqlite-utils_ for some inspiration.
 
 .. _Click: https://click.palletsprojects.com
 .. _dateparser: https://github.com/scrapinghub/dateparser
 .. _jrnl: https://github.com/jrnl-org/jrnl
 .. _fck: https://github.com/nvbn/thefuck
+.. _sqlite-utils: https://github.com/simonw/sqlite-utils/
