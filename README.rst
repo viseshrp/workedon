@@ -14,6 +14,10 @@ workedon
         :target: https://github.com/viseshrp/workedon/actions?query=workflow%3ATest
         :alt: Tests status
 
+.. image:: https://codecov.io/gh/viseshrp/workedon/branch/develop/graph/badge.svg
+        :target: https://codecov.io/gh/viseshrp/workedon
+        :alt: Coverage
+
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg
         :target: https://github.com/viseshrp/workedon/blob/develop/LICENSE
         :alt: License
