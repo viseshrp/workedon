@@ -2,6 +2,12 @@
 History
 =======
 
+0.5.5 (2023-01-23)
+------------------
+
+* add -l/--text-only for text-only output
+* remove -d used as alternative for --delete
+
 0.5.4 (2023-01-22)
 ------------------
 
