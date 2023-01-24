@@ -80,4 +80,3 @@ class Work(Model):
             )
         else:
             return f'\n{click.style(f"* {self.work}", bold=True, fg="white")}\n\n'
-
