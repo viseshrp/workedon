@@ -89,17 +89,20 @@ def _get_date_range(start_date, end_date, period, on, at):
     return to_internal_dt(start), to_internal_dt(end)
 
 
-def fetch_work(count, start_date, end_date, period, on, at, delete, no_page, reverse):
+def fetch_work(count, start_date, end_date, period, on, at, delete, no_page, reverse, text_only):
     """
     Fetch saved work filtered based on user input
     """
+    # filter fields
+    fields = [Work.work] if text_only else [Work.uuid, Work.timestamp, Work.work]
+    # initial set
     if count is not None:
         if count == 0:
             raise CannotFetchWorkError(extra_detail="count must be non-zero")
-        work_set = Work.select().limit(count)
+        work_set = Work.select(*fields).limit(count)
     else:
         start, end = _get_date_range(start_date, end_date, period, on, at)
-        work_set = Work.select().where((Work.timestamp >= start) & (Work.timestamp <= end))
+        work_set = Work.select(*fields).where((Work.timestamp >= start) & (Work.timestamp <= end))
     # descending by default
     sort_order = Work.timestamp.asc() if reverse else Work.timestamp.desc()
     work_set = work_set.order_by(sort_order)
@@ -117,11 +120,11 @@ def fetch_work(count, start_date, end_date, period, on, at, delete, no_page, rev
                     click.echo("Nothing to delete.")
                 return
             if count == 1:
-                click.echo(work_set[0])
+                click.echo(work_set[0], nl=False)
             elif count > 1:
                 if no_page:
                     for work in work_set:
-                        click.echo(work)
+                        click.echo(work, nl=False)
                 else:
                     gen = work_set.iterator()
                     click.echo_via_pager(_generate_work(gen))

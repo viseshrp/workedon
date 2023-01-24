@@ -170,14 +170,23 @@ def workedon(work):
     show_default=True,
     help="Don't page the output.",
 )
+@click.option(
+    "-l",
+    "--text-only",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Output the work log text only.",
+)
 @load_settings
-def what(count, last, start_date, end_date, period, on, at, delete, no_page, reverse):
+def what(count, last, start_date, end_date, period, on, at, delete, no_page, reverse, text_only):
     """
     Fetch your saved work.
     """
     if count is None and last:
         count = 1
-    fetch_work(count, start_date, end_date, period, on, at, delete, no_page, reverse)
+    fetch_work(count, start_date, end_date, period, on, at, delete, no_page, reverse, text_only)
 
 
 if __name__ == "__main__":

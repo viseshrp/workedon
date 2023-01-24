@@ -70,10 +70,14 @@ class Work(Model):
         Format the object for display.
         Uses a git log like structure.
         """
-        user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.user_tz))
-        time = user_time.strftime(settings.DATETIME_FORMAT)
-        return (
-            f'\n{click.style(f"id: {self.uuid}", fg="green")}'
-            f'\n{click.style(f"Date: {time}")}'
-            f'\n\n\t{click.style(f"{self.work}", bold=True, fg="white")}\n'
-        )
+        if self.timestamp and self.uuid:
+            user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.user_tz))
+            timestamp = user_time.strftime(settings.DATETIME_FORMAT)
+            return (
+                f'\n{click.style(f"id: {self.uuid}", fg="green")}'
+                f'\n{click.style(f"Date: {timestamp}")}'
+                f'\n\n\t{click.style(f"{self.work}", bold=True, fg="white")}\n\n'
+            )
+        else:
+            return f'\n{click.style(f"* {self.work}", bold=True, fg="white")}\n\n'
+
