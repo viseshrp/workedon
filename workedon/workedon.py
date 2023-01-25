@@ -91,7 +91,9 @@ def _get_date_range(start_date, end_date, since, period, on, at):
     return to_internal_dt(start), to_internal_dt(end)
 
 
-def fetch_work(count, start_date, end_date, since, period, on, at, delete, no_page, reverse, text_only):
+def fetch_work(
+    count, start_date, end_date, since, period, on, at, delete, no_page, reverse, text_only
+):
     """
     Fetch saved work filtered based on user input
     """
