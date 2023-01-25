@@ -6,6 +6,7 @@ History
 ------------------
 
 * add --since as alternative for --from
+* fix formatting in shell
 
 0.5.5 (2023-01-23)
 ------------------
