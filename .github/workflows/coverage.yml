@@ -20,7 +20,7 @@ jobs:
       with:
         python-version: 3.7
 
-    - uses: actions/cache@v2
+    - uses: actions/cache@v3
       name: Configure pip caching
       with:
         path: ~/.cache/pip
