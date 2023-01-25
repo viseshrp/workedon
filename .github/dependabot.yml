@@ -9,8 +9,7 @@ updates:
       - "Maintenance"
       - "Dependencies"
     ignore:
-      - dependency-name: "vtk"
-      - dependency-name: "grpcio"
+      - dependency-name: "whatsonpypi"
 
   - package-ecosystem: "github-actions"
     directory: "/"
