@@ -74,9 +74,9 @@ class Work(Model):
             user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.user_tz))
             timestamp = user_time.strftime(settings.DATETIME_FORMAT)
             return (
-                f'\n{click.style(f"id: {self.uuid}", fg="green")}'
-                f'\n{click.style(f"Date: {timestamp}")}'
-                f'\n\n\t{click.style(f"{self.work}", bold=True, fg="white")}\n\n'
+                f'{click.style(f"id: {self.uuid}", fg="green")}\n'
+                f'{click.style(f"Date: {timestamp}")}\n'
+                f'\n\t{click.style(f"{self.work}", bold=True, fg="white")}\n\n'
             )
         else:
-            return f'\n{click.style(f"* {self.work}", bold=True, fg="white")}\n\n'
+            return f'{click.style(f"* {self.work}", bold=True, fg="white")}\n'

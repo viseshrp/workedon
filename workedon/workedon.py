@@ -34,8 +34,8 @@ def save_work(work):
     try:
         with init_db():
             w = Work.create(**data)
-            click.echo("Work saved.")
-            click.echo(w)
+            click.echo("Work saved.\n")
+            click.echo(w, nl=False)
     except Exception as e:
         raise CannotSaveWorkError(extra_detail=str(e))
 
