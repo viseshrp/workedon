@@ -49,7 +49,7 @@ def _generate_work(result):
         yield from work_set
 
 
-def _get_date_range(start_date, end_date, period, on, at):
+def _get_date_range(start_date, end_date, since, period, on, at):
     curr_dt = now()
     # past week is the default
     start = curr_dt - datetime.timedelta(days=7)
@@ -66,13 +66,15 @@ def _get_date_range(start_date, end_date, period, on, at):
             start = parser.parse_datetime("1 month ago")
         elif period == "year":  # past year
             start = parser.parse_datetime("1 year ago")
+    elif on:
+        start = parser.parse_datetime(on)
+        end = start + datetime.timedelta(hours=24) - datetime.timedelta(seconds=1)
     elif at:
         at_time = parser.parse_datetime(at)
         start = at_time
         end = at_time
-    elif on:
-        start = parser.parse_datetime(on)
-        end = start + datetime.timedelta(hours=24) - datetime.timedelta(seconds=1)
+    elif since:
+        start = parser.parse_datetime(since)
     else:
         # need a start to avoid fetching everything since
         # the beginning of time.
@@ -89,7 +91,7 @@ def _get_date_range(start_date, end_date, period, on, at):
     return to_internal_dt(start), to_internal_dt(end)
 
 
-def fetch_work(count, start_date, end_date, period, on, at, delete, no_page, reverse, text_only):
+def fetch_work(count, start_date, end_date, since, period, on, at, delete, no_page, reverse, text_only):
     """
     Fetch saved work filtered based on user input
     """
@@ -101,7 +103,7 @@ def fetch_work(count, start_date, end_date, period, on, at, delete, no_page, rev
             raise CannotFetchWorkError(extra_detail="count must be non-zero")
         work_set = Work.select(*fields).limit(count)
     else:
-        start, end = _get_date_range(start_date, end_date, period, on, at)
+        start, end = _get_date_range(start_date, end_date, since, period, on, at)
         work_set = Work.select(*fields).where((Work.timestamp >= start) & (Work.timestamp <= end))
     # descending by default
     sort_order = Work.timestamp.asc() if reverse else Work.timestamp.desc()

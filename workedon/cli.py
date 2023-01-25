@@ -94,6 +94,13 @@ def workedon(work):
     help="End date-time to filter with.",
 )
 @click.option(
+    "--since",
+    required=False,
+    default="",
+    type=click.STRING,
+    help="Fetch work done since a specified date-time in the past.",
+)
+@click.option(
     "-d",
     "--past-day",
     "period",
@@ -180,13 +187,13 @@ def workedon(work):
     help="Output the work log text only.",
 )
 @load_settings
-def what(count, last, start_date, end_date, period, on, at, delete, no_page, reverse, text_only):
+def what(count, last, start_date, end_date, since, period, on, at, delete, no_page, reverse, text_only):
     """
     Fetch your saved work.
     """
     if count is None and last:
         count = 1
-    fetch_work(count, start_date, end_date, period, on, at, delete, no_page, reverse, text_only)
+    fetch_work(count, start_date, end_date, since, period, on, at, delete, no_page, reverse, text_only)
 
 
 if __name__ == "__main__":
