@@ -98,7 +98,9 @@ def fetch_work(
     Fetch saved work filtered based on user input
     """
     # filter fields
-    fields = [Work.work] if text_only else [Work.uuid, Work.timestamp, Work.work]
+    fields = []
+    if not delete:
+        fields = [Work.work] if text_only else [Work.uuid, Work.timestamp, Work.work]
     # initial set
     if count is not None:
         if count == 0:
