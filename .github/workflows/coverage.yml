@@ -8,6 +8,10 @@ on:
     branches:
       - develop
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -37,7 +41,7 @@ jobs:
     - name: Run tests
       run: |-
         ls -lah
-        pytest -rvx --setup-show --cov=workedon --cov-report xml:coverage.xml --cov-report term
+        make test-cov
         ls -lah
 
     - name: Upload coverage report
