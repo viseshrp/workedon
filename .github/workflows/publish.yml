@@ -3,8 +3,8 @@ name: Publish
 on:
   workflow_dispatch:
   push:
-    branches:
-      - develop
+    tags:
+      - "*"
   release:
     types: [published]
 
