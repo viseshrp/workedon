@@ -7,6 +7,7 @@ from workedon import __main__
 @pytest.mark.parametrize(
     "options",
     (
+        [],
         ["-h"],
         ["--help"],
         ["what", "-h"],
