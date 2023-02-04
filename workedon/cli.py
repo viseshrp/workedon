@@ -188,7 +188,18 @@ def workedon(work):
 )
 @load_settings
 def what(
-    count, last, start_date, end_date, since, period, on, at, delete, no_page, reverse, text_only
+    count,
+    last,
+    start_date,
+    end_date,
+    since,
+    period,
+    on,
+    at,
+    delete,
+    no_page,
+    reverse,
+    text_only,
 ):
     """
     Fetch your saved work.
@@ -196,7 +207,17 @@ def what(
     if count is None and last:
         count = 1
     fetch_work(
-        count, start_date, end_date, since, period, on, at, delete, no_page, reverse, text_only
+        count,
+        start_date,
+        end_date,
+        since,
+        period,
+        on,
+        at,
+        delete,
+        no_page,
+        reverse,
+        text_only,
     )
 
 
