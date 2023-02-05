@@ -1,3 +1,5 @@
+import re
+
 from click.testing import CliRunner
 import pytest
 
@@ -87,6 +89,26 @@ def test_save_and_fetch_last(work, option, valid):
     else:
         assert result.exit_code == 0
         assert work[0] not in result.output
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (["recording a demo"], ["--id"]),
+        (["recording a demo"], ["-i"]),
+    ],
+)
+def test_save_and_fetch_id(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    matches = re.search(r".*id: ([0-9a-f]{40}).*", result.output)
+    work_id = matches.group(1)
+    option.append(work_id)
+    result = CliRunner().invoke(cli.what, option)
+    verify_work_output(result, work)
 
 
 @pytest.mark.parametrize(
