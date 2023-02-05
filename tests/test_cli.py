@@ -189,6 +189,40 @@ def test_save_and_fetch_since(work, option):
 @pytest.mark.parametrize(
     "work, option",
     [
+        (["framing a photo", "@ 1:34pm yesterday"], ["--yesterday"]),
+        (["taking pictures", "@ 12:34pm yesterday"], ["-e"]),
+    ],
+)
+def test_save_and_fetch_yesterday(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    verify_work_output(result, work)
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (["training for a 4k", "@ 1 hour 3 mins ago"], ["--today"]),
+        (["training for a 10k", "@ 59 mins ago"], ["-o"]),
+    ],
+)
+def test_save_and_fetch_today(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    verify_work_output(result, work)
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
         (["setting up my homelab", "@ 1 hour ago "], ["--past-day"]),
         (["setting up my garden", "@ 2 hours ago "], ["-d"]),
     ],
