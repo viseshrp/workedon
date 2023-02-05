@@ -93,6 +93,7 @@ def _get_date_range(start_date, end_date, since, period, on, at):
 
 def fetch_work(
     count,
+    work_id,
     start_date,
     end_date,
     since,
@@ -114,17 +115,20 @@ def fetch_work(
     # initial set
     work_set = Work.select(*fields)
     # filter
-    start, end = _get_date_range(start_date, end_date, since, period, on, at)
-    if start and end:
-        work_set = work_set.where((Work.timestamp >= start) & (Work.timestamp <= end))
-    # order
-    sort_order = Work.timestamp.asc() if reverse else Work.timestamp.desc()
-    work_set = work_set.order_by(sort_order)
-    # limit
-    if count is not None:
-        if count == 0:
-            raise CannotFetchWorkError(extra_detail="count must be non-zero")
-        work_set = work_set.limit(count)
+    if not work_id:
+        start, end = _get_date_range(start_date, end_date, since, period, on, at)
+        if start and end:
+            work_set = work_set.where((Work.timestamp >= start) & (Work.timestamp <= end))
+        # order
+        sort_order = Work.timestamp.asc() if reverse else Work.timestamp.desc()
+        work_set = work_set.order_by(sort_order)
+        # limit
+        if count is not None:
+            if count == 0:
+                raise CannotFetchWorkError(extra_detail="count must be non-zero")
+            work_set = work_set.limit(count)
+    else:
+        work_set = work_set.where(Work.uuid == work_id)
     # fetch from db now.
     try:
         with init_db():

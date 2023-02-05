@@ -76,6 +76,15 @@ def workedon(work):
     help="Fetch the last thing you worked on",
 )
 @click.option(
+    "-i",
+    "--id",
+    "work_id",
+    required=False,
+    default="",
+    type=click.STRING,
+    help="id to fetch with.",
+)
+@click.option(
     "-f",
     "--from",
     "start_date",
@@ -190,6 +199,7 @@ def workedon(work):
 def what(
     count,
     last,
+    work_id,
     start_date,
     end_date,
     since,
@@ -208,6 +218,7 @@ def what(
         count = 1
     fetch_work(
         count,
+        work_id,
         start_date,
         end_date,
         since,
