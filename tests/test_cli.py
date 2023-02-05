@@ -171,6 +171,25 @@ def test_save_and_fetch_at(work, option):
     "work, option",
     [
         (
+            ["gaining Indian Independence", "@ 1pm August 15 1947"],
+            ["--since", "1947", "-r", "-n", "1"],
+        ),
+    ],
+)
+def test_save_and_fetch_since(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    verify_work_output(result, work)
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (
             ["learning to drive", "@ 3pm June 3rd 2020"],
             ["--from", "June 2nd 2020", "--to", "June 4th 2020"],
         ),
