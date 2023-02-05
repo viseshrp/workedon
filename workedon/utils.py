@@ -9,7 +9,7 @@ from .conf import settings
 
 try:
     from backports import zoneinfo
-except ImportError:
+except ImportError:  # pragma: no cover
     import zoneinfo
 
 

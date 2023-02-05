@@ -11,7 +11,7 @@ from .utils import get_default_time, get_unique_hash
 
 try:
     from backports import zoneinfo
-except ImportError:
+except ImportError:  # pragma: no cover
     import zoneinfo
 
 

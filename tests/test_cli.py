@@ -41,6 +41,12 @@ def test_version(options):
     assert __version__ in result.output
 
 
+def test_empty_fetch():
+    result = CliRunner().invoke(cli.what)
+    assert result.exit_code == 0
+    assert "Nothing to show" in result.output
+
+
 @pytest.mark.parametrize(
     "work",
     [
@@ -133,6 +139,19 @@ def test_save_and_fetch_delete(work, option):
     result = CliRunner().invoke(cli.what, option, input="y")
     assert result.exit_code == 0
     assert "deleted successfully" in result.output
+
+
+@pytest.mark.parametrize(
+    "option",
+    [
+        (["--at", "4:44pm 5 years ago", "--delete"]),
+    ],
+)
+def test_save_and_fetch_delete_empty(option):
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    assert result.exit_code == 0
+    assert "Nothing to delete" in result.output
 
 
 @pytest.mark.parametrize(
@@ -440,3 +459,21 @@ def test_save_and_fetch_start_greater(work, option):
     assert result.exit_code == 1
     assert work[0] not in result.output
     assert exceptions.StartDateGreaterError.detail in result.output
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (["cardio at the gym", "@ 5:53pm tuesday"], ["--count", "0"]),
+    ],
+)
+def test_save_and_fetch_zero_count(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    assert result.exit_code == 1
+    assert work[0] not in result.output
+    assert exceptions.CannotFetchWorkError.detail in result.output
