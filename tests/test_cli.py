@@ -1,7 +1,7 @@
 from click.testing import CliRunner
 import pytest
 
-from workedon import __version__, cli
+from workedon import __version__, cli, exceptions
 
 
 def verify_work_output(result, work):
@@ -222,3 +222,82 @@ def test_save_and_fetch_textonly(work, option):
     assert f"* {work[0]}" in result.output
     assert "id:" not in result.output
     assert "Date:" not in result.output
+
+
+# exceptions
+@pytest.mark.parametrize(
+    "work",
+    [
+        ([" ", "@ 9pm 8 days ago"]),
+    ],
+)
+def test_save_and_fetch_invalid(work):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    assert result.exit_code == 1
+    assert not result.output.startswith("Work saved.")
+    assert exceptions.InvalidWorkError.detail in result.output
+
+
+@pytest.mark.parametrize(
+    "work",
+    [
+        (["Creating the world", "@ lolololol"]),
+    ],
+)
+def test_save_and_fetch_date_invalid(work):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    assert result.exit_code == 1
+    assert not result.output.startswith("Work saved.")
+    assert exceptions.InvalidDateTimeError.detail in result.output
+
+
+@pytest.mark.parametrize(
+    "work",
+    [
+        (["Walking the dog", "@ 5pm tomorrow"]),
+    ],
+)
+def test_save_and_fetch_date_in_future(work):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    assert result.exit_code == 1
+    assert not result.output.startswith("Work saved.")
+    assert exceptions.DateTimeInFutureError.detail in result.output
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (["doing my taxes", "@ 9pm 8 days ago"], ["-t", "3pm today"]),
+    ],
+)
+def test_save_and_fetch_start_absent(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    assert result.exit_code == 1
+    assert work[0] not in result.output
+    assert exceptions.StartDateAbsentError.detail in result.output
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (["making pasta", "@ 9pm 5 days ago"], ["-f", "3pm today", "-t", "3pm 5 days ago"]),
+    ],
+)
+def test_save_and_fetch_start_greater(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    assert result.exit_code == 1
+    assert work[0] not in result.output
+    assert exceptions.StartDateGreaterError.detail in result.output
