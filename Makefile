@@ -17,13 +17,22 @@ test:
 	pytest -rvx --setup-show
 
 test-cov:
-	pytest -rvx --setup-show --cov=workedon --cov-report xml:coverage.xml --cov-report term
+	pytest -rvx --setup-show --cov=workedon \
+  --cov-report html:coverage-html \
+  --cov-report xml:coverage.xml \
+  --cov-report term \
+  --cov-config=.coveragerc
 
 smoketest:
 	workedon --help
 	workedon --version
 
 clean:
-	rm -rf dist build
-	rm -rf *.egg-info
 	find . -name \*.pyc -delete
+	rm -rf dist \
+  build \
+  *.egg-info \
+  .pytest_cache \
+  .coverage \
+  coverage-html \
+  coverage.xml

@@ -16,7 +16,7 @@ from .utils import now, to_internal_dt
 
 try:
     from backports import zoneinfo
-except ImportError:
+except ImportError:  # pragma: no cover
     import zoneinfo
 
 WORK_CHUNK_SIZE = 100
