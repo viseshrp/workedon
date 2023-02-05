@@ -112,32 +112,35 @@ def fetch_work(
     if not delete:
         fields = [Work.work] if text_only else [Work.uuid, Work.timestamp, Work.work]
     # initial set
+    work_set = Work.select(*fields)
+    # filter
+    start, end = _get_date_range(start_date, end_date, since, period, on, at)
+    if start and end:
+        work_set = work_set.where((Work.timestamp >= start) & (Work.timestamp <= end))
+    # order
+    sort_order = Work.timestamp.asc() if reverse else Work.timestamp.desc()
+    work_set = work_set.order_by(sort_order)
+    # limit
     if count is not None:
         if count == 0:
             raise CannotFetchWorkError(extra_detail="count must be non-zero")
-        work_set = Work.select(*fields).limit(count)
-    else:
-        start, end = _get_date_range(start_date, end_date, since, period, on, at)
-        work_set = Work.select(*fields).where((Work.timestamp >= start) & (Work.timestamp <= end))
-    # descending by default
-    sort_order = Work.timestamp.asc() if reverse else Work.timestamp.desc()
-    work_set = work_set.order_by(sort_order)
+        work_set = work_set.limit(count)
     # fetch from db now.
     try:
         with init_db():
-            count = work_set.count()
+            work_count = work_set.count()
             if delete:
-                if count > 0:
-                    if click.confirm(f"Continue deleting {count} log(s)?"):
+                if work_count > 0:
+                    if click.confirm(f"Continue deleting {work_count} log(s)?"):
                         click.echo("Deleting...")
                         deleted = Work.delete().where(Work.uuid.in_(work_set)).execute()
                         click.echo(f"{deleted} log(s) deleted successfully.")
                 else:
                     click.echo("Nothing to delete.")
                 return
-            if count == 1:
+            if work_count == 1:
                 click.echo(work_set[0], nl=False)
-            elif count > 1:
+            elif work_count > 1:
                 if no_page:
                     for work in work_set:
                         click.echo(work, nl=False)
