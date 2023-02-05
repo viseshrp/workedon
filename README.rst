@@ -25,9 +25,10 @@ workedon
 .. image:: https://pepy.tech/badge/workedon
         :target: https://pepy.tech/project/workedon
         :alt: Downloads
-|
+
 | CLI utility for daily work logging.
-|
+
+
 .. image:: demo.gif
    :alt: demo
    :align: center
