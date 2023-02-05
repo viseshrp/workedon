@@ -4,6 +4,13 @@ import pytest
 from workedon import __version__, cli
 
 
+def verify_work_output(result, work):
+    assert result.exit_code == 0
+    assert work[0] in result.output
+    assert "id:" in result.output
+    assert "Date:" in result.output
+
+
 @pytest.mark.parametrize(
     "options",
     [
@@ -47,17 +54,11 @@ def test_version(options):
 def test_save_and_fetch(work):
     # save
     result = CliRunner().invoke(cli.main, work)
-    assert result.exit_code == 0
+    verify_work_output(result, work)
     assert result.output.startswith("Work saved.")
-    assert work[0] in result.output
-    assert "id:" in result.output
-    assert "Date:" in result.output
     # fetch
     result = CliRunner().invoke(cli.what)
-    assert result.exit_code == 0
-    assert work[0] in result.output
-    assert "id:" in result.output
-    assert "Date:" in result.output
+    verify_work_output(result, work)
 
 
 @pytest.mark.parametrize(
@@ -71,19 +72,14 @@ def test_save_and_fetch(work):
 def test_save_and_fetch_last(work, option, valid):
     # save
     result = CliRunner().invoke(cli.main, work)
-    assert result.exit_code == 0
+    verify_work_output(result, work)
     assert result.output.startswith("Work saved.")
-    assert work[0] in result.output
-    assert "id:" in result.output
-    assert "Date:" in result.output
     # fetch
     result = CliRunner().invoke(cli.what, option)
-    assert result.exit_code == 0
     if valid:
-        assert work[0] in result.output
-        assert "id:" in result.output
-        assert "Date:" in result.output
+        verify_work_output(result, work)
     else:
+        assert result.exit_code == 0
         assert work[0] not in result.output
 
 
@@ -97,17 +93,11 @@ def test_save_and_fetch_last(work, option, valid):
 def test_save_and_fetch_count(work, option):
     # save
     result = CliRunner().invoke(cli.main, work)
-    assert result.exit_code == 0
+    verify_work_output(result, work)
     assert result.output.startswith("Work saved.")
-    assert work[0] in result.output
-    assert "id:" in result.output
-    assert "Date:" in result.output
     # fetch
     result = CliRunner().invoke(cli.what, option)
-    assert result.exit_code == 0
-    assert work[0] in result.output
-    assert "id:" in result.output
-    assert "Date:" in result.output
+    verify_work_output(result, work)
 
 
 @pytest.mark.parametrize(
@@ -120,12 +110,58 @@ def test_save_and_fetch_count(work, option):
 def test_save_and_fetch_reverse(work, option):
     # save
     result = CliRunner().invoke(cli.main, work)
-    assert result.exit_code == 0
+    verify_work_output(result, work)
     assert result.output.startswith("Work saved.")
-    assert work[0] in result.output
-    assert "id:" in result.output
-    assert "Date:" in result.output
     # fetch
     result = CliRunner().invoke(cli.what, option)
     assert result.exit_code == 0
     assert work[0] not in result.output
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (["building a house"], ["--delete"]),
+    ],
+)
+def test_save_and_fetch_delete(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    assert result.exit_code == 0
+    assert work[0] not in result.output
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (["yard work at home", "@ 3pm friday"], ["--on", "friday"]),
+    ],
+)
+def test_save_and_fetch_on(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    verify_work_output(result, work)
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (["learning guitar", "@ 3pm friday"], ["--at", "3pm friday"]),
+    ],
+)
+def test_save_and_fetch_at(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    verify_work_output(result, work)
