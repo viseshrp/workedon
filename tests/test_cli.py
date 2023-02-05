@@ -121,7 +121,7 @@ def test_save_and_fetch_reverse(work, option):
 @pytest.mark.parametrize(
     "work, option",
     [
-        (["building a house"], ["--delete"]),
+        (["building a house"], ["--last", "--delete"]),
     ],
 )
 def test_save_and_fetch_delete(work, option):
@@ -130,9 +130,9 @@ def test_save_and_fetch_delete(work, option):
     verify_work_output(result, work)
     assert result.output.startswith("Work saved.")
     # fetch
-    result = CliRunner().invoke(cli.what, option)
+    result = CliRunner().invoke(cli.what, option, input="y")
     assert result.exit_code == 0
-    assert work[0] not in result.output
+    assert "deleted successfully" in result.output
 
 
 @pytest.mark.parametrize(
@@ -165,3 +165,60 @@ def test_save_and_fetch_at(work, option):
     # fetch
     result = CliRunner().invoke(cli.what, option)
     verify_work_output(result, work)
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (
+            ["learning to drive", "@ 3pm June 3rd 2020"],
+            ["--from", "June 2nd 2020", "--to", "June 4th 2020"],
+        ),
+        (["learning to cook", "@ 3pm yesterday"], ["-f", "1am 3 days ago", "-t", "3pm today"]),
+    ],
+)
+def test_save_and_fetch_from_to(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    verify_work_output(result, work)
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (["watching tv", "@ 2am"], ["-g"]),
+        (["taking wife shopping", "@ 3pm"], ["--no-page"]),
+    ],
+)
+def test_save_and_fetch_nopage(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    verify_work_output(result, work)
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (["vacuuming", "@ 2am"], ["-l"]),
+        (["eating", "@ 3pm"], ["--text-only"]),
+    ],
+)
+def test_save_and_fetch_textonly(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    assert result.exit_code == 0
+    assert f"* {work[0]}" in result.output
+    assert "id:" not in result.output
+    assert "Date:" not in result.output
