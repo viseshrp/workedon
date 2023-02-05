@@ -47,7 +47,7 @@ def test_version(options):
         (["painting the garage"]),
         (["studying for the SAT", "@ 3pm friday"]),
         (["pissing my wife off", "@ 2:30pm yesterday"]),
-        (["writing some tests", "@ 2 days ago"]),
+        (["writing some tests", "@ 9 hours ago"]),
         (["finding a friend", "@ 2pm 4 days ago"]),
     ],
 )
@@ -121,7 +121,7 @@ def test_save_and_fetch_reverse(work, option):
 @pytest.mark.parametrize(
     "work, option",
     [
-        (["building a house"], ["--last", "--delete"]),
+        (["building a tree house"], ["--last", "--delete"]),
     ],
 )
 def test_save_and_fetch_delete(work, option):
@@ -154,7 +154,7 @@ def test_save_and_fetch_on(work, option):
 @pytest.mark.parametrize(
     "work, option",
     [
-        (["learning guitar", "@ 3pm friday"], ["--at", "3pm friday"]),
+        (["learning guitar", "@ 9pm friday"], ["--at", "9pm friday"]),
     ],
 )
 def test_save_and_fetch_at(work, option):
@@ -189,11 +189,97 @@ def test_save_and_fetch_since(work, option):
 @pytest.mark.parametrize(
     "work, option",
     [
+        (["setting up my homelab", "@ 1 hour ago "], ["--past-day"]),
+        (["setting up my garden", "@ 2 hours ago "], ["-d"]),
+    ],
+)
+def test_save_and_fetch_past_day(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    verify_work_output(result, work)
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (
+            ["setting up my garage", "@ 2pm 6 days ago "],
+            ["--past-week", "-r", "-n", "1"],
+        ),
+        (
+            ["setting up my kitchen", "@ 1pm 6 days ago "],
+            ["-w", "-r", "-n", "1"],
+        ),
+    ],
+)
+def test_save_and_fetch_past_week(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    verify_work_output(result, work)
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (
+            ["cleaning my car", "@ 2pm 27 days ago "],
+            ["--past-month", "-r", "-n", "1"],
+        ),
+        (
+            ["vacuuming my car", "@ 1pm 27 days ago "],
+            ["-m", "-r", "-n", "1"],
+        ),
+    ],
+)
+def test_save_and_fetch_past_month(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    verify_work_output(result, work)
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
+        (
+            ["learning to make sushi", "@ 2pm 360 days ago "],
+            ["--past-year", "-r", "-n", "1"],
+        ),
+        (
+            ["learning to brew soy sauce", "@ 1pm 360 days ago "],
+            ["-y", "-r", "-n", "1"],
+        ),
+    ],
+)
+def test_save_and_fetch_past_year(work, option):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # fetch
+    result = CliRunner().invoke(cli.what, option)
+    verify_work_output(result, work)
+
+
+@pytest.mark.parametrize(
+    "work, option",
+    [
         (
             ["learning to drive", "@ 3pm June 3rd 2020"],
             ["--from", "June 2nd 2020", "--to", "June 4th 2020"],
         ),
-        (["learning to cook", "@ 3pm yesterday"], ["-f", "1am 3 days ago", "-t", "3pm today"]),
+        (["learning to cook", "@ 3pm yesterday"], ["-f", "3 days ago", "-t", "3pm today"]),
     ],
 )
 def test_save_and_fetch_from_to(work, option):
@@ -209,7 +295,7 @@ def test_save_and_fetch_from_to(work, option):
 @pytest.mark.parametrize(
     "work, option",
     [
-        (["watching tv", "@ 2am"], ["-g"]),
+        (["watching tv", "@ 9am"], ["-g"]),
         (["taking wife shopping", "@ 3pm"], ["--no-page"]),
     ],
 )
@@ -227,7 +313,7 @@ def test_save_and_fetch_nopage(work, option):
     "work, option",
     [
         (["vacuuming", "@ 2am"], ["-l"]),
-        (["eating", "@ 3pm"], ["--text-only"]),
+        (["eating", "@ 3am"], ["--text-only"]),
     ],
 )
 def test_save_and_fetch_textonly(work, option):
