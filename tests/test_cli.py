@@ -113,8 +113,8 @@ def test_save_and_fetch_count(work, option):
 @pytest.mark.parametrize(
     "work, option",
     [
-        (["building a house"], ["-r", "-n", "1"]),
-        (["home improvement"], ["--reverse", "-n", "1"]),
+        (["building a house"], ["-r"]),
+        (["home improvement"], ["--reverse"]),
     ],
 )
 def test_save_and_fetch_reverse(work, option):
@@ -128,4 +128,4 @@ def test_save_and_fetch_reverse(work, option):
     # fetch
     result = CliRunner().invoke(cli.what, option)
     assert result.exit_code == 0
-    assert work[0] not in result.output
+    assert not result.output.strip().startswith(work[0])
