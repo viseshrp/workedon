@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  test-cov:
     runs-on: ubuntu-latest
     steps:
     - name: Check out repo
@@ -40,11 +40,11 @@ jobs:
 
     - name: Run tests
       run: |-
-        ls -lah
         make test-cov
         ls -lah
 
     - name: Upload coverage report
+      if: ${{ !env.ACT }}
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
