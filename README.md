@@ -27,7 +27,10 @@ Requirements
 Features
 --------
 
-Save by date or fetch work saved by date.
+- Log or save work with human-readable dates/time.
+- Fetch saved work with human-readable dates/times.
+- Familiar Git-like interface.
+- Filter, sort, delete, format and display logged work on your shell.
 
 <!-- [[[cog
 import cog
@@ -106,11 +109,11 @@ Options:
 Credits
 -------
 
-- [Click](https://click.palletsprojects.com), for making writing CLI
-    tools a complete pleasure.
 - [dateparser](https://github.com/scrapinghub/dateparser), for an
     amazing date parser. This project would not be possible without it.
+- [Click](https://click.palletsprojects.com), for making writing CLI
+    tools a complete pleasure.
 - [jrnl](https://github.com/jrnl-org/jrnl),
     [fck](https://github.com/nvbn/thefuck) and
-    [sqlite-utils](https://github.com/simonw/sqlite-utils/) for some
+    [Simon Willison](https://github.com/simonw/sqlite-utils/) for some
     inspiration.

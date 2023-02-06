@@ -36,7 +36,7 @@ setup(
     version=version,
     description="CLI tool for daily work logging.",
     long_description=get_file_text("README.md") + "\n\n" + get_file_text("CHANGELOG.md"),
-    long_description_content_type="text/x-rst",
+    long_description_content_type="text/markdown",
     author=author,
     author_email=email,
     maintainer=author,
@@ -62,7 +62,7 @@ setup(
     url="https://github.com/viseshrp/workedon",
     project_urls={
         "Documentation": "https://github.com/viseshrp/workedon#readme",
-        "Changelog": "https://github.com/viseshrp/workedon/blob/develop/CHANGELOG.rst",
+        "Changelog": "https://github.com/viseshrp/workedon/blob/develop/CHANGELOG.md",
         "Bug Tracker": "https://github.com/viseshrp/workedon/issues",
         "Source Code": "https://github.com/viseshrp/workedon",
         "CI": "https://github.com/viseshrp/workedon/actions",
