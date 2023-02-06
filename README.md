@@ -74,7 +74,7 @@ Options:
 
 Commands:
   work*  What you worked on, with optional date/time to save - see examples.
-  what   Fetch your saved work.
+  what   Fetch logged work.
 
 $ workedon what --help
 Usage: what [OPTIONS]
