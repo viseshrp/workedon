@@ -73,7 +73,7 @@ Options:
   -h, --help     Show this message and exit.
 
 Commands:
-  work*  What you worked on, with optional date/time to save - see examples.
+  work*  What you worked on, with optional date/time - see examples.
   what   Fetch logged work.
 
 $ workedon what --help
