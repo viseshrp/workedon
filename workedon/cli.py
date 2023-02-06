@@ -48,9 +48,9 @@ def main():
     type=click.STRING,
 )
 @load_settings
-def workedon(work):
+def work(work):
     """
-    Alternate way to save your work.
+    Work log with optional date to save - see examples.
     """
     save_work(work)
 

@@ -35,7 +35,7 @@ setup(
     name=name,
     version=version,
     description="CLI tool for daily work logging.",
-    long_description=get_file_text("README.rst") + "\n\n" + get_file_text("CHANGELOG.rst"),
+    long_description=get_file_text("README.md") + "\n\n" + get_file_text("CHANGELOG.md"),
     long_description_content_type="text/x-rst",
     author=author,
     author_email=email,

@@ -22,24 +22,24 @@ repos:
         types: [ python ]
         require_serial: true
         args: [ # black ignores files in .gitignore by default
-            --line-length, "100",
-            --target-version, "py37",
-            workedon, tests
+          --line-length, "100",
+          --target-version, "py37",
+          workedon, tests
         ]
       - id: isort
         name: isort
         entry: isort
         language: system
-        types_or: [cython, pyi, python]
+        types_or: [ cython, pyi, python ]
         require_serial: true
         args: [
-            --profile, black,
-            --skip-gitignore,
-            --force-sort-within-sections,
-            --line-length, "100",
-            --section-default, THIRDPARTY,
-            --filter-files,
-            --project, workedon, tests
+          --profile, black,
+          --skip-gitignore,
+          --force-sort-within-sections,
+          --line-length, "100",
+          --section-default, THIRDPARTY,
+          --filter-files,
+          --project, workedon, tests
         ]
       - id: flake8
         name: flake8
@@ -58,20 +58,31 @@ repos:
         types: [ python ]
         require_serial: true
         args: [
-            -lll,
-            -n, "3",
-            -r,
-            -x, "venv/*,setup.py,tests/*"
+          -lll,
+          -n, "3",
+          -r,
+          -x, "venv/*,setup.py,tests/*"
         ]
       - id: pyupgrade
         name: pyupgrade
         description: Automatically upgrade syntax for newer versions.
         entry: pyupgrade
         language: system
-        types: [python]
-        args: [--py37-plus]
+        types: [ python ]
+        args: [ --py37-plus ]
       - id: trailing-whitespace
         name: Trim Trailing Whitespace
         entry: trailing-whitespace-fixer
         language: system
-        types: [text]
+        types: [ text ]
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.33.0
+    hooks:
+      - id: markdownlint
+        name: markdownlint
+        entry: markdownlint
+        language: node
+        types: [ markdown ]
+        args: [
+          --fix,
+        ]
