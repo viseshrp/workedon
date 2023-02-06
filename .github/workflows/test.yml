@@ -1,6 +1,10 @@
 name: Test
 
-on: [ push, pull_request ]
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
 
 env:
   FORCE_COLOR: 1
@@ -29,6 +33,7 @@ jobs:
           cog --check README.md
 
   test:
+    needs: [ lint ]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

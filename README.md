@@ -16,13 +16,12 @@ Installation
 ------------
 
 ``` {.bash}
-$ pip install workedon
+pip install workedon
 ```
 
 Requirements
 ------------
 
-- The need to track your work :
 - Python 3.7+
 
 Features
@@ -107,11 +106,11 @@ Options:
 Credits
 -------
 
--   [Click](https://click.palletsprojects.com), for making writing CLI
+- [Click](https://click.palletsprojects.com), for making writing CLI
     tools a complete pleasure.
--   [dateparser](https://github.com/scrapinghub/dateparser), for an
+- [dateparser](https://github.com/scrapinghub/dateparser), for an
     amazing date parser. This project would not be possible without it.
--   [jrnl](https://github.com/jrnl-org/jrnl),
+- [jrnl](https://github.com/jrnl-org/jrnl),
     [fck](https://github.com/nvbn/thefuck) and
     [sqlite-utils](https://github.com/simonw/sqlite-utils/) for some
     inspiration.
