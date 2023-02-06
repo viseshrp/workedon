@@ -23,11 +23,21 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.11
+      - uses: actions/cache@v3
+        name: Configure pip caching
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
       - name: Install linter requirements
         run: pip install -r requirements/lint.txt
       - name: Run all pre-commit checks
         run: |
           pre-commit run --all-files --verbose --show-diff-on-failure
+      - name: Install dependencies
+        run: |
+          pip install -e .
       - name: Check if cog needs to be run
         run: |
           cog --check README.md
