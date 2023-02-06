@@ -8,7 +8,7 @@ workedon
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/viseshrp/workedon/blob/develop/LICENSE)
 [![Downloads](https://pepy.tech/badge/workedon)](https://pepy.tech/project/workedon)
 
-CLI utility for daily work logging.
+Work logging from the comfort of your shell.
 
 ![demo](https://raw.githubusercontent.com/viseshrp/workedon/develop/demo.gif)
 
@@ -54,7 +54,7 @@ cog.out(
 $ workedon --help
 Usage: workedon [OPTIONS] COMMAND [ARGS]...
 
-  CLI utility for daily work logging.
+  Work logging from the comfort of your shell.
 
   Example usages:
   1. Logging work:
