@@ -27,7 +27,7 @@ Requirements
 Features
 --------
 
-- Log your work from your shell in plain text with human-readable dates/times.
+- Log work from your shell in plain text with human-readable dates/times.
 - Fetch logged work with human-readable dates/times.
 - Familiar Git-like interface.
 - Filter, sort, delete, format and display logged work on your shell.
