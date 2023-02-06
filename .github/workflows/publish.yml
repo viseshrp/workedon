@@ -6,7 +6,7 @@ on:
     tags:
       - "*"
   release:
-    types: [published]
+    types: [ published ]
 
 permissions:
   contents: read
@@ -23,55 +23,40 @@ jobs:
         os: [ windows-latest, ubuntu-latest, macos-latest ]
         python-version: [ '3.7', '3.8', '3.9', '3.10', '3.11' ]
     runs-on: ${{ matrix.os }}
-
     steps:
       - uses: actions/checkout@v3
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-
       - name: Install build requirements
         run: pip install -r requirements/build.txt
-
       - name: Create wheel
         run: make build
-
       - name: Install
         run: make install
-
       - name: Test import
         run: make smoketest
 
   deploy:
     needs: [ smoketest ]
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
-
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
           python-version: '3.7'
-
       - name: Install build requirements
         run: pip install -r requirements/build.txt
-
       - name: Create wheel
         run: make build
-
+      - name: List directory structure
+        run: ls -R dist/*
       - name: Validate wheel
         run: twine check dist/*
-
-      # list current directory
-      - name: List directory structure
-        run: ls -R
-
       - name: Install
         run: make install
-
       - name: Upload wheel
         if: ${{ !env.ACT }}
         uses: actions/upload-artifact@v3
@@ -80,7 +65,6 @@ jobs:
           path: dist/
           retention-days: 7
           if-no-files-found: error
-
       - name: Publish package
         uses: pypa/gh-action-pypi-publish@c7f29f7adef1a245bd91520e94867e5c6eedddcc
         with:

@@ -354,7 +354,7 @@ def test_save_and_fetch_past_year(work, option):
             ["learning to drive", "@ 3pm June 3rd 2020"],
             ["--from", "June 2nd 2020", "--to", "June 4th 2020"],
         ),
-        (["learning to cook", "@ 3pm yesterday"], ["-f", "3 days ago", "-t", "3pm today"]),
+        (["learning to cook", "@ 3pm yesterday"], ["-f", "3 days ago", "-t", "3pm yesterday"]),
     ],
 )
 def test_save_and_fetch_from_to(work, option):
@@ -450,7 +450,7 @@ def test_save_and_fetch_date_in_future(work):
 @pytest.mark.parametrize(
     "work, option",
     [
-        (["doing my taxes", "@ 9pm 8 days ago"], ["-t", "3pm today"]),
+        (["doing my taxes", "@ 9pm 8 days ago"], ["-t", "3pm yesterday"]),
     ],
 )
 def test_save_and_fetch_start_absent(work, option):
@@ -468,7 +468,7 @@ def test_save_and_fetch_start_absent(work, option):
 @pytest.mark.parametrize(
     "work, option",
     [
-        (["making pasta", "@ 9pm 5 days ago"], ["-f", "3pm today", "-t", "3pm 5 days ago"]),
+        (["making pasta", "@ 9pm 5 days ago"], ["-f", "3pm yesterday", "-t", "3pm 5 days ago"]),
     ],
 )
 def test_save_and_fetch_start_greater(work, option):
