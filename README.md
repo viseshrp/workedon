@@ -27,7 +27,7 @@ Requirements
 Features
 --------
 
-- Log your work with human-readable dates/times.
+- Log your work from your shell in plain text with human-readable dates/times.
 - Fetch logged work with human-readable dates/times.
 - Familiar Git-like interface.
 - Filter, sort, delete, format and display logged work on your shell.
@@ -73,7 +73,7 @@ Options:
   -h, --help     Show this message and exit.
 
 Commands:
-  work*  Work log with optional date/time to save - see examples.
+  work*  What you worked on, with optional date/time to save - see examples.
   what   Fetch your saved work.
 
 $ workedon what --help
