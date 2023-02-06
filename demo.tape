@@ -21,7 +21,7 @@ Type "workedon setting up code coverage"
 Sleep 2s
 
 # Run the command by pressing enter.
-Enter 2
+Enter
 
 # Admire the output for a bit.
 Sleep 4s
@@ -32,13 +32,13 @@ Enter
 Show
 
 # Type a command in the terminal.
-Type "workedon integrating the Twitter API @ 2pm"
+Type "workedon removing the Twitter API integration @ 9am"
 
 # Pause for dramatic effect...
 Sleep 2s
 
 # Run the command by pressing enter.
-Enter 2
+Enter
 
 # Admire the output for a bit.
 Sleep 4s
@@ -55,7 +55,7 @@ Type "workedon reviewing some pull requests @ 3pm yesterday"
 Sleep 2s
 
 # Run the command by pressing enter.
-Enter 2
+Enter
 
 # Admire the output for a bit.
 Sleep 4s
@@ -130,7 +130,7 @@ Enter
 Show
 
 # Type a command in the terminal.
-Type "workedon what --at '2pm today'"
+Type "workedon what --at '9am today'"
 
 # Pause for dramatic effect...
 Sleep 2s

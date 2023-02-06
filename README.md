@@ -8,7 +8,7 @@ workedon
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/viseshrp/workedon/blob/develop/LICENSE)
 [![Downloads](https://pepy.tech/badge/workedon)](https://pepy.tech/project/workedon)
 
-CLI utility for daily work logging.
+Work logging from the comfort of your shell.
 
 ![demo](https://raw.githubusercontent.com/viseshrp/workedon/develop/demo.gif)
 
@@ -27,8 +27,8 @@ Requirements
 Features
 --------
 
-- Log or save work with human-readable dates/time.
-- Fetch saved work with human-readable dates/times.
+- Log work from your shell in plain text with human-readable dates/times.
+- Fetch logged work with human-readable dates/times.
 - Familiar Git-like interface.
 - Filter, sort, delete, format and display logged work on your shell.
 
@@ -54,10 +54,10 @@ cog.out(
 $ workedon --help
 Usage: workedon [OPTIONS] COMMAND [ARGS]...
 
-  CLI utility for daily work logging.
+  Work logging from the comfort of your shell.
 
   Example usages:
-  1. Saving work:
+  1. Logging work:
   workedon studying for the SAT @ June 2010
   workedon pissing my wife off @ 2pm yesterday
   workedon painting the garage
@@ -73,13 +73,13 @@ Options:
   -h, --help     Show this message and exit.
 
 Commands:
-  work*  Work log with optional date to save - see examples.
-  what   Fetch your saved work.
+  work*  What you worked on, with optional date/time - see examples.
+  what   Fetch logged work.
 
 $ workedon what --help
 Usage: what [OPTIONS]
 
-  Fetch your saved work.
+  Fetch logged work.
 
 Options:
   -r, --reverse        Reverse order while sorting.

@@ -20,11 +20,11 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 @click.version_option(__version__, "-v", "--version")
 def main():
     """
-    CLI utility for daily work logging.
+    Work logging from the comfort of your shell.
 
     \b
     Example usages:
-    1. Saving work:
+    1. Logging work:
     workedon studying for the SAT @ June 2010
     workedon pissing my wife off @ 2pm yesterday
     workedon painting the garage
@@ -50,7 +50,7 @@ def main():
 @load_settings
 def work(work):
     """
-    Work log with optional date to save - see examples.
+    What you worked on, with optional date/time - see examples.
     """
     save_work(work)
 
@@ -212,7 +212,7 @@ def what(
     text_only,
 ):
     """
-    Fetch your saved work.
+    Fetch logged work.
     """
     if count is None and last:
         count = 1
