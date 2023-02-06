@@ -24,7 +24,7 @@ def main():
 
     \b
     Example usages:
-    1. Saving work:
+    1. Logging work:
     workedon studying for the SAT @ June 2010
     workedon pissing my wife off @ 2pm yesterday
     workedon painting the garage
@@ -212,7 +212,7 @@ def what(
     text_only,
 ):
     """
-    Fetch your saved work.
+    Fetch logged work.
     """
     if count is None and last:
         count = 1
