@@ -57,7 +57,7 @@ Usage: workedon [OPTIONS] COMMAND [ARGS]...
   CLI utility for daily work logging.
 
   Example usages:
-  1. Saving work:
+  1. Logging work:
   workedon studying for the SAT @ June 2010
   workedon pissing my wife off @ 2pm yesterday
   workedon painting the garage
@@ -79,7 +79,7 @@ Commands:
 $ workedon what --help
 Usage: what [OPTIONS]
 
-  Fetch your saved work.
+  Fetch logged work.
 
 Options:
   -r, --reverse        Reverse order while sorting.
