@@ -50,7 +50,7 @@ def main():
 @load_settings
 def work(work):
     """
-    Work log with optional date/time to save - see examples.
+    What you worked on, with optional date/time to save - see examples.
     """
     save_work(work)
 
