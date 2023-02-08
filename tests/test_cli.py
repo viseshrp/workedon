@@ -116,9 +116,52 @@ def test_save_and_fetch_id(work, option):
     [
         (["calling 911"], ["-n", "1"]),
         (["weights at the gym"], ["--count", "1"]),
+        (["yard work at home", "@ 3pm friday"], ["--on", "friday"]),
+        (["learning guitar", "@ 9pm friday"], ["--at", "9pm friday"]),
+        (
+            ["gaining Indian Independence", "@ 1pm August 15 1947"],
+            ["--since", "1947", "-r", "-n", "1"],
+        ),
+        (["framing a photo", "@ 1:34pm yesterday"], ["--yesterday"]),
+        (["taking pictures", "@ 12:34pm yesterday"], ["-e"]),
+        (["training for a 4k", "@ 1 hour 3 mins ago"], ["--today"]),
+        (["training for a 10k", "@ 59 mins ago"], ["-o"]),
+        (["setting up my homelab", "@ 1 hour ago "], ["--past-day"]),
+        (["setting up my garden", "@ 2 hours ago "], ["-d"]),
+        (
+            ["setting up my garage", "@ 2pm 6 days ago "],
+            ["--past-week", "-r", "-n", "1"],
+        ),
+        (
+            ["setting up my kitchen", "@ 1pm 6 days ago "],
+            ["-w", "-r", "-n", "1"],
+        ),
+        (
+            ["cleaning my car", "@ 2pm 27 days ago "],
+            ["--past-month", "-r", "-n", "1"],
+        ),
+        (
+            ["vacuuming my car", "@ 1pm 27 days ago "],
+            ["-m", "-r", "-n", "1"],
+        ),
+        (
+            ["learning to make sushi", "@ 2pm 360 days ago "],
+            ["--past-year", "-r", "-n", "1"],
+        ),
+        (
+            ["learning to brew soy sauce", "@ 1pm 360 days ago "],
+            ["-y", "-r", "-n", "1"],
+        ),
+        (
+            ["learning to drive", "@ 3pm June 3rd 2020"],
+            ["--from", "June 2nd 2020", "--to", "June 4th 2020"],
+        ),
+        (["learning to cook", "@ 3pm yesterday"], ["-f", "2 days ago", "-t", "3:05pm yesterday"]),
+        (["watching tv", "@ 9am"], ["-g"]),
+        (["taking wife shopping", "@ 3pm"], ["--no-page"]),
     ],
 )
-def test_save_and_fetch_count(work, option):
+def test_save_and_fetch_others(work, option):
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -174,214 +217,6 @@ def test_save_and_fetch_delete_empty(option):
     result = CliRunner().invoke(cli.what, option)
     assert result.exit_code == 0
     assert "Nothing to delete" in result.output
-
-
-@pytest.mark.parametrize(
-    "work, option",
-    [
-        (["yard work at home", "@ 3pm friday"], ["--on", "friday"]),
-    ],
-)
-def test_save_and_fetch_on(work, option):
-    # save
-    result = CliRunner().invoke(cli.main, work)
-    verify_work_output(result, work)
-    assert result.output.startswith("Work saved.")
-    # fetch
-    result = CliRunner().invoke(cli.what, option)
-    verify_work_output(result, work)
-
-
-@pytest.mark.parametrize(
-    "work, option",
-    [
-        (["learning guitar", "@ 9pm friday"], ["--at", "9pm friday"]),
-    ],
-)
-def test_save_and_fetch_at(work, option):
-    # save
-    result = CliRunner().invoke(cli.main, work)
-    verify_work_output(result, work)
-    assert result.output.startswith("Work saved.")
-    # fetch
-    result = CliRunner().invoke(cli.what, option)
-    verify_work_output(result, work)
-
-
-@pytest.mark.parametrize(
-    "work, option",
-    [
-        (
-            ["gaining Indian Independence", "@ 1pm August 15 1947"],
-            ["--since", "1947", "-r", "-n", "1"],
-        ),
-    ],
-)
-def test_save_and_fetch_since(work, option):
-    # save
-    result = CliRunner().invoke(cli.main, work)
-    verify_work_output(result, work)
-    assert result.output.startswith("Work saved.")
-    # fetch
-    result = CliRunner().invoke(cli.what, option)
-    verify_work_output(result, work)
-
-
-@pytest.mark.parametrize(
-    "work, option",
-    [
-        (["framing a photo", "@ 1:34pm yesterday"], ["--yesterday"]),
-        (["taking pictures", "@ 12:34pm yesterday"], ["-e"]),
-    ],
-)
-def test_save_and_fetch_yesterday(work, option):
-    # save
-    result = CliRunner().invoke(cli.main, work)
-    verify_work_output(result, work)
-    assert result.output.startswith("Work saved.")
-    # fetch
-    result = CliRunner().invoke(cli.what, option)
-    verify_work_output(result, work)
-
-
-@pytest.mark.parametrize(
-    "work, option",
-    [
-        (["training for a 4k", "@ 1 hour 3 mins ago"], ["--today"]),
-        (["training for a 10k", "@ 59 mins ago"], ["-o"]),
-    ],
-)
-def test_save_and_fetch_today(work, option):
-    # save
-    result = CliRunner().invoke(cli.main, work)
-    verify_work_output(result, work)
-    assert result.output.startswith("Work saved.")
-    # fetch
-    result = CliRunner().invoke(cli.what, option)
-    verify_work_output(result, work)
-
-
-@pytest.mark.parametrize(
-    "work, option",
-    [
-        (["setting up my homelab", "@ 1 hour ago "], ["--past-day"]),
-        (["setting up my garden", "@ 2 hours ago "], ["-d"]),
-    ],
-)
-def test_save_and_fetch_past_day(work, option):
-    # save
-    result = CliRunner().invoke(cli.main, work)
-    verify_work_output(result, work)
-    assert result.output.startswith("Work saved.")
-    # fetch
-    result = CliRunner().invoke(cli.what, option)
-    verify_work_output(result, work)
-
-
-@pytest.mark.parametrize(
-    "work, option",
-    [
-        (
-            ["setting up my garage", "@ 2pm 6 days ago "],
-            ["--past-week", "-r", "-n", "1"],
-        ),
-        (
-            ["setting up my kitchen", "@ 1pm 6 days ago "],
-            ["-w", "-r", "-n", "1"],
-        ),
-    ],
-)
-def test_save_and_fetch_past_week(work, option):
-    # save
-    result = CliRunner().invoke(cli.main, work)
-    verify_work_output(result, work)
-    assert result.output.startswith("Work saved.")
-    # fetch
-    result = CliRunner().invoke(cli.what, option)
-    verify_work_output(result, work)
-
-
-@pytest.mark.parametrize(
-    "work, option",
-    [
-        (
-            ["cleaning my car", "@ 2pm 27 days ago "],
-            ["--past-month", "-r", "-n", "1"],
-        ),
-        (
-            ["vacuuming my car", "@ 1pm 27 days ago "],
-            ["-m", "-r", "-n", "1"],
-        ),
-    ],
-)
-def test_save_and_fetch_past_month(work, option):
-    # save
-    result = CliRunner().invoke(cli.main, work)
-    verify_work_output(result, work)
-    assert result.output.startswith("Work saved.")
-    # fetch
-    result = CliRunner().invoke(cli.what, option)
-    verify_work_output(result, work)
-
-
-@pytest.mark.parametrize(
-    "work, option",
-    [
-        (
-            ["learning to make sushi", "@ 2pm 360 days ago "],
-            ["--past-year", "-r", "-n", "1"],
-        ),
-        (
-            ["learning to brew soy sauce", "@ 1pm 360 days ago "],
-            ["-y", "-r", "-n", "1"],
-        ),
-    ],
-)
-def test_save_and_fetch_past_year(work, option):
-    # save
-    result = CliRunner().invoke(cli.main, work)
-    verify_work_output(result, work)
-    assert result.output.startswith("Work saved.")
-    # fetch
-    result = CliRunner().invoke(cli.what, option)
-    verify_work_output(result, work)
-
-
-@pytest.mark.parametrize(
-    "work, option",
-    [
-        (
-            ["learning to drive", "@ 3pm June 3rd 2020"],
-            ["--from", "June 2nd 2020", "--to", "June 4th 2020"],
-        ),
-        (["learning to cook", "@ 3pm yesterday"], ["-f", "3 days ago", "-t", "3pm yesterday"]),
-    ],
-)
-def test_save_and_fetch_from_to(work, option):
-    # save
-    result = CliRunner().invoke(cli.main, work)
-    verify_work_output(result, work)
-    assert result.output.startswith("Work saved.")
-    # fetch
-    result = CliRunner().invoke(cli.what, option)
-    verify_work_output(result, work)
-
-
-@pytest.mark.parametrize(
-    "work, option",
-    [
-        (["watching tv", "@ 9am"], ["-g"]),
-        (["taking wife shopping", "@ 3pm"], ["--no-page"]),
-    ],
-)
-def test_save_and_fetch_nopage(work, option):
-    # save
-    result = CliRunner().invoke(cli.main, work)
-    verify_work_output(result, work)
-    assert result.output.startswith("Work saved.")
-    # fetch
-    result = CliRunner().invoke(cli.what, option)
-    verify_work_output(result, work)
 
 
 @pytest.mark.parametrize(
