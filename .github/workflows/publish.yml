@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: '3.7'
       - name: Install build requirements
@@ -66,7 +66,7 @@ jobs:
           retention-days: 7
           if-no-files-found: error
       - name: Publish package
-        uses: pypa/gh-action-pypi-publish@c7f29f7adef1a245bd91520e94867e5c6eedddcc
+        uses: pypa/gh-action-pypi-publish@8ef2b3d46c9ecba901fb2ae21d98e322c4089c4e
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
