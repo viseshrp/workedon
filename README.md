@@ -28,9 +28,31 @@ Features
 --------
 
 - Log work from your shell in plain text with human-readable dates/times.
+  - The `@` character is optional and is used to separate the text from the
+  date. If not provided, the default is the current date/time.
 - Fetch logged work with human-readable dates/times.
 - Familiar Git-like interface.
 - Filter, sort, delete, format and display logged work on your shell.
+
+How it works
+------------
+
+This tool is useful in two ways - for logging work and fetching logged work.
+The implementation is very simple. Work is logged in the form of
+`workedon <text> @ <date>`or just `workedon <text>`
+(which uses the current date/time). There is a custom parser that reads the
+content, splits it at the `@` to a work and a date component and then uses
+the awesome `dateparser` library to parse human-readable dates into datetime
+objects. This is then saved in a SQLite database
+([File location varies](https://github.com/platformdirs/platformdirs) based
+on OS). Logged work can be fetched using multiple options that accept similar
+human-readable date/times and uses the same parser to parse and query the
+database with datetime objects. The output uses the current shell's pager to
+display a paged list similar to `git log`
+(your output may vary based on your shell).
+
+Options
+--------
 
 <!-- [[[cog
 import cog
@@ -111,6 +133,8 @@ Credits
 
 - [dateparser](https://github.com/scrapinghub/dateparser), for an
     amazing date parser. This project would not be possible without it.
+- [peewee](https://github.com/coleifer/peewee), for a nice and
+   tiny ORM to interact with sqlite.
 - [Click](https://click.palletsprojects.com), for making writing CLI
     tools a complete pleasure.
 - [jrnl](https://github.com/jrnl-org/jrnl),
