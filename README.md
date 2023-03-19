@@ -28,9 +28,8 @@ Features
 --------
 
 - Log work from your shell in plain text with human-readable dates/times.
-  - The date/time is optional. Default is the current date/time.
-  - The `@` character is used to separate the text from the
-  date/time.
+  - The `@` character is optional and is used to separate the text from the
+  date. If not provided, the default is the current date/time.
 - Fetch logged work with human-readable dates/times.
 - Familiar Git-like interface.
 - Filter, sort, delete, format and display logged work on your shell.
