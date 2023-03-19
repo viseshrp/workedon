@@ -28,7 +28,7 @@ Features
 --------
 
 - Log work from your shell in plain text with human-readable dates/times.
-  - The date/time is optional. Default is the current date/time.
+  - The date/time is optional. The default is the current date/time.
   - The `@` character is used to separate the text from the
   date/time.
 - Fetch logged work with human-readable dates/times.
