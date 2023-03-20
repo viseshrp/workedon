@@ -130,7 +130,7 @@ Options:
 
 Commands:
   workedon*  What you worked on, with optional date/time - see examples.
-  db         Perform database maintenance (only for advanced users)
+  db         Perform database maintenance (for advanced users only)
   what       Fetch logged work.
 
 $ workedon what --help
