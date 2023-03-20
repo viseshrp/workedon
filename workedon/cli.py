@@ -6,7 +6,7 @@ import click
 from click_default_group import DefaultGroup
 
 from . import __version__
-from .utils import load_settings
+from .utils import get_db_path, load_settings
 from .workedon import fetch_work, save_work
 
 warnings.filterwarnings("ignore")
@@ -53,6 +53,25 @@ def work(work):
     What you worked on, with optional date/time - see examples.
     """
     save_work(work)
+
+
+@main.command()
+@click.option(
+    "--print-path",
+    "db_path",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print the location of the database file.",
+)
+@load_settings
+def db(db_path):
+    """
+    Database operations allowed
+    """
+    if db_path:
+        return click.echo(get_db_path())
 
 
 @main.command()

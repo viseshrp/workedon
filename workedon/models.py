@@ -1,13 +1,10 @@
 import contextlib
-from pathlib import Path
 
 import click
 from peewee import CharField, DateTimeField, Model, SqliteDatabase, TextField
-from platformdirs import user_data_dir
 
-from . import __name__ as app_name
 from .conf import settings
-from .utils import get_default_time, get_unique_hash
+from .utils import get_db_path, get_default_time, get_unique_hash
 
 try:
     from backports import zoneinfo
@@ -15,19 +12,34 @@ except ImportError:  # pragma: no cover
     import zoneinfo
 
 
-def create_db():
+def get_or_create_db():
     """
     Create the database and return the connection
     """
-    db_file = Path(user_data_dir(app_name, roaming=True)) / "won.db"
+    db_file = get_db_path()
     if not db_file.is_file():
         # create parent dirs
         db_file.parent.mkdir(parents=True, exist_ok=True)
         db_file.touch()
-    return SqliteDatabase(str(db_file))
+    return SqliteDatabase(
+        str(db_file),
+        pragmas={
+            "journal_mode": "wal",  # does not work over a network filesystem.
+            "cache_size": -1 * 64000,  # 64MB
+            "foreign_keys": 1,
+            "ignore_check_constraints": 0,
+            "synchronous": "NORMAL",
+            "auto_vacuum": "FULL",
+            "automatic_index": 1,
+            "temp_store": "MEMORY",
+            "analysis_limit": 1000,
+            "user_version": 1,  # SQLite makes no use of the user-version
+            "locking_mode": "EXCLUSIVE",
+        },
+    )
 
 
-db = create_db()
+db = get_or_create_db()
 
 
 @contextlib.contextmanager

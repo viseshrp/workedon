@@ -1,16 +1,23 @@
 from datetime import datetime
 from functools import wraps
 import hashlib
+from pathlib import Path
 import uuid
 
 import click
+from platformdirs import user_data_dir
 
+from . import __name__ as app_name
 from .conf import settings
 
 try:
     from backports import zoneinfo
 except ImportError:  # pragma: no cover
     import zoneinfo
+
+
+def get_db_path():
+    return Path(user_data_dir(app_name, roaming=True)) / "won.db"
 
 
 def get_unique_hash():
