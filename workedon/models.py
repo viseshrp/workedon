@@ -34,7 +34,6 @@ def get_or_create_db():
             "temp_store": "MEMORY",
             "analysis_limit": 1000,
             "user_version": 1,  # SQLite makes no use of the user-version
-            "locking_mode": "EXCLUSIVE",
         },
     )
 
