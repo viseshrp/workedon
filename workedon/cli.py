@@ -42,18 +42,18 @@ def main():
 
 @main.command(default=True)
 @click.argument(
-    "work",
+    "stuff",
     metavar="<what_you_worked_on>",
     nargs=-1,
     required=False,
     type=click.STRING,
 )
 @load_settings
-def work(work):
+def workedon(stuff):
     """
     What you worked on, with optional date/time - see examples.
     """
-    save_work(work)
+    save_work(stuff)
 
 
 @main.command()

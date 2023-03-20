@@ -52,8 +52,30 @@ database with datetime objects. The output uses the current shell's pager to
 display a paged list similar to `git log`
 (your output may vary based on your shell).
 
-Options
---------
+Limitations
+-----------
+
+- Your input is limited by your shell. Certain characters like the single
+    quote `'` behave differently. Put your content within double quotes
+    to get around special characters.
+- There are also some reserved keywords that cannot be used as the first word
+    of your log's content:
+  - `workedon`
+  - `what`
+  - `db`
+
+  For example, this is fine:
+  ``` {.bash}
+    $ workedon my workedon tool
+  ```
+
+  This is not:
+  ``` {.bash}
+  $ workedon workedon
+  ```
+
+Usage
+-----
 
 <!-- [[[cog
 import cog
@@ -96,8 +118,9 @@ Options:
   -h, --help     Show this message and exit.
 
 Commands:
-  work*  What you worked on, with optional date/time - see examples.
-  what   Fetch logged work.
+  workedon*  What you worked on, with optional date/time - see examples.
+  db         Perform database operations (for advanced users)
+  what       Fetch logged work.
 
 $ workedon what --help
 Usage: what [OPTIONS]
