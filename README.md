@@ -58,6 +58,13 @@ Limitations
 - Your input is limited by your shell. Certain characters like the single
     quote `'` behave differently. Put your content within double quotes
     to get around special characters.
+
+  For example:
+
+  ``` {.bash}
+  workedon "repairing my wife's phone"
+  ```
+
 - There are also some reserved keywords that cannot be used as the first word
     of your log's content:
   - `workedon`
