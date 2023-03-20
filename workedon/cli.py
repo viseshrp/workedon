@@ -8,6 +8,7 @@ from click_default_group import DefaultGroup
 from . import __version__
 from .utils import get_db_path, load_settings
 from .workedon import fetch_work, save_work
+from .models import get_or_create_db
 
 warnings.filterwarnings("ignore")
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
@@ -65,13 +66,23 @@ def work(work):
     show_default=True,
     help="Print the location of the database file.",
 )
+@click.option(
+    "--vacuum",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Execute the VACUUM command on the database to reclaim some space.",
+)
 @load_settings
-def db(db_path):
+def db(db_path, vacuum):
     """
-    Database operations allowed
+    Perform database operations (for advanced users)
     """
     if db_path:
         return click.echo(get_db_path())
+    if vacuum:
+        return get_or_create_db().execute_sql("VACUUM;")
 
 
 @main.command()
