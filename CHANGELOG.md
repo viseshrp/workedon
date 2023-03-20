@@ -1,5 +1,13 @@
 # History
 
+## 0.6.1 (2023-03-19)
+
+- add a new "db" command
+- add --print-path to print database file path
+- add --vacuum to run VACUUM on the database
+- add --truncate to delete all saved work
+- Remove usage of reserved keyword "work" and make it available
+
 ## 0.6.0 (2023-02-05)
 
 - add fetching by id using --id/-i

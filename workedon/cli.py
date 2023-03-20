@@ -6,7 +6,8 @@ import click
 from click_default_group import DefaultGroup
 
 from . import __version__
-from .utils import load_settings
+from .models import Work, get_or_create_db
+from .utils import get_db_path, load_settings
 from .workedon import fetch_work, save_work
 
 warnings.filterwarnings("ignore")
@@ -41,18 +42,63 @@ def main():
 
 @main.command(default=True)
 @click.argument(
-    "work",
+    "stuff",
     metavar="<what_you_worked_on>",
     nargs=-1,
     required=False,
     type=click.STRING,
 )
 @load_settings
-def work(work):
+def workedon(stuff):
     """
     What you worked on, with optional date/time - see examples.
     """
-    save_work(work)
+    save_work(stuff)
+
+
+@main.command()
+@click.option(
+    "--print-path",
+    "db_path",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print the location of the database file.",
+)
+@click.option(
+    "--vacuum",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Execute the VACUUM command on the database to reclaim some space.",
+)
+@click.option(
+    "--truncate",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Delete all data since the beginning of time.",
+)
+@load_settings
+def db(db_path, vacuum, truncate):
+    """
+    Perform database operations (for advanced users)
+    """
+    if db_path:
+        return click.echo(get_db_path())
+    elif vacuum:
+        get_or_create_db().execute_sql("VACUUM;")
+        return click.echo("VACUUM complete.")
+    elif truncate:
+        if click.confirm("Continue deleting all saved data?") and click.confirm(
+            "Are you sure? There's no going back."
+        ):
+            click.echo("Deleting...")
+            Work.truncate_table()
+            click.echo("Deletion successful.")
 
 
 @main.command()
