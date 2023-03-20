@@ -82,7 +82,8 @@ def db(db_path, vacuum):
     if db_path:
         return click.echo(get_db_path())
     if vacuum:
-        return get_or_create_db().execute_sql("VACUUM;")
+        get_or_create_db().execute_sql("VACUUM;")
+        return click.echo("VACUUM complete.")
 
 
 @main.command()
