@@ -6,9 +6,9 @@ import click
 from click_default_group import DefaultGroup
 
 from . import __version__
+from .models import Work, get_or_create_db
 from .utils import get_db_path, load_settings
 from .workedon import fetch_work, save_work
-from .models import get_or_create_db
 
 warnings.filterwarnings("ignore")
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
@@ -74,16 +74,31 @@ def work(work):
     show_default=True,
     help="Execute the VACUUM command on the database to reclaim some space.",
 )
+@click.option(
+    "--truncate",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Delete all data since the beginning of time.",
+)
 @load_settings
-def db(db_path, vacuum):
+def db(db_path, vacuum, truncate):
     """
     Perform database operations (for advanced users)
     """
     if db_path:
         return click.echo(get_db_path())
-    if vacuum:
+    elif vacuum:
         get_or_create_db().execute_sql("VACUUM;")
         return click.echo("VACUUM complete.")
+    elif truncate:
+        if click.confirm("Continue deleting all saved data?") and click.confirm(
+            "Are you sure? There's no going back."
+        ):
+            click.echo("Deleting...")
+            Work.truncate_table()
+            click.echo("Deletion successful.")
 
 
 @main.command()
