@@ -239,6 +239,43 @@ def test_save_and_fetch_textonly(work, option):
     assert "Date:" not in result.output
 
 
+# db
+@pytest.mark.parametrize(
+    "options",
+    [
+        (["--print-path"]),
+    ],
+)
+def test_db_print_path(options):
+    result = CliRunner().invoke(cli.db, options)
+    assert result.exit_code == 0
+    assert result.output.startswith("The database is located at: ")
+
+
+@pytest.mark.parametrize(
+    "options",
+    [
+        (["--vacuum"]),
+    ],
+)
+def test_db_vacuum(options):
+    result = CliRunner().invoke(cli.db, options)
+    assert result.exit_code == 0
+    assert result.output.startswith("VACUUM complete.")
+
+
+@pytest.mark.parametrize(
+    "options",
+    [
+        (["--truncate"]),
+    ],
+)
+def test_db_truncate(options):
+    result = CliRunner().invoke(cli.db, options, input="y")
+    assert result.exit_code == 0
+    assert "Deletion successful." in result.output
+
+
 # exceptions
 @pytest.mark.parametrize(
     "work",

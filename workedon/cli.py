@@ -265,14 +265,12 @@ def db(db_path, vacuum, truncate):
     Perform database maintenance (for advanced users only)
     """
     if db_path:
-        return click.echo(get_db_path())
+        return click.echo(f"The database is located at: {get_db_path()}")
     elif vacuum:
         get_or_create_db().execute_sql("VACUUM;")
         return click.echo("VACUUM complete.")
     elif truncate:
-        if click.confirm("Continue deleting all saved data?") and click.confirm(
-            "Are you sure? There's no going back."
-        ):
+        if click.confirm("Continue deleting all saved data? There's no going back."):
             click.echo("Deleting...")
             Work.truncate_table()
             return click.echo("Deletion successful.")
