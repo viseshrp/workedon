@@ -262,7 +262,7 @@ def what(
 @load_settings
 def db(db_path, vacuum, truncate):
     """
-    Perform database maintenance (only for advanced users)
+    Perform database maintenance (for advanced users only)
     """
     if db_path:
         return click.echo(get_db_path())
