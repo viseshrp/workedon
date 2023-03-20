@@ -65,13 +65,15 @@ Limitations
   - `db`
 
   For example, this is fine:
+
   ``` {.bash}
-    $ workedon my workedon tool
+  workedon my workedon tool
   ```
 
   This is not:
+
   ``` {.bash}
-  $ workedon workedon
+  workedon workedon
   ```
 
 Usage
