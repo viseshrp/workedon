@@ -56,8 +56,8 @@ Limitations
 -----------
 
 - Your input is limited by your shell. Certain characters like the single
-    quote `'` behave differently. Put your content within double quotes
-    to get around special characters.
+  quote `'` behave differently. Put your content within double quotes
+  to get around special characters.
 
   For example:
 
@@ -65,22 +65,24 @@ Limitations
   workedon "repairing my wife's phone"
   ```
 
-- There are also some reserved keywords that cannot be used as the first word
-    of your log's content:
+- There are also some reserved keywords that are used as subcommands and
+  cannot be used as the first word of your log's content:
   - `workedon`
   - `what`
   - `db`
 
-  For example, this is fine:
+  You can use double quotes here as well to get around this.
+
+  For example, this will not work:
 
   ``` {.bash}
-  workedon my workedon tool
+  workedon what my wife asked me to do @ 3pm 3 days ago
   ```
 
-  This is not:
+  This is fine:
 
   ``` {.bash}
-  workedon workedon
+  workedon "what my wife asked me to do" @ 3pm 3 days ago
   ```
 
 Usage
@@ -128,7 +130,7 @@ Options:
 
 Commands:
   workedon*  What you worked on, with optional date/time - see examples.
-  db         Perform database operations (for advanced users)
+  db         Perform database maintenance (only for advanced users)
   what       Fetch logged work.
 
 $ workedon what --help
