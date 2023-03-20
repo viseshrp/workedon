@@ -58,51 +58,6 @@ def workedon(stuff):
 
 @main.command()
 @click.option(
-    "--print-path",
-    "db_path",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Print the location of the database file.",
-)
-@click.option(
-    "--vacuum",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Execute the VACUUM command on the database to reclaim some space.",
-)
-@click.option(
-    "--truncate",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Delete all data since the beginning of time.",
-)
-@load_settings
-def db(db_path, vacuum, truncate):
-    """
-    Perform database operations (for advanced users)
-    """
-    if db_path:
-        return click.echo(get_db_path())
-    elif vacuum:
-        get_or_create_db().execute_sql("VACUUM;")
-        return click.echo("VACUUM complete.")
-    elif truncate:
-        if click.confirm("Continue deleting all saved data?") and click.confirm(
-            "Are you sure? There's no going back."
-        ):
-            click.echo("Deleting...")
-            Work.truncate_table()
-            click.echo("Deletion successful.")
-
-
-@main.command()
-@click.option(
     "-r",
     "--reverse",
     is_flag=True,
@@ -276,6 +231,51 @@ def what(
         reverse,
         text_only,
     )
+
+
+@main.command()
+@click.option(
+    "--print-path",
+    "db_path",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print the location of the database file.",
+)
+@click.option(
+    "--vacuum",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Execute the VACUUM command on the database to reclaim some space.",
+)
+@click.option(
+    "--truncate",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Delete all data since the beginning of time.",
+)
+@load_settings
+def db(db_path, vacuum, truncate):
+    """
+    Perform database maintenance (only for advanced users)
+    """
+    if db_path:
+        return click.echo(get_db_path())
+    elif vacuum:
+        get_or_create_db().execute_sql("VACUUM;")
+        return click.echo("VACUUM complete.")
+    elif truncate:
+        if click.confirm("Continue deleting all saved data?") and click.confirm(
+            "Are you sure? There's no going back."
+        ):
+            click.echo("Deleting...")
+            Work.truncate_table()
+            return click.echo("Deletion successful.")
 
 
 if __name__ == "__main__":
