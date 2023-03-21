@@ -65,7 +65,11 @@ Limitations
   workedon "repairing my wife's phone"
   ```
 
-- There are also some reserved keywords that are used as subcommands and
+- The [date parser](https://github.com/scrapinghub/dateparser) which is
+  used may misinterpret some irregular phrases of date/time, but mostly
+  does great.
+
+- There are some reserved keywords that are used as subcommands and
   cannot be used as the first word of your log's content:
   - `workedon`
   - `what`
