@@ -268,7 +268,7 @@ def what(
     help="Print the version of SQLite being used.",
 )
 @load_settings
-def db(db_path, vacuum, truncate):
+def db(db_path, vacuum, truncate, version):
     """
     Perform database maintenance (for advanced users only)
     """
