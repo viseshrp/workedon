@@ -1,6 +1,11 @@
 # History
 
-## 0.6.1 (2023-03-19)
+## 0.6.2 (2023-03-21)
+
+- more database optimizations
+- add --version for the db subcommand to print current SQLite version
+
+## 0.6.1 (2023-03-20)
 
 - add some database optimizations
 - add a new "db" subcommand for database maintenance (advanced users only)
