@@ -47,33 +47,46 @@ the awesome `dateparser` library to parse human-readable dates into datetime
 objects. This is then saved in a SQLite database
 ([File location varies](https://github.com/platformdirs/platformdirs) based
 on OS). Logged work can be fetched using multiple options that accept similar
-human-readable date/times and uses the same parser to parse and query the
-database with datetime objects. The output uses the current shell's pager to
-display a paged list similar to `git log`
+human-readable date/times. The same parser is used again to parse into datetime
+objects which are used to query the database. The output uses the current
+shell's pager to display a paged list similar to `git log`
 (your output may vary based on your shell).
 
 Limitations
 -----------
 
 - Your input is limited by your shell. Certain characters like the single
-    quote `'` behave differently. Put your content within double quotes
-    to get around special characters.
-- There are also some reserved keywords that cannot be used as the first word
-    of your log's content:
+  quote `'` behave differently. Put your content within double quotes
+  to get around special characters.
+
+  For example:
+
+  ``` {.bash}
+  workedon "repairing my wife's phone"
+  ```
+
+- The [date parser](https://github.com/scrapinghub/dateparser) which is
+  used may misinterpret some irregular phrases of date/time, but mostly
+  does great.
+
+- There are some reserved keywords that are used as subcommands and
+  cannot be used as the first word of your log's content:
   - `workedon`
   - `what`
   - `db`
 
-  For example, this is fine:
+  You can use double quotes here as well to get around this.
+
+  For example, this will not work:
 
   ``` {.bash}
-  workedon my workedon tool
+  workedon what my wife asked me to do @ 3pm 3 days ago
   ```
 
-  This is not:
+  This is fine:
 
   ``` {.bash}
-  workedon workedon
+  workedon "what my wife asked me to do" @ 3pm 3 days ago
   ```
 
 Usage
@@ -121,7 +134,7 @@ Options:
 
 Commands:
   workedon*  What you worked on, with optional date/time - see examples.
-  db         Perform database operations (for advanced users)
+  db         Perform database maintenance (for advanced users only)
   what       Fetch logged work.
 
 $ workedon what --help
