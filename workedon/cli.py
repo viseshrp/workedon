@@ -267,6 +267,7 @@ def db(db_path, vacuum, truncate):
     if db_path:
         return click.echo(f"The database is located at: {get_db_path()}")
     elif vacuum:
+        click.echo("Performing VACUUM...")
         get_or_create_db().execute_sql("VACUUM;")
         return click.echo("VACUUM complete.")
     elif truncate:

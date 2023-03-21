@@ -52,6 +52,7 @@ def init_db():
     if not Work.table_exists():
         Work.create_table()
     yield
+    db.execute_sql("PRAGMA optimize;")
     db.close()
 
 
