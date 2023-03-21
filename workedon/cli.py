@@ -259,14 +259,23 @@ def what(
     show_default=True,
     help="Delete all data since the beginning of time.",
 )
+@click.option(
+    "--version",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print the version of SQLite being used.",
+)
 @load_settings
-def db(db_path, vacuum, truncate):
+def db(db_path, vacuum, truncate, version):
     """
     Perform database maintenance (for advanced users only)
     """
     if db_path:
         return click.echo(f"The database is located at: {get_db_path()}")
     elif vacuum:
+        click.echo("Performing VACUUM...")
         get_or_create_db().execute_sql("VACUUM;")
         return click.echo("VACUUM complete.")
     elif truncate:
@@ -274,6 +283,9 @@ def db(db_path, vacuum, truncate):
             click.echo("Deleting...")
             Work.truncate_table()
             return click.echo("Deletion successful.")
+    elif version:
+        server_version = ".".join([str(num) for num in get_or_create_db().server_version])
+        return click.echo(f"SQLite version: {server_version}")
 
 
 if __name__ == "__main__":

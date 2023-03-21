@@ -269,7 +269,7 @@ def test_db_print_path(options):
 def test_db_vacuum(options):
     result = CliRunner().invoke(cli.db, options)
     assert result.exit_code == 0
-    assert result.output.startswith("VACUUM complete.")
+    assert "VACUUM complete." in result.output
 
 
 @pytest.mark.parametrize(
@@ -291,6 +291,18 @@ def test_db_truncate(work, option_db, option_what):
     result = CliRunner().invoke(cli.what, option_what)
     assert result.exit_code == 0
     assert "Nothing to show" in result.output
+
+
+@pytest.mark.parametrize(
+    "options",
+    [
+        (["--version"]),
+    ],
+)
+def test_db_version(options):
+    result = CliRunner().invoke(cli.db, options)
+    assert result.exit_code == 0
+    assert result.output.startswith("SQLite version: ")
 
 
 # exceptions

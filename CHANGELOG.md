@@ -2,7 +2,8 @@
 
 ## 0.6.1 (2023-03-19)
 
-- add a new "db" command
+- add some database optimizations
+- add a new "db" subcommand for database maintenance (advanced users only)
 - add --print-path to print database file path
 - add --vacuum to run VACUUM on the database
 - add --truncate to delete all saved work
