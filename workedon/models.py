@@ -29,7 +29,7 @@ def get_or_create_db():
             "foreign_keys": 1,
             "ignore_check_constraints": 0,
             "synchronous": "NORMAL",
-            "auto_vacuum": "FULL",
+            "auto_vacuum": "NONE",
             "automatic_index": 1,
             "temp_store": "MEMORY",
             "analysis_limit": 1000,
