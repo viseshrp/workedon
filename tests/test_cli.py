@@ -293,6 +293,18 @@ def test_db_truncate(work, option_db, option_what):
     assert "Nothing to show" in result.output
 
 
+@pytest.mark.parametrize(
+    "options",
+    [
+        (["--version"]),
+    ],
+)
+def test_db_version(options):
+    result = CliRunner().invoke(cli.db, options)
+    assert result.exit_code == 0
+    assert result.output.startswith("SQLite version: ")
+
+
 # exceptions
 @pytest.mark.parametrize(
     "work",
