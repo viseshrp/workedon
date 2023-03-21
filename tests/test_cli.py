@@ -190,20 +190,28 @@ def test_save_and_fetch_reverse(work, option):
 
 
 @pytest.mark.parametrize(
-    "work, option",
+    "work, option_del, option_what",
     [
-        (["building a tree house"], ["--last", "--delete"]),
+        (
+            ["watching Modern Family", "@ 8:53pm"],
+            ["--at", "8:53pm", "--delete"],
+            ["--at", "8:53pm"],
+        ),
     ],
 )
-def test_save_and_fetch_delete(work, option):
+def test_save_and_fetch_delete(work, option_del, option_what):
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
     assert result.output.startswith("Work saved.")
-    # fetch
-    result = CliRunner().invoke(cli.what, option, input="y")
+    # fetch and delete
+    result = CliRunner().invoke(cli.what, option_del, input="y")
     assert result.exit_code == 0
     assert "deleted successfully" in result.output
+    # check
+    result = CliRunner().invoke(cli.what, option_what)
+    assert result.exit_code == 0
+    assert "Nothing to show" in result.output
 
 
 @pytest.mark.parametrize(
@@ -265,15 +273,24 @@ def test_db_vacuum(options):
 
 
 @pytest.mark.parametrize(
-    "options",
+    "work, option_db, option_what",
     [
-        (["--truncate"]),
+        (["watching Lost"], ["--truncate"], ["--last"]),
     ],
 )
-def test_db_truncate(options):
-    result = CliRunner().invoke(cli.db, options, input="y")
+def test_db_truncate(work, option_db, option_what):
+    # save
+    result = CliRunner().invoke(cli.main, work)
+    verify_work_output(result, work)
+    assert result.output.startswith("Work saved.")
+    # trunc
+    result = CliRunner().invoke(cli.db, option_db, input="y")
     assert result.exit_code == 0
     assert "Deletion successful." in result.output
+    # check
+    result = CliRunner().invoke(cli.what, option_what)
+    assert result.exit_code == 0
+    assert "Nothing to show" in result.output
 
 
 # exceptions
