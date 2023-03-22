@@ -273,7 +273,7 @@ def db(db_path, vacuum, truncate, version):
     Perform database maintenance (for advanced users only)
     """
     if db_path:
-        return click.echo(f"The database is located at: {get_db_path()}")
+        return click.echo(get_db_path())
     elif vacuum:
         click.echo("Performing VACUUM...")
         get_or_create_db().execute_sql("VACUUM;")
