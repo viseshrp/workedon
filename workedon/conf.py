@@ -1,4 +1,5 @@
 from importlib.machinery import SourceFileLoader
+from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 
 from platformdirs import user_config_dir
@@ -52,10 +53,11 @@ class Settings(dict):
         else:
             # load user settings module
             try:
-                user_settings_module = SourceFileLoader(
-                    self.settings_file.name,
-                    str(self.settings_file.resolve()),  # abs path
-                ).load_module()
+                spec = spec_from_file_location(
+                    self.settings_file.name, self.settings_file.resolve()
+                )
+                user_settings_module = module_from_spec(spec)
+                spec.loader.exec_module(user_settings_module)
             except Exception as e:
                 raise CannotLoadSettingsError(extra_detail=str(e))
 
