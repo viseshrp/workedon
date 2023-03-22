@@ -1,3 +1,3 @@
-DATE_FORMAT = "%Y-%m-%d"
-TIME_FORMAT = "%H:%M"
+DATE_FORMAT = "%a %b %d %Y"
+TIME_FORMAT = "%H:%M %z %Z"
 DATETIME_FORMAT = f"{DATE_FORMAT} {TIME_FORMAT}"
