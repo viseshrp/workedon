@@ -257,7 +257,7 @@ def test_save_and_fetch_textonly(work, option):
 def test_db_print_path(options):
     result = CliRunner().invoke(cli.db, options)
     assert result.exit_code == 0
-    assert result.output.startswith("The database is located at: ")
+    assert "won.db" in result.output
 
 
 @pytest.mark.parametrize(

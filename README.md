@@ -35,6 +35,24 @@ Features
 - Familiar Git-like interface.
 - Filter, sort, delete, format and display logged work on your shell.
 
+Why build this
+--------------
+
+I believe tracking your work is an important way of measuring productivity
+and is a habit that is very helpful to develop. But the thing about habits
+is - if they aren’t easy and accessible, you will eventually stop doing
+them - just like going to a gym that is 40 minutes away :) I have tried
+different methods to log my work and have failed. Google Drive, iCloud
+Notes, Notepad++, Sticky Notes, etc. I really wanted a way of tracking
+with very little effort so I could make this a habit.
+It's pretty obvious that we all spend most of our day on the terminal.
+Wouldn’t it be nice if I wrote a feature, committed it and then logged
+what I did right then and there without a second thought?
+What if I could also search work I logged based on date so I could
+look at, for example, how productive I was in the past week?
+
+`workedon` is another attempt of mine to make work logging a habit.
+
 How it works
 ------------
 
@@ -51,43 +69,6 @@ human-readable date/times. The same parser is used again to parse into datetime
 objects which are used to query the database. The output uses the current
 shell's pager to display a paged list similar to `git log`
 (your output may vary based on your shell).
-
-Limitations
------------
-
-- Your input is limited by your shell. Certain characters like the single
-  quote `'` behave differently. Put your content within double quotes
-  to get around special characters.
-
-  For example:
-
-  ``` {.bash}
-  workedon "repairing my wife's phone"
-  ```
-
-- The [date parser](https://github.com/scrapinghub/dateparser) which is
-  used may misinterpret some irregular phrases of date/time, but mostly
-  does great.
-
-- There are some reserved keywords that are used as subcommands and
-  cannot be used as the first word of your log's content:
-  - `workedon`
-  - `what`
-  - `db`
-
-  You can use double quotes here as well to get around this.
-
-  For example, this will not work:
-
-  ``` {.bash}
-  workedon what my wife asked me to do @ 3pm 3 days ago
-  ```
-
-  This is fine:
-
-  ``` {.bash}
-  workedon "what my wife asked me to do" @ 3pm 3 days ago
-  ```
 
 Usage
 -----
@@ -166,6 +147,43 @@ Options:
 
 ```
 <!-- [[[end]]] -->
+
+Limitations
+-----------
+
+- Your input is limited by your shell. Certain characters like the single
+  quote `'` behave differently. Put your content within double quotes
+  to get around special characters.
+
+  For example:
+
+  ``` {.bash}
+  workedon "repairing my wife's phone"
+  ```
+
+- The [date parser](https://github.com/scrapinghub/dateparser) which is
+  used may misinterpret some irregular phrases of date/time, but mostly
+  does great.
+
+- There are some reserved keywords that are used as subcommands and
+  cannot be used as the first word of your log's content:
+  - `workedon`
+  - `what`
+  - `db`
+
+  You can use double quotes here as well to get around this.
+
+  For example, this will not work:
+
+  ``` {.bash}
+  workedon what my wife asked me to do @ 3pm 3 days ago
+  ```
+
+  This is fine:
+
+  ``` {.bash}
+  workedon "what my wife asked me to do" @ 3pm 3 days ago
+  ```
 
 Credits
 -------
