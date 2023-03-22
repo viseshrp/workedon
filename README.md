@@ -12,6 +12,25 @@ Work logging from the comfort of your shell.
 
 ![demo](https://raw.githubusercontent.com/viseshrp/workedon/develop/demo.gif)
 
+Why build this
+--------------
+
+I believe tracking your work is an important way of measuring productivity
+and is a habit that is very helpful to develop. But the thing about habits
+is - if they aren’t easy and accessible, you will eventually stop doing
+them - just like going to a gym that is 40 minutes away :) I have tried
+different methods to log my work and have failed. Google Drive, iCloud
+Notes, Notepad++, Sticky Notes, etc. I really wanted a way of tracking
+with very little effort so I could make this a habit.
+It's pretty obvious that we all spend most of our day on the terminal.
+Wouldn’t it be nice if I wrote a feature, committed it and then logged
+what I did right then and there without a second thought?
+What if I could also search this based on date so I could look at,
+for example, how productive I was in the past week?
+
+`workedon` is another attempt of mine to make work logging a habit and
+improve my productivity.
+
 Installation
 ------------
 
@@ -34,24 +53,6 @@ Features
 - Fetch logged work with human-readable dates/times.
 - Familiar Git-like interface.
 - Filter, sort, delete, format and display logged work on your shell.
-
-Why build this
---------------
-
-I believe tracking your work is an important way of measuring productivity
-and is a habit that is very helpful to develop. But the thing about habits
-is - if they aren’t easy and accessible, you will eventually stop doing
-them - just like going to a gym that is 40 minutes away :) I have tried
-different methods to log my work and have failed. Google Drive, iCloud
-Notes, Notepad++, Sticky Notes, etc. I really wanted a way of tracking
-with very little effort so I could make this a habit.
-It's pretty obvious that we all spend most of our day on the terminal.
-Wouldn’t it be nice if I wrote a feature, committed it and then logged
-what I did right then and there without a second thought?
-What if I could also search work I logged based on date so I could
-look at, for example, how productive I was in the past week?
-
-`workedon` is another attempt of mine to make work logging a habit.
 
 How it works
 ------------
