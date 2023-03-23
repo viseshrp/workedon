@@ -27,7 +27,7 @@ def to_internal_dt(date_time):
     and remove the second and microsecond components.
     """
     return (
-        date_time.astimezone(zoneinfo.ZoneInfo(settings._internal_tz))
+        date_time.astimezone(zoneinfo.ZoneInfo(settings.internal_tz))
         .replace(second=0)
         .replace(microsecond=0)
     )
@@ -37,7 +37,7 @@ def now():
     """
     Current datetime in user's local timezone
     """
-    return datetime.now(zoneinfo.ZoneInfo(settings._user_tz))
+    return datetime.now(zoneinfo.ZoneInfo(settings.user_tz))
 
 
 def get_default_time():

@@ -321,7 +321,7 @@ def conf(settings_path, print_settings):
         return click.echo(get_conf_path())
     elif print_settings:
         for key, value in settings.items():
-            if not key.startswith("_"):
+            if key.isupper():
                 click.echo(f'{key}="{value}"')
         return
 

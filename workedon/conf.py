@@ -18,10 +18,10 @@ class Settings(dict):
     # upper case settings are user-configurable
     def __init__(self):
         super().__init__()
-        self._settings_file = get_conf_path()
-        self._user_tz = str(get_localzone())  # for user display
-        self._internal_tz = "UTC"  # for internal storage and manipulation
-        self._internal_dt_format = "%Y-%m-%d %H:%M:%S%z"
+        self.settings_file = get_conf_path()
+        self.user_tz = str(get_localzone())  # for user display
+        self.internal_tz = "UTC"  # for internal storage and manipulation
+        self.internal_dt_format = "%Y-%m-%d %H:%M:%S%z"
 
     def __getattr__(self, item):
         return self.get(item)
@@ -34,9 +34,9 @@ class Settings(dict):
         Create settings file if absent
         """
         # make the parent first
-        self._settings_file.parent.mkdir(parents=True, exist_ok=True)
+        self.settings_file.parent.mkdir(parents=True, exist_ok=True)
         # write sample settings
-        with self._settings_file.open(mode="w") as settings_file:
+        with self.settings_file.open(mode="w") as settings_file:
             settings_file.write(SETTINGS_HEADER)
             for setting in dir(default_settings):
                 if setting.isupper():
@@ -48,7 +48,7 @@ class Settings(dict):
         """
         user_settings_module = None
         # create module
-        if not self._settings_file.is_file():
+        if not self.settings_file.is_file():
             try:
                 self._create_settings_file()
             except Exception as e:
@@ -57,7 +57,7 @@ class Settings(dict):
             # load user settings module
             try:
                 spec = spec_from_file_location(
-                    self._settings_file.name, self._settings_file.resolve()
+                    self.settings_file.name, self.settings_file.resolve()
                 )
                 user_settings_module = module_from_spec(spec)
                 spec.loader.exec_module(user_settings_module)

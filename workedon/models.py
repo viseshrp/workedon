@@ -70,12 +70,12 @@ class Work(Model):
 
     uuid = CharField(primary_key=True, null=False, default=get_unique_hash)
     created = DateTimeField(
-        null=False, formats=[settings._internal_dt_format], default=get_default_time
+        null=False, formats=[settings.internal_dt_format], default=get_default_time
     )
     work = TextField(null=False)
     timestamp = DateTimeField(
         null=False,
-        formats=[settings._internal_dt_format],
+        formats=[settings.internal_dt_format],
         index=True,
         default=get_default_time,
     )
@@ -90,7 +90,7 @@ class Work(Model):
         Uses a git log like structure.
         """
         if self.timestamp and self.uuid:
-            user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings._user_tz))
+            user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.user_tz))
             timestamp = user_time.strftime(settings.DATETIME_FORMAT)
             return (
                 f'{click.style(f"id: {self.uuid}", fg="green")}\n'
