@@ -6,8 +6,9 @@ import click
 from click_default_group import DefaultGroup
 
 from . import __version__
-from .models import Work, get_or_create_db
-from .utils import get_db_path, load_settings
+from .conf import get_conf_path, settings
+from .models import Work, get_db_path, get_or_create_db
+from .utils import load_settings
 from .workedon import fetch_work, save_work
 
 warnings.filterwarnings("ignore")
@@ -26,9 +27,9 @@ def main():
     \b
     Example usages:
     1. Logging work:
-    workedon studying for the SAT @ June 2010
-    workedon pissing my wife off @ 2pm yesterday
     workedon painting the garage
+    workedon studying for the SAT @ June 23 2010
+    workedon pissing my wife off @ 2pm yesterday
 
     \b
     2. Fetching work:
@@ -51,7 +52,7 @@ def main():
 @load_settings
 def workedon(stuff):
     """
-    What you worked on, with optional date/time - see examples.
+    Specify what you worked on, with optional date/time. See examples.
     """
     save_work(stuff)
 
@@ -213,7 +214,11 @@ def what(
     text_only,
 ):
     """
-    Fetch logged work.
+    Fetch and display logged work.
+
+    \b
+    If no options are provided, work
+    from the past week is returned.
     """
     if count is None and last:
         count = 1
@@ -270,7 +275,7 @@ def what(
 @load_settings
 def db(db_path, vacuum, truncate, version):
     """
-    Perform database maintenance (for advanced users only)
+    Perform database maintenance (for advanced users only).
     """
     if db_path:
         return click.echo(get_db_path())
@@ -286,6 +291,39 @@ def db(db_path, vacuum, truncate, version):
     elif version:
         server_version = ".".join([str(num) for num in get_or_create_db().server_version])
         return click.echo(f"SQLite version: {server_version}")
+
+
+@main.command()
+@click.option(
+    "--print-path",
+    "settings_path",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print the location of the settings file.",
+)
+@click.option(
+    "--print",
+    "print_settings",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print all the current settings, including defaults.",
+)
+@load_settings
+def conf(settings_path, print_settings):
+    """
+    View workedon settings.
+    """
+    if settings_path:
+        return click.echo(get_conf_path())
+    elif print_settings:
+        for key, value in settings.items():
+            if not key.startswith("_"):
+                click.echo(f'{key}="{value}"')
+        return
 
 
 if __name__ == "__main__":
