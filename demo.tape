@@ -66,6 +66,23 @@ Enter
 Show
 
 # Type a command in the terminal.
+Type "workedon fixing deprecation warnings @ 3:45pm 4 days ago"
+
+# Pause for dramatic effect...
+Sleep 2s
+
+# Run the command by pressing enter.
+Enter
+
+# Admire the output for a bit.
+Sleep 4s
+
+Hide
+Type "clear"
+Enter
+Show
+
+# Type a command in the terminal.
 Type "workedon what"
 
 # Pause for dramatic effect...
@@ -77,7 +94,33 @@ Enter
 # Pause for dramatic effect...
 Sleep 2s
 
-Down 2
+Down 3
+
+# Pause for dramatic effect...
+Sleep 5s
+
+Type "q"
+
+Enter
+
+Hide
+Type "clear"
+Enter
+Show
+
+# Type a command in the terminal.
+Type "workedon what --since '5 days ago'"
+
+# Pause for dramatic effect...
+Sleep 2s
+
+# Run the command by pressing enter.
+Enter
+
+# Pause for dramatic effect...
+Sleep 2s
+
+Down 3
 
 # Pause for dramatic effect...
 Sleep 5s
