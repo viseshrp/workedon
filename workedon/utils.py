@@ -1,23 +1,16 @@
 from datetime import datetime
 from functools import wraps
 import hashlib
-from pathlib import Path
 import uuid
 
 import click
-from platformdirs import user_data_dir
 
-from . import __name__ as app_name
 from .conf import settings
 
 try:
     from backports import zoneinfo
 except ImportError:  # pragma: no cover
     import zoneinfo
-
-
-def get_db_path():
-    return Path(user_data_dir(app_name, roaming=True)) / "won.db"
 
 
 def get_unique_hash():
@@ -34,7 +27,7 @@ def to_internal_dt(date_time):
     and remove the second and microsecond components.
     """
     return (
-        date_time.astimezone(zoneinfo.ZoneInfo(settings.internal_tz))
+        date_time.astimezone(zoneinfo.ZoneInfo(settings._internal_tz))
         .replace(second=0)
         .replace(microsecond=0)
     )
@@ -44,7 +37,7 @@ def now():
     """
     Current datetime in user's local timezone
     """
-    return datetime.now(zoneinfo.ZoneInfo(settings.user_tz))
+    return datetime.now(zoneinfo.ZoneInfo(settings._user_tz))
 
 
 def get_default_time():

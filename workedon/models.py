@@ -1,15 +1,22 @@
 import contextlib
+from pathlib import Path
 
 import click
 from peewee import CharField, DateTimeField, Model, SqliteDatabase, TextField
+from platformdirs import user_data_dir
 
+from . import __name__ as app_name
 from .conf import settings
-from .utils import get_db_path, get_default_time, get_unique_hash
+from .utils import get_default_time, get_unique_hash
 
 try:
     from backports import zoneinfo
 except ImportError:  # pragma: no cover
     import zoneinfo
+
+
+def get_db_path():
+    return Path(user_data_dir(app_name, roaming=True)) / "won.db"
 
 
 def get_or_create_db():
@@ -63,12 +70,12 @@ class Work(Model):
 
     uuid = CharField(primary_key=True, null=False, default=get_unique_hash)
     created = DateTimeField(
-        null=False, formats=[settings.internal_dt_format], default=get_default_time
+        null=False, formats=[settings._internal_dt_format], default=get_default_time
     )
     work = TextField(null=False)
     timestamp = DateTimeField(
         null=False,
-        formats=[settings.internal_dt_format],
+        formats=[settings._internal_dt_format],
         index=True,
         default=get_default_time,
     )
@@ -83,7 +90,7 @@ class Work(Model):
         Uses a git log like structure.
         """
         if self.timestamp and self.uuid:
-            user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.user_tz))
+            user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings._user_tz))
             timestamp = user_time.strftime(settings.DATETIME_FORMAT)
             return (
                 f'{click.style(f"id: {self.uuid}", fg="green")}\n'
