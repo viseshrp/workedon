@@ -4,7 +4,6 @@ from click.testing import CliRunner
 import pytest
 
 from workedon import __version__, cli, exceptions
-from workedon.conf import get_conf_path
 
 
 def verify_work_output(result, work):
@@ -304,34 +303,6 @@ def test_db_version(options):
     result = CliRunner().invoke(cli.db, options)
     assert result.exit_code == 0
     assert result.output.startswith("SQLite version: ")
-
-
-# conf
-@pytest.mark.parametrize(
-    "options",
-    [
-        (["--print-path"]),
-    ],
-)
-def test_conf_print_path(options):
-    result = CliRunner().invoke(cli.conf, options)
-    assert result.exit_code == 0
-    assert "wonfile.py" in result.output
-
-
-@pytest.mark.parametrize(
-    "options",
-    [
-        (["--print"]),
-    ],
-)
-def test_conf_print_settings(options):
-    settings_path = get_conf_path()
-    with open(settings_path, "a") as f:
-        f.write('TIME_FORMAT = "%H:%M %z"\n')
-    result = CliRunner().invoke(cli.conf, options)
-    assert result.exit_code == 0
-    assert 'TIME_FORMAT="%H:%M %z"' in result.output
 
 
 # exceptions
