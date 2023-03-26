@@ -18,8 +18,8 @@ Why build this
 I believe tracking your work is an important way of measuring productivity
 and is a habit that is very helpful to develop. But the thing about habits
 is - if they aren’t easy and accessible, you will eventually stop doing
-them - just like going to a gym that is 40 minutes away :) I have tried
-different methods to log my work and have failed. Google Drive, iCloud
+them - just like going to a gym that is 40 minutes away :) I tried
+different methods to log my work and failed. Google Docs, iCloud
 Notes, Notepad++, Sticky Notes, etc. I really wanted a way of tracking
 with very little effort so I could make this a habit.
 It's pretty obvious that we all spend most of our day on the terminal.
