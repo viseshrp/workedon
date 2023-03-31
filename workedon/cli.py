@@ -22,7 +22,7 @@ CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 @click.version_option(__version__, "-v", "--version")
 def main():
     """
-    Work logging from the comfort of your shell.
+    Work tracking from your shell.
 
     \b
     Example usages:
