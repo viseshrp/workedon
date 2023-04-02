@@ -6,7 +6,7 @@ import click
 from click_default_group import DefaultGroup
 
 from . import __version__
-from .conf import get_conf_path, settings
+from .conf import CONF_PATH, settings
 from .models import Work, DB_PATH, get_or_create_db
 from .utils import load_settings
 from .workedon import fetch_work, save_work
@@ -318,7 +318,7 @@ def conf(settings_path, print_settings):
     View workedon settings.
     """
     if settings_path:
-        return click.echo(get_conf_path())
+        return click.echo(CONF_PATH)
     elif print_settings:
         for key, value in settings.items():
             if key.isupper():
