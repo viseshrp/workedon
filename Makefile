@@ -32,11 +32,7 @@ clean:
 	rm -rf dist \
   build \
   *.egg-info \
-  .pytest_cache \
-  coverage-html
-
-clean-test:
-	rm -rf .coverage \
+  .coverage \
   coverage-html \
   coverage.xml \
   .pytest_cache

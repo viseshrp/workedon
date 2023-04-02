@@ -7,7 +7,7 @@ from click_default_group import DefaultGroup
 
 from . import __version__
 from .conf import CONF_PATH, settings
-from .models import Work, DB_PATH, get_or_create_db
+from .models import DB_PATH, Work, get_or_create_db
 from .utils import load_settings
 from .workedon import fetch_work, save_work
 

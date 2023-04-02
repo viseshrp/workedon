@@ -4,7 +4,8 @@ from click.testing import CliRunner
 import pytest
 
 from workedon import __version__, cli, exceptions
-from workedon.conf import get_conf_path
+from workedon.conf import CONF_PATH
+from workedon.models import DB_PATH
 
 
 def verify_work_output(result, work):
@@ -12,6 +13,16 @@ def verify_work_output(result, work):
     assert work[0] in result.output
     assert "id:" in result.output
     assert "Date:" in result.output
+
+
+@pytest.fixture()
+def cleanup():
+    yield
+    # delete db every test
+    try:
+        DB_PATH.unlink()
+    except FileNotFoundError:
+        pass
 
 
 @pytest.mark.parametrize(
@@ -53,21 +64,22 @@ def test_empty_fetch():
 @pytest.mark.parametrize(
     "work",
     [
-        (["painting the garage"]),
-        (["studying for the SAT", "@ 3pm friday"]),
-        (["pissing my wife off", "@ 2:30pm yesterday"]),
-        (["writing some tests", "@ 9 hours ago"]),
-        (["finding a friend", "@ 2pm 4 days ago"]),
+        (["painting the garage", "washing the car"]),
+        (["studying for the SAT @ 3pm friday"]),
+        (["pissing my wife off @ 2:30pm yesterday"]),
+        (["writing some tests @ 9 hours ago"]),
+        (["finding a friend @ 2pm 4 days ago"]),
     ],
 )
-def test_save_and_fetch(work):
-    # save
-    result = CliRunner().invoke(cli.main, work)
-    verify_work_output(result, work)
-    assert result.output.startswith("Work saved.")
-    # fetch
-    result = CliRunner().invoke(cli.what)
-    verify_work_output(result, work)
+def test_save_and_fetch(work, cleanup):
+    for w in work:
+        # save
+        result = CliRunner().invoke(cli.main, w)
+        verify_work_output(result, w)
+        assert result.output.startswith("Work saved.")
+        # fetch
+        result = CliRunner().invoke(cli.what)
+        verify_work_output(result, w)
 
 
 @pytest.mark.parametrize(
@@ -78,7 +90,7 @@ def test_save_and_fetch(work):
         (["talking to my brother", "@ 3pm 3 years ago"], ["--last"], False),
     ],
 )
-def test_save_and_fetch_last(work, option, valid):
+def test_save_and_fetch_last(work, option, valid, cleanup):
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -99,7 +111,7 @@ def test_save_and_fetch_last(work, option, valid):
         (["recording a demo"], ["-i"]),
     ],
 )
-def test_save_and_fetch_id(work, option):
+def test_save_and_fetch_id(work, option, cleanup):
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -125,8 +137,8 @@ def test_save_and_fetch_id(work, option):
         ),
         (["framing a photo", "@ 1:34pm yesterday"], ["--yesterday"]),
         (["taking pictures", "@ 12:34pm yesterday"], ["-e"]),
-        (["training for a 4k", "@ 1 hour 3 mins ago"], ["--today"]),
-        (["training for a 10k", "@ 59 mins ago"], ["-o"]),
+        (["training for a 4k"], ["--today"]),
+        (["training for a 10k"], ["-o"]),
         (["setting up my homelab", "@ 1 hour ago "], ["--past-day"]),
         (["setting up my garden", "@ 2 hours ago "], ["-d"]),
         (
@@ -162,7 +174,7 @@ def test_save_and_fetch_id(work, option):
         (["taking wife shopping", "@ 3pm"], ["--no-page"]),
     ],
 )
-def test_save_and_fetch_others(work, option):
+def test_save_and_fetch_others(work, option, cleanup):
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -175,19 +187,20 @@ def test_save_and_fetch_others(work, option):
 @pytest.mark.parametrize(
     "work, option",
     [
-        (["building a house"], ["-r", "-n", "1"]),
-        (["home improvement"], ["--reverse", "-n", "1"]),
+        (["building a house", "destroying the house"], ["-r", "-n", "1"]),
+        (["home improvement", "home destruction"], ["--reverse", "-n", "1"]),
     ],
 )
-def test_save_and_fetch_reverse(work, option):
+def test_save_and_fetch_reverse(work, option, cleanup):
     # save
-    result = CliRunner().invoke(cli.main, work)
-    verify_work_output(result, work)
-    assert result.output.startswith("Work saved.")
+    for w in work:
+        result = CliRunner().invoke(cli.main, w)
+        verify_work_output(result, w)
+        assert result.output.startswith("Work saved.")
     # fetch
     result = CliRunner().invoke(cli.what, option)
     assert result.exit_code == 0
-    assert work[0] not in result.output
+    assert work[1] not in result.output
 
 
 @pytest.mark.parametrize(
@@ -200,7 +213,7 @@ def test_save_and_fetch_reverse(work, option):
         ),
     ],
 )
-def test_save_and_fetch_delete(work, option_del, option_what):
+def test_save_and_fetch_delete(work, option_del, option_what, cleanup):
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -221,7 +234,7 @@ def test_save_and_fetch_delete(work, option_del, option_what):
         (["--at", "4:44pm 5 years ago", "--delete"]),
     ],
 )
-def test_save_and_fetch_delete_empty(option):
+def test_save_and_fetch_delete_empty(option, cleanup):
     # fetch
     result = CliRunner().invoke(cli.what, option)
     assert result.exit_code == 0
@@ -235,7 +248,7 @@ def test_save_and_fetch_delete_empty(option):
         (["eating", "@ 3am"], ["--text-only"]),
     ],
 )
-def test_save_and_fetch_textonly(work, option):
+def test_save_and_fetch_textonly(work, option, cleanup):
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -326,8 +339,7 @@ def test_conf_print_path(options):
     ],
 )
 def test_conf_print_settings(options):
-    settings_path = get_conf_path()
-    with open(settings_path, "a") as f:
+    with open(CONF_PATH, "a") as f:
         f.write('TIME_FORMAT = "%H:%M %z"\n')
     result = CliRunner().invoke(cli.conf, options)
     assert result.exit_code == 0

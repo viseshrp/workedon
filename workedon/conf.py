@@ -8,7 +8,6 @@ from . import __name__, default_settings
 from .constants import SETTINGS_HEADER
 from .exceptions import CannotCreateSettingsError, CannotLoadSettingsError
 
-
 CONF_PATH = Path(user_config_dir(__name__)) / "wonfile.py"
 
 
@@ -54,9 +53,7 @@ class Settings(dict):
         else:
             # load user settings module
             try:
-                spec = spec_from_file_location(
-                    CONF_PATH.name, CONF_PATH.resolve()
-                )
+                spec = spec_from_file_location(CONF_PATH.name, CONF_PATH.resolve())
                 user_settings_module = module_from_spec(spec)
                 spec.loader.exec_module(user_settings_module)
             except Exception as e:
