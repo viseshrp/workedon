@@ -15,21 +15,19 @@ except ImportError:  # pragma: no cover
     import zoneinfo
 
 
-def get_db_path():
-    return Path(user_data_dir(app_name, roaming=True)) / "won.db"
+DB_PATH = Path(user_data_dir(app_name, roaming=True)) / "won.db"
 
 
 def get_or_create_db():
     """
     Create the database and return the connection
     """
-    db_file = get_db_path()
-    if not db_file.is_file():
+    if not DB_PATH.is_file():
         # create parent dirs
-        db_file.parent.mkdir(parents=True, exist_ok=True)
-        db_file.touch()
+        DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+        DB_PATH.touch()
     return SqliteDatabase(
-        str(db_file),
+        str(DB_PATH),
         pragmas={
             "journal_mode": "wal",  # does not work over a network filesystem.
             "cache_size": -1 * 64000,  # 64MB

@@ -7,7 +7,7 @@ from click_default_group import DefaultGroup
 
 from . import __version__
 from .conf import get_conf_path, settings
-from .models import Work, get_db_path, get_or_create_db
+from .models import Work, DB_PATH, get_or_create_db
 from .utils import load_settings
 from .workedon import fetch_work, save_work
 
@@ -278,7 +278,7 @@ def db(db_path, vacuum, truncate, version):
     Perform database maintenance (for advanced users only).
     """
     if db_path:
-        return click.echo(get_db_path())
+        return click.echo(DB_PATH)
     elif vacuum:
         click.echo("Performing VACUUM...")
         get_or_create_db().execute_sql("VACUUM;")
