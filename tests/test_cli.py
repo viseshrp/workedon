@@ -64,11 +64,15 @@ def test_empty_fetch():
 @pytest.mark.parametrize(
     "work",
     [
-        (["painting the garage", "washing the car"]),
-        (["studying for the SAT @ 3pm friday"]),
-        (["pissing my wife off @ 2:30pm yesterday"]),
-        (["writing some tests @ 9 hours ago"]),
-        (["finding a friend @ 2pm 4 days ago"]),
+        (
+            [
+                "painting the garage",
+                "washing the car",
+                "studying for the SAT @ 3pm friday",
+                "pissing my wife off @ 2:30pm yesterday",
+            ]
+        ),
+        (["writing some tests @ 9 hours ago", "finding a friend @ 2pm 4 days ago"]),
     ],
 )
 def test_save_and_fetch(work, cleanup):
