@@ -6,7 +6,7 @@
 - allow  settings `DATE_FORMAT`, `TIME_FORMAT`, `DATETIME_FORMAT`
 - add a `conf` command to view the settings
 - fix load_module deprecation
-- change default date/time format 
+- change default date/time format
 
 ## 0.6.2 (2023-03-21)
 
