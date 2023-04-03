@@ -3,10 +3,10 @@
 ## 0.6.3 (2023-04-02)
 
 - enable the settings file `wonfile.py`
-- allow `DATE_FORMAT`, `TIME_FORMAT`, `DATETIME_FORMAT`
-- add a `conf` command to view with settings
+- allow  settings `DATE_FORMAT`, `TIME_FORMAT`, `DATETIME_FORMAT`
+- add a `conf` command to view the settings
 - fix load_module deprecation
-- change default date/time format to match `git log` closely
+- change default date/time format
 
 ## 0.6.2 (2023-03-21)
 
