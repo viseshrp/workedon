@@ -93,6 +93,12 @@ Python [strftime](https://strftime.org/) string.
 - `DATETIME_FORMAT` : Sets the date and time format of the output. Must be a valid
 Python [strftime](https://strftime.org/) string.
 
+To find your current settings, run:
+
+``` {.bash}
+workedon conf --print
+```
+
 Check how to use these and the default settings
 [here](https://github.com/viseshrp/workedon/blob/develop/workedon/default_settings.py).
 
