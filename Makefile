@@ -31,10 +31,8 @@ clean:
 	find . -name \*.pyc -delete
 	rm -rf dist \
   build \
-  *.egg-info
-
-clean-test:
-	rm -rf .coverage \
+  *.egg-info \
+  .coverage \
   coverage-html \
   coverage.xml \
   .pytest_cache

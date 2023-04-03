@@ -34,7 +34,7 @@ email = _init["__email__"]
 setup(
     name=name,
     version=version,
-    description="Work logging from the comfort of your shell.",
+    description="Work tracking from your shell.",
     long_description=get_file_text("README.md") + "\n\n" + get_file_text("CHANGELOG.md"),
     long_description_content_type="text/markdown",
     author=author,

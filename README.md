@@ -8,7 +8,7 @@ workedon
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/viseshrp/workedon/blob/develop/LICENSE)
 [![Downloads](https://pepy.tech/badge/workedon)](https://pepy.tech/project/workedon)
 
-Work logging from the comfort of your shell.
+Work tracking from your shell.
 
 ![demo](https://raw.githubusercontent.com/viseshrp/workedon/develop/demo.gif)
 
@@ -18,8 +18,8 @@ Why build this
 I believe tracking your work is an important way of measuring productivity
 and is a habit that is very helpful to develop. But the thing about habits
 is - if they aren’t easy and accessible, you will eventually stop doing
-them - just like going to a gym that is 40 minutes away :) I have tried
-different methods to log my work and have failed. Google Drive, iCloud
+them - just like going to a gym that is 40 minutes away :) I tried
+different methods to log my work and failed. Google Docs, iCloud
 Notes, Notepad++, Sticky Notes, etc. I really wanted a way of tracking
 with very little effort so I could make this a habit.
 It's pretty obvious that we all spend most of our day on the terminal.
@@ -30,6 +30,23 @@ for example, how productive I was in the past week?
 
 `workedon` is another attempt of mine to make work logging a habit and
 improve my productivity.
+
+How it works
+------------
+
+This tool is useful in two ways - for logging work and fetching logged work.
+The implementation is very simple. Work is logged in the form of
+`workedon <text> @ <date>`or just `workedon <text>`
+(which uses the current date/time). There is a custom parser that reads the
+content, splits it at the `@` to a work and a date component and then uses
+the awesome `dateparser` library to parse human-readable dates into datetime
+objects. This is then saved in a SQLite database
+([File location varies](https://github.com/platformdirs/platformdirs) based
+on OS). Logged work can be fetched using multiple options that accept similar
+human-readable date/times. The same parser is used again to parse into datetime
+objects which are used to query the database. The output uses the current
+shell's pager to display a paged list similar to `git log`
+(your output may slightly vary based on your shell).
 
 Installation
 ------------
@@ -53,23 +70,31 @@ Features
 - Fetch logged work with human-readable dates/times.
 - Familiar Git-like interface.
 - Filter, sort, delete, format and display logged work on your shell.
+- Set date/time format of the output through settings.
 
-How it works
-------------
+Settings
+--------
 
-This tool is useful in two ways - for logging work and fetching logged work.
-The implementation is very simple. Work is logged in the form of
-`workedon <text> @ <date>`or just `workedon <text>`
-(which uses the current date/time). There is a custom parser that reads the
-content, splits it at the `@` to a work and a date component and then uses
-the awesome `dateparser` library to parse human-readable dates into datetime
-objects. This is then saved in a SQLite database
-([File location varies](https://github.com/platformdirs/platformdirs) based
-on OS). Logged work can be fetched using multiple options that accept similar
-human-readable date/times. The same parser is used again to parse into datetime
-objects which are used to query the database. The output uses the current
-shell's pager to display a paged list similar to `git log`
-(your output may vary based on your shell).
+Whenever `workedon` is run for the first time, a settings file named
+`wonfile.py` is generated at the user's configuration directory, which
+varies based on OS. To find, run:
+
+``` {.bash}
+workedon conf --print-path
+```
+
+Settings are strings used to configure the behavior of `workedon`.
+The currently available settings are:
+
+- `DATE_FORMAT` : Sets the date format of the output. Must be a valid
+Python [strftime](https://strftime.org/) string.
+- `TIME_FORMAT` : Sets the time format of the output. Must be a valid
+Python [strftime](https://strftime.org/) string.
+- `DATETIME_FORMAT` : Sets the date and time format of the output. Must be a valid
+Python [strftime](https://strftime.org/) string.
+
+Check how to use these and the default settings
+[here](https://github.com/viseshrp/workedon/blob/develop/workedon/default_settings.py).
 
 Usage
 -----
@@ -96,13 +121,13 @@ cog.out(
 $ workedon --help
 Usage: workedon [OPTIONS] COMMAND [ARGS]...
 
-  Work logging from the comfort of your shell.
+  Work tracking from your shell.
 
   Example usages:
   1. Logging work:
-  workedon studying for the SAT @ June 2010
-  workedon pissing my wife off @ 2pm yesterday
   workedon painting the garage
+  workedon studying for the SAT @ June 23 2010
+  workedon pissing my wife off @ 2pm yesterday
 
   2. Fetching work:
   workedon what
@@ -115,14 +140,18 @@ Options:
   -h, --help     Show this message and exit.
 
 Commands:
-  workedon*  What you worked on, with optional date/time - see examples.
-  db         Perform database maintenance (for advanced users only)
-  what       Fetch logged work.
+  workedon*  Specify what you worked on, with optional date/time.
+  conf       View workedon settings.
+  db         Perform database maintenance (for advanced users only).
+  what       Fetch and display logged work.
 
 $ workedon what --help
 Usage: what [OPTIONS]
 
-  Fetch logged work.
+  Fetch and display logged work.
+
+  If no options are provided, work
+  from the past week is returned.
 
 Options:
   -r, --reverse        Reverse order while sorting.
@@ -171,6 +200,7 @@ Limitations
   - `workedon`
   - `what`
   - `db`
+  - `conf`
 
   You can use double quotes here as well to get around this.
 
