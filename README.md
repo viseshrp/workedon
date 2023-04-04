@@ -80,7 +80,7 @@ Whenever `workedon` is run for the first time, a settings file named
 varies based on OS. To find out, run:
 
 ``` {.bash}
-workedon conf --print-path
+workedon --print-settings-path
 ```
 
 Settings are strings used to configure the behavior of `workedon`.
@@ -96,7 +96,7 @@ Python [strftime](https://strftime.org/) string.
 To find your current settings, run:
 
 ``` {.bash}
-workedon conf --print
+workedon --print-settings
 ```
 
 Check how to use these and the default settings
@@ -114,17 +114,13 @@ result = runner.invoke(cli.main, ["--help"])
 out = result.output.replace("Usage: main", "Usage: workedon")
 result = runner.invoke(cli.what, ["--help"])
 what_out = result.output
-result = runner.invoke(cli.conf, ["--help"])
-conf_out = result.output
 cog.out(
     "``` {{.bash}}\n"
     "$ workedon --help\n"
     "{}\n"
     "$ workedon what --help\n"
-    "{}\n"
-    "$ workedon conf --help\n"
-    "{}\n"
-    "```".format(out, what_out, conf_out)
+    "{}"
+    "```".format(out, what_out)
 )
 ]]] -->
 ``` {.bash}
@@ -151,8 +147,6 @@ Options:
 
 Commands:
   workedon*  Specify what you worked on, with optional date/time.
-  conf       View workedon settings.
-  db         Perform database maintenance (for advanced users only).
   what       Fetch and display logged work.
 
 $ workedon what --help
@@ -184,17 +178,6 @@ Options:
   -g, --no-page        Don't page the output.
   -l, --text-only      Output the work log text only.
   --help               Show this message and exit.
-
-$ workedon conf --help
-Usage: conf [OPTIONS]
-
-  View workedon settings.
-
-Options:
-  --print-path  Print the location of the settings file.
-  --print       Print all the current settings, including defaults.
-  --help        Show this message and exit.
-
 ```
 <!-- [[[end]]] -->
 
@@ -219,8 +202,6 @@ Limitations
   cannot be used as the first word of your log's content:
   - `workedon`
   - `what`
-  - `db`
-  - `conf`
 
   You can use double quotes here as well to get around this.
 

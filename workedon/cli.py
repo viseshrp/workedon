@@ -49,12 +49,87 @@ def main():
     required=False,
     type=click.STRING,
 )
+@click.option(
+    "--print-settings",
+    "print_settings",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print all the current settings, including defaults.",
+)
+@click.option(
+    "--print-settings-path",
+    "settings_path",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print the location of the settings file.",
+)
+@click.option(
+    "--print-db-path",
+    "db_path",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print the location of the database file.",
+)
+@click.option(
+    "--vacuum-db",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Execute the VACUUM command on the database to reclaim some space.",
+)
+@click.option(
+    "--truncate-db",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Delete all data since the beginning of time.",
+)
+@click.option(
+    "--db-version",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print the version of SQLite being used.",
+)
 @load_settings
-def workedon(stuff):
+def workedon(stuff, settings_path, print_settings, db_path, vacuum_db, truncate_db, db_version):
     """
     Specify what you worked on, with optional date/time. See examples.
+
+    Options are for advanced users only.
     """
-    save_work(stuff)
+    if settings_path:
+        return click.echo(CONF_PATH)
+    elif print_settings:
+        for key, value in settings.items():
+            if key.isupper():
+                click.echo(f'{key}="{value}"')
+        return
+    elif db_path:
+        return click.echo(DB_PATH)
+    elif vacuum_db:
+        click.echo("Performing VACUUM...")
+        get_or_create_db().execute_sql("VACUUM;")
+        return click.echo("VACUUM complete.")
+    elif truncate_db:
+        if click.confirm("Continue deleting all saved data? There's no going back."):
+            click.echo("Deleting...")
+            Work.truncate_table()
+            return click.echo("Deletion successful.")
+    elif db_version:
+        server_version = ".".join([str(num) for num in get_or_create_db().server_version])
+        return click.echo(f"SQLite version: {server_version}")
+    else:
+        save_work(stuff)
 
 
 @main.command()
@@ -236,94 +311,6 @@ def what(
         reverse,
         text_only,
     )
-
-
-@main.command()
-@click.option(
-    "--print-path",
-    "db_path",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Print the location of the database file.",
-)
-@click.option(
-    "--vacuum",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Execute the VACUUM command on the database to reclaim some space.",
-)
-@click.option(
-    "--truncate",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Delete all data since the beginning of time.",
-)
-@click.option(
-    "--version",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Print the version of SQLite being used.",
-)
-@load_settings
-def db(db_path, vacuum, truncate, version):
-    """
-    Perform database maintenance (for advanced users only).
-    """
-    if db_path:
-        return click.echo(DB_PATH)
-    elif vacuum:
-        click.echo("Performing VACUUM...")
-        get_or_create_db().execute_sql("VACUUM;")
-        return click.echo("VACUUM complete.")
-    elif truncate:
-        if click.confirm("Continue deleting all saved data? There's no going back."):
-            click.echo("Deleting...")
-            Work.truncate_table()
-            return click.echo("Deletion successful.")
-    elif version:
-        server_version = ".".join([str(num) for num in get_or_create_db().server_version])
-        return click.echo(f"SQLite version: {server_version}")
-
-
-@main.command()
-@click.option(
-    "--print-path",
-    "settings_path",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Print the location of the settings file.",
-)
-@click.option(
-    "--print",
-    "print_settings",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Print all the current settings, including defaults.",
-)
-@load_settings
-def conf(settings_path, print_settings):
-    """
-    View workedon settings.
-    """
-    if settings_path:
-        return click.echo(CONF_PATH)
-    elif print_settings:
-        for key, value in settings.items():
-            if key.isupper():
-                click.echo(f'{key}="{value}"')
-        return
 
 
 if __name__ == "__main__":
