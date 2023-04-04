@@ -1,9 +1,11 @@
 # History
 
-## 0.7.0 (2023-04-02)
+## 0.7.0 (2023-04-05)
 
-- BREAKING (for advanced users only): removed the `db` and `conf` subcommands 
-  and moved their options under the main `workedon` command to free up reserved words `db` and `conf`.
+- add option and environment variable alternative for settings.
+- BREAKING (for advanced users only): removed the `db` and `conf`
+  subcommands and moved their options under the main `workedon`
+  command to free up reserved words `db` and `conf`.
   - `workedon db --print-path` is now `workedon --print-db-path`
   - `workedon db --vacuum` is now `workedon --vacuum-db`
   - `workedon db --truncate` is now `workedon --truncate-db`

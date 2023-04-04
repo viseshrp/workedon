@@ -86,12 +86,20 @@ workedon --print-settings-path
 Settings are strings used to configure the behavior of `workedon`.
 The currently available settings are:
 
-- `DATE_FORMAT` : Sets the date format of the output. Must be a valid
-Python [strftime](https://strftime.org/) string.
-- `TIME_FORMAT` : Sets the time format of the output. Must be a valid
-Python [strftime](https://strftime.org/) string.
-- `DATETIME_FORMAT` : Sets the date and time format of the output. Must be a valid
-Python [strftime](https://strftime.org/) string.
+- `DATE_FORMAT` : Sets the date format of the output.
+  - Must be a valid Python [strftime](https://strftime.org/) string.
+  - Option: `--date-format <value>`
+  - Environment variable: `WORKEDON_DATE_FORMAT`
+- `TIME_FORMAT` : Sets the time format of the output.
+  - Must be a valid Python [strftime](https://strftime.org/) string.
+  - Option: `--time-format <value>`
+  - Environment variable: `WORKEDON_TIME_FORMAT`
+- `DATETIME_FORMAT` : Sets the date and time format of the output.
+  - Must be a valid Python [strftime](https://strftime.org/) string.
+  - Option: `--datetime-format <value>`
+  - Environment variable: `WORKEDON_DATETIME_FORMAT`
+
+Order of priority is Option > Environment variable > Setting.
 
 To find your current settings, run:
 
@@ -99,7 +107,7 @@ To find your current settings, run:
 workedon --print-settings
 ```
 
-Check how to use these and the default settings
+Check the default settings
 [here](https://github.com/viseshrp/workedon/blob/develop/workedon/default_settings.py).
 
 Usage

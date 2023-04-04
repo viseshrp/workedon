@@ -1,5 +1,5 @@
 """Console script for workedon."""
-
+import functools
 import warnings
 
 import click
@@ -13,6 +13,41 @@ from .workedon import fetch_work, save_work
 
 warnings.filterwarnings("ignore")
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
+
+
+def settings_options(func):
+    @click.option(
+        "--date-format",
+        "DATE_FORMAT",
+        required=False,
+        default="",
+        type=click.STRING,
+        envvar="WORKEDON_DATE_FORMAT",
+        help="Sets the date format of the output. Must be a valid Python strftime string.",
+    )
+    @click.option(
+        "--time-format",
+        "TIME_FORMAT",
+        required=False,
+        default="",
+        type=click.STRING,
+        envvar="WORKEDON_TIME_FORMAT",
+        help="Sets the time format of the output. Must be a valid Python strftime string.",
+    )
+    @click.option(
+        "--datetime-format",
+        "DATETIME_FORMAT",
+        required=False,
+        default="",
+        type=click.STRING,
+        envvar="WORKEDON_DATETIME_FORMAT",
+        help="Sets the datetime format of the output. Must be a valid Python strftime string.",
+    )
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 @click.group(
@@ -100,8 +135,11 @@ def main():
     show_default=True,
     help="Print the version of SQLite being used.",
 )
+@settings_options
 @load_settings
-def workedon(stuff, settings_path, print_settings, db_path, vacuum_db, truncate_db, db_version):
+def workedon(
+    stuff, settings_path, print_settings, db_path, vacuum_db, truncate_db, db_version, **kwargs
+):
     """
     Specify what you worked on, with optional date/time. See examples.
 
@@ -272,6 +310,7 @@ def workedon(stuff, settings_path, print_settings, db_path, vacuum_db, truncate_
     show_default=True,
     help="Output the work log text only.",
 )
+@settings_options
 @load_settings
 def what(
     count,
@@ -287,6 +326,7 @@ def what(
     no_page,
     reverse,
     text_only,
+    **kwargs,
 ):
     """
     Fetch and display logged work.
