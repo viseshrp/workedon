@@ -77,7 +77,7 @@ Settings
 
 Whenever `workedon` is run for the first time, a settings file named
 `wonfile.py` is generated at the user's configuration directory, which
-varies based on OS. To find, run:
+varies based on OS. To find out, run:
 
 ``` {.bash}
 workedon conf --print-path
@@ -114,13 +114,17 @@ result = runner.invoke(cli.main, ["--help"])
 out = result.output.replace("Usage: main", "Usage: workedon")
 result = runner.invoke(cli.what, ["--help"])
 what_out = result.output
+result = runner.invoke(cli.conf, ["--help"])
+conf_out = result.output
 cog.out(
     "``` {{.bash}}\n"
     "$ workedon --help\n"
     "{}\n"
     "$ workedon what --help\n"
     "{}\n"
-    "```".format(out, what_out)
+    "$ workedon conf --help\n"
+    "{}\n"
+    "```".format(out, what_out, conf_out)
 )
 ]]] -->
 ``` {.bash}
@@ -180,6 +184,16 @@ Options:
   -g, --no-page        Don't page the output.
   -l, --text-only      Output the work log text only.
   --help               Show this message and exit.
+
+$ workedon conf --help
+Usage: conf [OPTIONS]
+
+  View workedon settings.
+
+Options:
+  --print-path  Print the location of the settings file.
+  --print       Print all the current settings, including defaults.
+  --help        Show this message and exit.
 
 ```
 <!-- [[[end]]] -->
