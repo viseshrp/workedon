@@ -32,12 +32,9 @@ class Settings(dict):
         """
         # make the parent first
         CONF_PATH.parent.mkdir(parents=True, exist_ok=True)
-        # write sample settings
+        # write settings file
         with CONF_PATH.open(mode="w") as settings_file:
             settings_file.write(SETTINGS_HEADER)
-            for setting in dir(default_settings):
-                if setting.isupper():
-                    settings_file.write(f'# {setting} = "{getattr(default_settings, setting)}"\n')
 
     def configure(self, user_settings=None):
         """
