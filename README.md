@@ -96,6 +96,7 @@ The currently available settings are:
   - Environment variable: `WORKEDON_TIME_FORMAT`
 - `DATETIME_FORMAT` : Sets the date and time format of the output.
   - Must be a valid Python [strftime](https://strftime.org/) string.
+  - Setting this overrides `DATE_FORMAT` and `TIME_FORMAT`.
   - Option: `--datetime-format <value>`
   - Environment variable: `WORKEDON_DATETIME_FORMAT`
 
@@ -166,26 +167,33 @@ Usage: what [OPTIONS]
   from the past week is returned.
 
 Options:
-  -r, --reverse        Reverse order while sorting.
-  -n, --count INTEGER  Number of entries to return.
-  -s, --last           Fetch the last thing you worked on
-  -i, --id TEXT        id to fetch with.
-  -f, --from TEXT      Start date-time to filter with.
-  -t, --to TEXT        End date-time to filter with.
-  --since TEXT         Fetch work done since a specified date-time in the past.
-  -d, --past-day       Fetch work done in the past 24 hours.
-  -w, --past-week      Fetch work done in the past week.
-  -m, --past-month     Fetch work done in the past month.
-  -y, --past-year      Fetch work done in the past year.
-  -e, --yesterday      Fetch work done yesterday.
-  -o, --today          Fetch work done today.
-  --on TEXT            Fetch work done on a particular date/day.
-  --at TEXT            Fetch work done at a particular time on a particular
-                       date/day.
-  --delete             Delete fetched work.
-  -g, --no-page        Don't page the output.
-  -l, --text-only      Output the work log text only.
-  --help               Show this message and exit.
+  -r, --reverse           Reverse order while sorting.
+  -n, --count INTEGER     Number of entries to return.
+  -s, --last              Fetch the last thing you worked on
+  -i, --id TEXT           id to fetch with.
+  -f, --from TEXT         Start date-time to filter with.
+  -t, --to TEXT           End date-time to filter with.
+  --since TEXT            Fetch work done since a specified date-time in the
+                          past.
+  -d, --past-day          Fetch work done in the past 24 hours.
+  -w, --past-week         Fetch work done in the past week.
+  -m, --past-month        Fetch work done in the past month.
+  -y, --past-year         Fetch work done in the past year.
+  -e, --yesterday         Fetch work done yesterday.
+  -o, --today             Fetch work done today.
+  --on TEXT               Fetch work done on a particular date/day.
+  --at TEXT               Fetch work done at a particular time on a particular
+                          date/day.
+  --delete                Delete fetched work.
+  -g, --no-page           Don't page the output.
+  -l, --text-only         Output the work log text only.
+  --date-format TEXT      Sets the date format of the output. Must be a valid
+                          Python strftime string.
+  --time-format TEXT      Sets the time format of the output. Must be a valid
+                          Python strftime string.
+  --datetime-format TEXT  Sets the datetime format of the output. Must be a
+                          valid Python strftime string.
+  --help                  Show this message and exit.
 ```
 <!-- [[[end]]] -->
 
