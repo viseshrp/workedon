@@ -2,6 +2,7 @@
 
 ## 0.7.0 (2023-04-05)
 
+- fix usage of date/time formatting
 - add option and environment variable alternative for settings.
 - BREAKING (for advanced users only): removed the `db` and `conf`
   subcommands and moved their options under the main `workedon`
