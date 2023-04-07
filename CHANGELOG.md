@@ -1,9 +1,12 @@
 # History
 
-## 0.7.0 (2023-04-05)
+## 0.7.0 (2023-04-06)
 
-- fix usage of date/time formatting
-- add option and environment variable alternative for settings.
+- add setting to specify timezone for display
+  - setting : `TIME_ZONE`
+  - option: `--time-zone <value>`
+  - environment variable: `WORKEDON_TIME_ZONE`
+- add option and environment variable alternative for settings
 - BREAKING (for advanced users only): removed the `db` and `conf`
   subcommands and moved their options under the main `workedon`
   command to free up reserved keywords `db` and `conf`.
@@ -13,6 +16,7 @@
   - `workedon db --version` is now `workedon --db-version`
   - `workedon conf --print-path` is now `workedon --print-settings-path`
   - `workedon conf --print` is now `workedon --print-settings`
+- fix usage of date/time formatting
 
 ## 0.6.3 (2023-04-02)
 

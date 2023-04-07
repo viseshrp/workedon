@@ -88,7 +88,7 @@ class Work(Model):
         Uses a git log like structure.
         """
         if self.timestamp and self.uuid:
-            user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.user_tz))
+            user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.TIME_ZONE))
             timestamp = user_time.strftime(
                 settings.DATETIME_FORMAT
                 if settings.DATETIME_FORMAT

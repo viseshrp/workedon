@@ -37,7 +37,7 @@ def now():
     """
     Current datetime in user's local timezone
     """
-    return datetime.now(zoneinfo.ZoneInfo(settings.user_tz))
+    return datetime.now(zoneinfo.ZoneInfo(settings.TIME_ZONE))
 
 
 def get_default_time():

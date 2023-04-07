@@ -43,6 +43,15 @@ def settings_options(func):
         envvar="WORKEDON_DATETIME_FORMAT",
         help="Sets the datetime format of the output. Must be a valid Python strftime string.",
     )
+    @click.option(
+        "--time-zone",
+        "TIME_ZONE",
+        required=False,
+        default="",
+        type=click.STRING,
+        envvar="WORKEDON_TIME_ZONE",
+        help="Sets the timezone of the output. Must be a valid timezone string.",
+    )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)

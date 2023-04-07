@@ -99,6 +99,13 @@ The currently available settings are:
   - Setting this overrides `DATE_FORMAT` and `TIME_FORMAT`.
   - Option: `--datetime-format <value>`
   - Environment variable: `WORKEDON_DATETIME_FORMAT`
+- `TIME_ZONE` : Sets the time zone of the output.
+  - Must be a valid
+    [timezone string](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+  - Default is the auto-detected timezone using the
+    [tzlocal](https://github.com/regebro/tzlocal) library.
+  - Option: `--time-zone <value>`
+  - Environment variable: `WORKEDON_TIME_ZONE`
 
 Order of priority is Option > Environment variable > Setting.
 
@@ -193,6 +200,8 @@ Options:
                           Python strftime string.
   --datetime-format TEXT  Sets the datetime format of the output. Must be a
                           valid Python strftime string.
+  --time-zone TEXT        Sets the timezone of the output. Must be a valid
+                          timezone string.
   --help                  Show this message and exit.
 ```
 <!-- [[[end]]] -->
