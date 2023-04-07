@@ -1,6 +1,8 @@
+from datetime import datetime
 import re
 
 from click.testing import CliRunner
+import dateparser
 import pytest
 
 from workedon import __version__, cli, exceptions
@@ -121,11 +123,34 @@ def test_save_and_fetch_id(work, option, cleanup):
     verify_work_output(result, work)
     assert result.output.startswith("Work saved.")
     # fetch
-    matches = re.search(r".*id: ([0-9a-f]{40}).*", result.output)
+    matches = re.search(r".*id:\s+([0-9a-f]{40}).*", result.output)
     work_id = matches.group(1)
     option.append(work_id)
     result = CliRunner().invoke(cli.what, option)
     verify_work_output(result, work)
+
+
+@pytest.mark.parametrize(
+    "opt, env",
+    [
+        ("", "WORKEDON_DATETIME_FORMAT"),
+        ("--datetime-format", ""),
+    ],
+)
+def test_save_and_fetch_date_opt_env(opt, env, monkeypatch, cleanup):
+    result = CliRunner().invoke(cli.main, ["testing date opt"])
+    assert result.output.startswith("Work saved.")
+    strp_string = "%a %b %d"
+    if env:
+        monkeypatch.setenv(env, strp_string)
+    opts = []
+    if opt:
+        opts = [opt, strp_string]
+    result = CliRunner().invoke(cli.what, opts)
+    matches = re.search(r"Date:\s+(.*)\n", result.output)
+    date_text = matches.group(1)
+    date_object = datetime.strptime(date_text, strp_string)
+    assert date_object.year != datetime.now().year
 
 
 @pytest.mark.parametrize(
