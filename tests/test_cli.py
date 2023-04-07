@@ -1,6 +1,8 @@
+from datetime import datetime
 import re
 
 from click.testing import CliRunner
+import dateparser
 import pytest
 
 from workedon import __version__, cli, exceptions
@@ -64,11 +66,15 @@ def test_empty_fetch():
 @pytest.mark.parametrize(
     "work",
     [
-        (["painting the garage", "washing the car"]),
-        (["studying for the SAT @ 3pm friday"]),
-        (["pissing my wife off @ 2:30pm yesterday"]),
-        (["writing some tests @ 9 hours ago"]),
-        (["finding a friend @ 2pm 4 days ago"]),
+        (
+            [
+                "painting the garage",
+                "washing the car",
+                "studying for the SAT @ 3pm friday",
+                "pissing my wife off @ 2:30pm yesterday",
+            ]
+        ),
+        (["writing some tests @ 9 hours ago", "finding a friend @ 2pm 4 days ago"]),
     ],
 )
 def test_save_and_fetch(work, cleanup):
@@ -117,11 +123,34 @@ def test_save_and_fetch_id(work, option, cleanup):
     verify_work_output(result, work)
     assert result.output.startswith("Work saved.")
     # fetch
-    matches = re.search(r".*id: ([0-9a-f]{40}).*", result.output)
+    matches = re.search(r".*id:\s+([0-9a-f]{40}).*", result.output)
     work_id = matches.group(1)
     option.append(work_id)
     result = CliRunner().invoke(cli.what, option)
     verify_work_output(result, work)
+
+
+@pytest.mark.parametrize(
+    "opt, env",
+    [
+        ("", "WORKEDON_DATETIME_FORMAT"),
+        ("--datetime-format", ""),
+    ],
+)
+def test_save_and_fetch_date_opt_env(opt, env, monkeypatch, cleanup):
+    result = CliRunner().invoke(cli.main, ["testing date opt"])
+    assert result.output.startswith("Work saved.")
+    strp_string = "%a %b %d"
+    if env:
+        monkeypatch.setenv(env, strp_string)
+    opts = []
+    if opt:
+        opts = [opt, strp_string]
+    result = CliRunner().invoke(cli.what, opts)
+    matches = re.search(r"Date:\s+(.*)\n", result.output)
+    date_text = matches.group(1)
+    date_object = datetime.strptime(date_text, strp_string)
+    assert date_object.year != datetime.now().year
 
 
 @pytest.mark.parametrize(
@@ -265,11 +294,11 @@ def test_save_and_fetch_textonly(work, option, cleanup):
 @pytest.mark.parametrize(
     "options",
     [
-        (["--print-path"]),
+        (["--print-db-path"]),
     ],
 )
 def test_db_print_path(options):
-    result = CliRunner().invoke(cli.db, options)
+    result = CliRunner().invoke(cli.workedon, options)
     assert result.exit_code == 0
     assert "won.db" in result.output
 
@@ -277,11 +306,11 @@ def test_db_print_path(options):
 @pytest.mark.parametrize(
     "options",
     [
-        (["--vacuum"]),
+        (["--vacuum-db"]),
     ],
 )
 def test_db_vacuum(options):
-    result = CliRunner().invoke(cli.db, options)
+    result = CliRunner().invoke(cli.workedon, options)
     assert result.exit_code == 0
     assert "VACUUM complete." in result.output
 
@@ -289,7 +318,7 @@ def test_db_vacuum(options):
 @pytest.mark.parametrize(
     "work, option_db, option_what",
     [
-        (["watching Lost"], ["--truncate"], ["--last"]),
+        (["watching Lost"], ["--truncate-db"], ["--last"]),
     ],
 )
 def test_db_truncate(work, option_db, option_what):
@@ -298,7 +327,7 @@ def test_db_truncate(work, option_db, option_what):
     verify_work_output(result, work)
     assert result.output.startswith("Work saved.")
     # trunc
-    result = CliRunner().invoke(cli.db, option_db, input="y")
+    result = CliRunner().invoke(cli.workedon, option_db, input="y")
     assert result.exit_code == 0
     assert "Deletion successful." in result.output
     # check
@@ -310,11 +339,11 @@ def test_db_truncate(work, option_db, option_what):
 @pytest.mark.parametrize(
     "options",
     [
-        (["--version"]),
+        (["--db-version"]),
     ],
 )
 def test_db_version(options):
-    result = CliRunner().invoke(cli.db, options)
+    result = CliRunner().invoke(cli.workedon, options)
     assert result.exit_code == 0
     assert result.output.startswith("SQLite version: ")
 
@@ -323,11 +352,11 @@ def test_db_version(options):
 @pytest.mark.parametrize(
     "options",
     [
-        (["--print-path"]),
+        (["--print-settings-path"]),
     ],
 )
 def test_conf_print_path(options):
-    result = CliRunner().invoke(cli.conf, options)
+    result = CliRunner().invoke(cli.workedon, options)
     assert result.exit_code == 0
     assert "wonfile.py" in result.output
 
@@ -335,13 +364,13 @@ def test_conf_print_path(options):
 @pytest.mark.parametrize(
     "options",
     [
-        (["--print"]),
+        (["--print-settings"]),
     ],
 )
 def test_conf_print_settings(options):
     with open(CONF_PATH, "a") as f:
         f.write('TIME_FORMAT = "%H:%M %z"\n')
-    result = CliRunner().invoke(cli.conf, options)
+    result = CliRunner().invoke(cli.workedon, options)
     assert result.exit_code == 0
     assert 'TIME_FORMAT="%H:%M %z"' in result.output
 

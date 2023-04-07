@@ -89,7 +89,11 @@ class Work(Model):
         """
         if self.timestamp and self.uuid:
             user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.user_tz))
-            timestamp = user_time.strftime(settings.DATETIME_FORMAT)
+            timestamp = user_time.strftime(
+                settings.DATETIME_FORMAT
+                if settings.DATETIME_FORMAT
+                else f"{settings.DATE_FORMAT} {settings.TIME_FORMAT}"
+            )
             return (
                 f'{click.style(f"id: {self.uuid}", fg="green")}\n'
                 f'{click.style(f"Date: {timestamp}")}\n'
