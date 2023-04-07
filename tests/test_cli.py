@@ -2,7 +2,6 @@ from datetime import datetime
 import re
 
 from click.testing import CliRunner
-import dateparser
 import pytest
 
 from workedon import __version__, cli, exceptions
@@ -151,6 +150,26 @@ def test_save_and_fetch_date_opt_env(opt, env, monkeypatch, cleanup):
     date_text = matches.group(1)
     date_object = datetime.strptime(date_text, strp_string)
     assert date_object.year != datetime.now().year
+
+
+@pytest.mark.parametrize(
+    "opt, env",
+    [
+        ("", "WORKEDON_TIME_ZONE"),
+        ("--time-zone", ""),
+    ],
+)
+def test_save_and_fetch_timezone_opt_env(opt, env, monkeypatch, cleanup):
+    result = CliRunner().invoke(cli.main, ["testing timezone opt"])
+    assert result.output.startswith("Work saved.")
+    tz = "Asia/Tokyo"
+    if env:
+        monkeypatch.setenv(env, tz)
+    opts = []
+    if opt:
+        opts = [opt, tz]
+    result = CliRunner().invoke(cli.what, opts)
+    assert "JST" in result.output
 
 
 @pytest.mark.parametrize(

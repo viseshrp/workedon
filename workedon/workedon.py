@@ -11,7 +11,7 @@ from .exceptions import (
     StartDateGreaterError,
 )
 from .models import Work, init_db
-from .parser import parser
+from .parser import InputParser
 from .utils import now, to_internal_dt
 
 try:
@@ -27,7 +27,7 @@ def save_work(work):
     Save work from user input
     """
     work_desc = " ".join(work).strip()
-    text, dt = parser.parse(work_desc)
+    text, dt = InputParser().parse(work_desc)
     data = {"work": text}
     if dt:
         data["timestamp"] = to_internal_dt(dt)
@@ -50,6 +50,7 @@ def _generate_work(result):
 
 
 def _get_date_range(start_date, end_date, since, period, on, at):
+    parser = InputParser()
     curr_dt = now()
     # past week is the default
     start = curr_dt - datetime.timedelta(days=7)

@@ -16,7 +16,6 @@ class Settings(dict):
     # upper case settings are user-configurable
     def __init__(self):
         super().__init__()
-        self.user_tz = str(get_localzone())  # for user display
         self.internal_tz = "UTC"  # for internal storage and manipulation
         self.internal_dt_format = "%Y-%m-%d %H:%M:%S%z"
 

@@ -5,18 +5,16 @@ from .utils import now
 
 
 class InputParser:
-    LANGUAGES = ["en"]
-    DATE_PARSER_SETTINGS = {
-        "STRICT_PARSING": False,
-        "NORMALIZE": True,
-        "RETURN_AS_TIMEZONE_AWARE": True,
-        "PREFER_DATES_FROM": "past",
-        "RELATIVE_BASE": now(),
-    }
-
     def __init__(self):
         self._date_parser = DateDataParser(
-            languages=self.LANGUAGES, settings=self.DATE_PARSER_SETTINGS
+            languages=["en"],
+            settings={
+                "STRICT_PARSING": False,
+                "NORMALIZE": True,
+                "RETURN_AS_TIMEZONE_AWARE": True,
+                "PREFER_DATES_FROM": "past",
+                "RELATIVE_BASE": now(),
+            },
         )
 
     def _as_datetime(self, date_time):
@@ -46,6 +44,3 @@ class InputParser:
             raise InvalidWorkError
         date_time = self.parse_datetime(date_time)
         return work, date_time
-
-
-parser = InputParser()
