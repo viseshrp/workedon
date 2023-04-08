@@ -1,5 +1,24 @@
 # History
 
+## 0.7.0 (2023-04-07)
+
+- add option and environment variable alternatives for all settings
+- add setting to specify timezone for display
+  - setting : `TIME_ZONE`
+  - option: `--time-zone <value>`
+  - environment variable: `WORKEDON_TIME_ZONE`
+- fix usage of date/time formatting settings
+- BREAKING (for advanced users only): removed the `db` and `conf`
+  subcommands and moved their options under the main `workedon`
+  command to free up reserved keywords `db` and `conf`.
+  - `workedon db --print-path` is now `workedon --print-db-path`
+  - `workedon db --vacuum` is now `workedon --vacuum-db`
+  - `workedon db --truncate` is now `workedon --truncate-db`
+  - `workedon db --version` is now `workedon --db-version`
+  - `workedon conf --print-path` is now `workedon --print-settings-path`
+  - `workedon conf --print` is now `workedon --print-settings`
+  - all above options are now hidden from the user
+
 ## 0.6.3 (2023-04-02)
 
 - enable the settings file `wonfile.py`
@@ -74,6 +93,7 @@
 ## 0.5.0 (2023-01-14)
 
 - Breaking: rename database to won.db
+(A new database will be created and the old one will no longer be used.)
 
 ## 0.4.5 (2023-01-13)
 

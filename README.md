@@ -77,29 +77,45 @@ Settings
 
 Whenever `workedon` is run for the first time, a settings file named
 `wonfile.py` is generated at the user's configuration directory, which
-varies based on OS. To find, run:
+varies based on OS. To find out, run:
 
 ``` {.bash}
-workedon conf --print-path
+workedon --print-settings-path
 ```
 
 Settings are strings used to configure the behavior of `workedon`.
 The currently available settings are:
 
-- `DATE_FORMAT` : Sets the date format of the output. Must be a valid
-Python [strftime](https://strftime.org/) string.
-- `TIME_FORMAT` : Sets the time format of the output. Must be a valid
-Python [strftime](https://strftime.org/) string.
-- `DATETIME_FORMAT` : Sets the date and time format of the output. Must be a valid
-Python [strftime](https://strftime.org/) string.
+- `DATE_FORMAT` : Sets the date format of the output.
+  - Must be a valid Python [strftime](https://strftime.org/) string.
+  - Option: `--date-format <value>`
+  - Environment variable: `WORKEDON_DATE_FORMAT`
+- `TIME_FORMAT` : Sets the time format of the output.
+  - Must be a valid Python [strftime](https://strftime.org/) string.
+  - Option: `--time-format <value>`
+  - Environment variable: `WORKEDON_TIME_FORMAT`
+- `DATETIME_FORMAT` : Sets the date and time format of the output.
+  - Must be a valid Python [strftime](https://strftime.org/) string.
+  - Setting this overrides `DATE_FORMAT` and `TIME_FORMAT`.
+  - Option: `--datetime-format <value>`
+  - Environment variable: `WORKEDON_DATETIME_FORMAT`
+- `TIME_ZONE` : Sets the time zone of the output.
+  - Must be a valid
+    [timezone string](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+  - Default is the auto-detected timezone using the
+    [tzlocal](https://github.com/regebro/tzlocal) library.
+  - Option: `--time-zone <value>`
+  - Environment variable: `WORKEDON_TIME_ZONE`
+
+Order of priority is Option > Environment variable > Setting.
 
 To find your current settings, run:
 
 ``` {.bash}
-workedon conf --print
+workedon --print-settings
 ```
 
-Check how to use these and the default settings
+Check the default settings
 [here](https://github.com/viseshrp/workedon/blob/develop/workedon/default_settings.py).
 
 Usage
@@ -119,7 +135,7 @@ cog.out(
     "$ workedon --help\n"
     "{}\n"
     "$ workedon what --help\n"
-    "{}\n"
+    "{}"
     "```".format(out, what_out)
 )
 ]]] -->
@@ -147,8 +163,6 @@ Options:
 
 Commands:
   workedon*  Specify what you worked on, with optional date/time.
-  conf       View workedon settings.
-  db         Perform database maintenance (for advanced users only).
   what       Fetch and display logged work.
 
 $ workedon what --help
@@ -160,27 +174,35 @@ Usage: what [OPTIONS]
   from the past week is returned.
 
 Options:
-  -r, --reverse        Reverse order while sorting.
-  -n, --count INTEGER  Number of entries to return.
-  -s, --last           Fetch the last thing you worked on
-  -i, --id TEXT        id to fetch with.
-  -f, --from TEXT      Start date-time to filter with.
-  -t, --to TEXT        End date-time to filter with.
-  --since TEXT         Fetch work done since a specified date-time in the past.
-  -d, --past-day       Fetch work done in the past 24 hours.
-  -w, --past-week      Fetch work done in the past week.
-  -m, --past-month     Fetch work done in the past month.
-  -y, --past-year      Fetch work done in the past year.
-  -e, --yesterday      Fetch work done yesterday.
-  -o, --today          Fetch work done today.
-  --on TEXT            Fetch work done on a particular date/day.
-  --at TEXT            Fetch work done at a particular time on a particular
-                       date/day.
-  --delete             Delete fetched work.
-  -g, --no-page        Don't page the output.
-  -l, --text-only      Output the work log text only.
-  --help               Show this message and exit.
-
+  -r, --reverse           Reverse order while sorting.
+  -n, --count INTEGER     Number of entries to return.
+  -s, --last              Fetch the last thing you worked on
+  -i, --id TEXT           id to fetch with.
+  -f, --from TEXT         Start date-time to filter with.
+  -t, --to TEXT           End date-time to filter with.
+  --since TEXT            Fetch work done since a specified date-time in the
+                          past.
+  -d, --past-day          Fetch work done in the past 24 hours.
+  -w, --past-week         Fetch work done in the past week.
+  -m, --past-month        Fetch work done in the past month.
+  -y, --past-year         Fetch work done in the past year.
+  -e, --yesterday         Fetch work done yesterday.
+  -o, --today             Fetch work done today.
+  --on TEXT               Fetch work done on a particular date/day.
+  --at TEXT               Fetch work done at a particular time on a particular
+                          date/day.
+  --delete                Delete fetched work.
+  -g, --no-page           Don't page the output.
+  -l, --text-only         Output the work log text only.
+  --date-format TEXT      Sets the date format of the output. Must be a valid
+                          Python strftime string.
+  --time-format TEXT      Sets the time format of the output. Must be a valid
+                          Python strftime string.
+  --datetime-format TEXT  Sets the datetime format of the output. Must be a
+                          valid Python strftime string.
+  --time-zone TEXT        Sets the timezone of the output. Must be a valid
+                          timezone string.
+  --help                  Show this message and exit.
 ```
 <!-- [[[end]]] -->
 
@@ -205,8 +227,6 @@ Limitations
   cannot be used as the first word of your log's content:
   - `workedon`
   - `what`
-  - `db`
-  - `conf`
 
   You can use double quotes here as well to get around this.
 
@@ -228,7 +248,7 @@ Credits
 - [dateparser](https://github.com/scrapinghub/dateparser), for an
     amazing date parser. This project would not be possible without it.
 - [peewee](https://github.com/coleifer/peewee), for a nice and
-   tiny ORM to interact with sqlite.
+   tiny ORM to interact with SQLite.
 - [Click](https://click.palletsprojects.com), for making writing CLI
     tools a complete pleasure.
 - [jrnl](https://github.com/jrnl-org/jrnl),

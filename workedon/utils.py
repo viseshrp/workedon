@@ -37,7 +37,7 @@ def now():
     """
     Current datetime in user's local timezone
     """
-    return datetime.now(zoneinfo.ZoneInfo(settings.user_tz))
+    return datetime.now(zoneinfo.ZoneInfo(settings.TIME_ZONE))
 
 
 def get_default_time():
@@ -58,7 +58,12 @@ def load_settings(func):
         try:
             from .conf import settings
 
-            settings.configure()
+            user_settings = {}
+            for key, value in kwargs.items():
+                if key.isupper() and value:
+                    user_settings[key] = value
+            settings.configure(user_settings=user_settings)
+
             func(*args, **kwargs)
         except Exception as e:
             raise click.ClickException(click.style(str(e), fg="bright_red"))

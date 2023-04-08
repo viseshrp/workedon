@@ -88,8 +88,12 @@ class Work(Model):
         Uses a git log like structure.
         """
         if self.timestamp and self.uuid:
-            user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.user_tz))
-            timestamp = user_time.strftime(settings.DATETIME_FORMAT)
+            user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.TIME_ZONE))
+            timestamp = user_time.strftime(
+                settings.DATETIME_FORMAT
+                if settings.DATETIME_FORMAT
+                else f"{settings.DATE_FORMAT} {settings.TIME_FORMAT}"
+            )
             return (
                 f'{click.style(f"id: {self.uuid}", fg="green")}\n'
                 f'{click.style(f"Date: {timestamp}")}\n'

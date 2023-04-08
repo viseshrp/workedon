@@ -16,7 +16,6 @@ class Settings(dict):
     # upper case settings are user-configurable
     def __init__(self):
         super().__init__()
-        self.user_tz = str(get_localzone())  # for user display
         self.internal_tz = "UTC"  # for internal storage and manipulation
         self.internal_dt_format = "%Y-%m-%d %H:%M:%S%z"
 
@@ -32,12 +31,9 @@ class Settings(dict):
         """
         # make the parent first
         CONF_PATH.parent.mkdir(parents=True, exist_ok=True)
-        # write sample settings
+        # write settings file
         with CONF_PATH.open(mode="w") as settings_file:
             settings_file.write(SETTINGS_HEADER)
-            for setting in dir(default_settings):
-                if setting.isupper():
-                    settings_file.write(f'# {setting} = "{getattr(default_settings, setting)}"\n')
 
     def configure(self, user_settings=None):
         """
