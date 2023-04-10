@@ -10,6 +10,22 @@ repos:
         name: check-case-conflict
         entry: check-case-conflict
         language: system
+      - id: codespell
+        name: codespell
+        entry: codespell
+        language: system
+      - id: trailing-whitespace
+        name: Trim Trailing Whitespace
+        entry: trailing-whitespace-fixer
+        language: system
+        types: [ text ]
+      - id: cog
+        name: cog
+        entry: cog
+        language: system
+        types: [ markdown ]
+        require_serial: true
+        args: [ -r, "README.md", ]
       - id: debug-statements
         name: debug-statements
         entry: debug-statement-hook
@@ -47,10 +63,20 @@ repos:
         language: system
         types: [ python ]
         require_serial: true
-      - id: codespell
-        name: codespell
-        entry: codespell
+      - id: pyupgrade
+        name: pyupgrade
+        description: Automatically upgrade syntax for newer versions.
+        entry: pyupgrade
         language: system
+        types: [ python ]
+        args: [ --py37-plus ]
+      - id: refurb
+        name: refurb
+        description: A tool for refurbishing and modernizing Python codebases.
+        entry: refurb
+        language: system
+        types: [ python ]
+        args: [ --python-version, "3.7" ]
       - id: bandit
         name: bandit
         entry: bandit
@@ -63,32 +89,6 @@ repos:
           -r,
           -x, "venv/*,setup.py,tests/*"
         ]
-      - id: pyupgrade
-        name: pyupgrade
-        description: Automatically upgrade syntax for newer versions.
-        entry: pyupgrade
-        language: system
-        types: [ python ]
-        args: [ --py37-plus ]
-      - id: trailing-whitespace
-        name: Trim Trailing Whitespace
-        entry: trailing-whitespace-fixer
-        language: system
-        types: [ text ]
-      - id: cog
-        name: cog
-        entry: cog
-        language: system
-        types: [ markdown ]
-        require_serial: true
-        args: [ -r, "README.md", ]
-      - id: refurb
-        name: refurb
-        description: A tool for refurbishing and modernizing Python codebases.
-        entry: refurb
-        language: system
-        types: [ python ]
-        args: [ --python-version, "3.7" ]
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.33.0
     hooks:
