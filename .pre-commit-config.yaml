@@ -82,6 +82,13 @@ repos:
         types: [ markdown ]
         require_serial: true
         args: [ -r, "README.md", ]
+      - id: refurb
+        name: refurb
+        description: A tool for refurbishing and modernizing Python codebases.
+        entry: refurb
+        language: system
+        types: [ python ]
+        args: [ --python-version, "3.7" ]
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.33.0
     hooks:
