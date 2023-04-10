@@ -248,7 +248,7 @@ Credits
 - [dateparser](https://github.com/scrapinghub/dateparser), for an
     amazing date parser. This project would not be possible without it.
 - [peewee](https://github.com/coleifer/peewee), for a nice and
-   tiny ORM to interact with sqlite.
+   tiny ORM to interact with SQLite.
 - [Click](https://click.palletsprojects.com), for making writing CLI
     tools a complete pleasure.
 - [jrnl](https://github.com/jrnl-org/jrnl),
