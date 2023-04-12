@@ -2,6 +2,7 @@
 import os
 
 from setuptools import find_packages, setup
+import versioningit
 
 REQUIREMENTS = [
     "click>=8.1.1",
@@ -13,6 +14,8 @@ REQUIREMENTS = [
     "peewee>=3.15.2",
     "platformdirs>=2.6.0",
 ]
+
+SETUP_REQUIREMENTS = ["versioningit"]
 
 curr_dir = os.path.abspath(os.path.dirname(__file__))
 
@@ -27,13 +30,12 @@ _init_file = os.path.join(curr_dir, "workedon", "__init__.py")
 with open(_init_file) as fp:
     exec(fp.read(), _init)
 name = _init["__name__"]
-version = _init["__version__"]
 author = _init["__author__"]
 email = _init["__email__"]
 
 setup(
     name=name,
-    version=version,
+    version=versioningit.get_version(),
     description="Work tracking from your shell.",
     long_description=get_file_text("README.md") + "\n\n" + get_file_text("CHANGELOG.md"),
     long_description_content_type="text/markdown",
@@ -70,6 +72,7 @@ setup(
     python_requires=">=3.7",
     keywords="workedon work worklog log journal",
     install_requires=REQUIREMENTS,
+    setup_requires=SETUP_REQUIREMENTS,
     entry_points={
         "console_scripts": [
             "workedon=workedon.__main__:main",

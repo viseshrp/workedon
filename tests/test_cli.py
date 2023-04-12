@@ -1,3 +1,4 @@
+import contextlib
 from datetime import datetime
 import re
 
@@ -19,11 +20,9 @@ def verify_work_output(result, work):
 @pytest.fixture()
 def cleanup():
     yield
-    # delete db every test
-    try:
+    # delete db after every test
+    with contextlib.suppress(FileNotFoundError):
         DB_PATH.unlink()
-    except FileNotFoundError:
-        pass
 
 
 @pytest.mark.parametrize(
@@ -387,7 +386,7 @@ def test_conf_print_path(options):
     ],
 )
 def test_conf_print_settings(options):
-    with open(CONF_PATH, "a") as f:
+    with CONF_PATH.open("a") as f:
         f.write('TIME_FORMAT = "%H:%M %z"\n')
     result = CliRunner().invoke(cli.workedon, options)
     assert result.exit_code == 0
