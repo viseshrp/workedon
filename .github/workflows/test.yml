@@ -66,3 +66,31 @@ jobs:
       - name: Run tests
         run: |
           make test
+
+  test-deploy:
+    needs: [ test ]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.7'
+      - name: Install build requirements
+        run: pip install -r requirements/build.txt
+      - name: Create wheel
+        run: make build
+      - name: List directory structure
+        run: ls -R dist/*
+      - name: Validate wheel
+        run: twine check dist/*
+      - name: Install
+        run: make install
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@29930c9cf57955dc1b98162d0d8bc3ec80d9e75c
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
