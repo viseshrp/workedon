@@ -4,6 +4,6 @@ __email__ = "viseshrprasad@gmail.com"
 __name__ = "workedon"
 
 try:
-    from ._version import version as __version__
+    from ._version import __version__
 except ImportError:
-    __version__ = "unknown version"
+    __version__ = "0.7.0"

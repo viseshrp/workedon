@@ -1,6 +1,19 @@
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+requires = [
+    "setuptools >= 45",
+    "wheel",
+    "versioningit",
+]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools_scm]
-write_to = "workedon/_version.py"
+[tool.versioningit]
+vcs = { method = "git", default-tag = "0.0.0" }
+write = { file = "workedon/_version.py" }
+
+[tool.versioningit.next-version]
+method = "smallest"
+
+[tool.versioningit.format]
+distance = "{next_version}.dev{distance}"
+dirty = "{base_version}.dev{distance}"
+distance-dirty = "{next_version}.dev{distance}"

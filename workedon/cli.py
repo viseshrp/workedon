@@ -5,7 +5,7 @@ import warnings
 import click
 from click_default_group import DefaultGroup
 
-from . import __version__
+from . import __version__ as _version
 from .conf import CONF_PATH, settings
 from .models import DB_PATH, Work, get_or_create_db
 from .utils import load_settings
@@ -63,7 +63,7 @@ def settings_options(func):
     cls=DefaultGroup,
     context_settings=CONTEXT_SETTINGS,
 )
-@click.version_option(__version__, "-v", "--version")
+@click.version_option(_version, "-v", "--version")
 def main():
     """
     Work tracking from your shell.
