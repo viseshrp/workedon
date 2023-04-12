@@ -15,6 +15,8 @@ REQUIREMENTS = [
     "platformdirs>=2.6.0",
 ]
 
+SETUP_REQUIREMENTS = ["versioningit"]
+
 curr_dir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -70,7 +72,7 @@ setup(
     python_requires=">=3.7",
     keywords="workedon work worklog log journal",
     install_requires=REQUIREMENTS,
-    setup_requires=["versioningit"],
+    setup_requires=SETUP_REQUIREMENTS,
     entry_points={
         "console_scripts": [
             "workedon=workedon.__main__:main",
