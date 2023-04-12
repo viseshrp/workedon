@@ -70,9 +70,9 @@ setup(
     python_requires=">=3.7",
     keywords="workedon work worklog log journal",
     use_scm_version={
-        'write_to': '_version.py',
+        "write_to": "_version.py",
     },
-    setup_requires=['setuptools_scm'],
+    setup_requires=["setuptools_scm"],
     install_requires=REQUIREMENTS,
     entry_points={
         "console_scripts": [
