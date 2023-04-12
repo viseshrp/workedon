@@ -14,6 +14,6 @@ write = { file = "workedon/_version.py" }
 method = "smallest"
 
 [tool.versioningit.format]
-distance = "{next_version}.dev{distance}"
-dirty = "{base_version}.dev{distance}+dirty"
-distance-dirty = "{next_version}.dev{distance}+dirty"
+distance = "{next_version}.dev{build_date:%Y%m%d%H%M%S}"
+dirty = "{base_version}.dev{build_date:%Y%m%d%H%M%S}+dirty"
+distance-dirty = "{next_version}.dev{build_date:%Y%m%d%H%M%S}+dirty"

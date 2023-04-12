@@ -64,7 +64,7 @@ jobs:
           if-no-files-found: error
       - name: Publish package
         if: ${{ !env.ACT }}
-        uses: pypa/gh-action-pypi-publish@0bf742be3ebe032c25dd15117957dc15d0cfc38d
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
           user: __token__
           password: ${{ secrets.PYPI_API_TOKEN }}
