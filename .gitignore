@@ -107,4 +107,4 @@ ENV/
 poetry.lock
 .DS_Store
 *.sqlite3
-workedon/_version.py
+_version.py
