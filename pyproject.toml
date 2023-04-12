@@ -15,5 +15,5 @@ method = "smallest"
 
 [tool.versioningit.format]
 distance = "{next_version}.dev{distance}"
-dirty = "{base_version}.dev{distance}+{rev}"
-distance-dirty = "{next_version}.dev{distance}+{rev}"
+dirty = "{base_version}.dev{distance}+dirty"
+distance-dirty = "{next_version}.dev{distance}+dirty"
