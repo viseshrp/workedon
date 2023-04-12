@@ -5,5 +5,5 @@ __name__ = "workedon"
 
 try:
     from ._version import __version__
-except ImportError:
+except ImportError:  # pragma: no cover
     __version__ = "0.7.0"
