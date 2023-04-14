@@ -194,13 +194,14 @@ Options:
   --delete                Delete fetched work.
   -g, --no-page           Don't page the output.
   -l, --text-only         Output the work log text only.
-  --date-format TEXT      Sets the date format of the output. Must be a valid
+  --tag TEXT              Tag to filter by.
+  --date-format TEXT      Set the date format of the output. Must be a valid
                           Python strftime string.
-  --time-format TEXT      Sets the time format of the output. Must be a valid
+  --time-format TEXT      Set the time format of the output. Must be a valid
                           Python strftime string.
-  --datetime-format TEXT  Sets the datetime format of the output. Must be a
-                          valid Python strftime string.
-  --time-zone TEXT        Sets the timezone of the output. Must be a valid
+  --datetime-format TEXT  Set the datetime format of the output. Must be a valid
+                          Python strftime string.
+  --time-zone TEXT        Set the timezone of the output. Must be a valid
                           timezone string.
   --help                  Show this message and exit.
 ```
