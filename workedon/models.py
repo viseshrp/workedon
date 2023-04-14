@@ -142,5 +142,5 @@ def init_db():
 
 
 def truncate_all_tables(**options):
-    for model in sort_models(_models):
+    for model in reversed(_models):
         model.truncate_table(**options)
