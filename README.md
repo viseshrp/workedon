@@ -162,8 +162,7 @@ Options:
   -h, --help     Show this message and exit.
 
 Commands:
-  workedon*  Specify what you worked on, with optional date/time.
-  what       Fetch and display logged work.
+  what  Fetch and display logged work.
 
 $ workedon what --help
 Usage: what [OPTIONS]
@@ -194,7 +193,6 @@ Options:
   --delete                Delete fetched work.
   -g, --no-page           Don't page the output.
   -l, --text-only         Output the work log text only.
-  --tag TEXT              Tag to filter by.
   --date-format TEXT      Set the date format of the output. Must be a valid
                           Python strftime string.
   --time-format TEXT      Set the time format of the output. Must be a valid

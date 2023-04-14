@@ -7,7 +7,7 @@ from click_default_group import DefaultGroup
 
 from . import __version__ as _version
 from .conf import CONF_PATH, settings
-from .models import DB_PATH, Work, get_or_create_db
+from .models import DB_PATH, get_or_create_db, truncate_all_tables
 from .utils import load_settings
 from .workedon import fetch_work, save_work
 
@@ -23,7 +23,7 @@ def settings_options(func):
         default="",
         type=click.STRING,
         envvar="WORKEDON_DATE_FORMAT",
-        help="Sets the date format of the output. Must be a valid Python strftime string.",
+        help="Set the date format of the output. Must be a valid Python strftime string.",
     )
     @click.option(
         "--time-format",
@@ -32,7 +32,7 @@ def settings_options(func):
         default="",
         type=click.STRING,
         envvar="WORKEDON_TIME_FORMAT",
-        help="Sets the time format of the output. Must be a valid Python strftime string.",
+        help="Set the time format of the output. Must be a valid Python strftime string.",
     )
     @click.option(
         "--datetime-format",
@@ -41,7 +41,7 @@ def settings_options(func):
         default="",
         type=click.STRING,
         envvar="WORKEDON_DATETIME_FORMAT",
-        help="Sets the datetime format of the output. Must be a valid Python strftime string.",
+        help="Set the datetime format of the output. Must be a valid Python strftime string.",
     )
     @click.option(
         "--time-zone",
@@ -50,7 +50,7 @@ def settings_options(func):
         default="",
         type=click.STRING,
         envvar="WORKEDON_TIME_ZONE",
-        help="Sets the timezone of the output. Must be a valid timezone string.",
+        help="Set the timezone of the output. Must be a valid timezone string.",
     )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -85,7 +85,7 @@ def main():
     pass
 
 
-@main.command(default=True)
+@main.command(default=True, hidden=True)
 @click.argument(
     "stuff",
     metavar="<what_you_worked_on>",
@@ -170,7 +170,7 @@ def workedon(
     elif truncate_db:
         if click.confirm("Continue deleting all saved data? There's no going back."):
             click.echo("Deleting...")
-            Work.truncate_table()
+            truncate_all_tables()
             return click.echo("Deletion successful.")
     elif db_version:
         server_version = ".".join([str(num) for num in get_or_create_db().server_version])

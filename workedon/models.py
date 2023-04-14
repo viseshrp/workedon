@@ -10,7 +10,6 @@ from peewee import (
     Model,
     SqliteDatabase,
     TextField,
-    sort_models,
 )
 from platformdirs import user_data_dir
 
