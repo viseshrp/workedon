@@ -100,6 +100,7 @@ def main():
     required=False,
     default=False,
     show_default=True,
+    hidden=True,
     help="Print all the current settings, including defaults.",
 )
 @click.option(
@@ -109,6 +110,7 @@ def main():
     required=False,
     default=False,
     show_default=True,
+    hidden=True,
     help="Print the location of the settings file.",
 )
 @click.option(
@@ -118,6 +120,7 @@ def main():
     required=False,
     default=False,
     show_default=True,
+    hidden=True,
     help="Print the location of the database file.",
 )
 @click.option(
@@ -126,6 +129,7 @@ def main():
     required=False,
     default=False,
     show_default=True,
+    hidden=True,
     help="Execute the VACUUM command on the database to reclaim some space.",
 )
 @click.option(
@@ -134,6 +138,7 @@ def main():
     required=False,
     default=False,
     show_default=True,
+    hidden=True,
     help="Delete all data since the beginning of time.",
 )
 @click.option(
@@ -142,6 +147,7 @@ def main():
     required=False,
     default=False,
     show_default=True,
+    hidden=True,
     help="Print the version of SQLite being used.",
 )
 @settings_options
