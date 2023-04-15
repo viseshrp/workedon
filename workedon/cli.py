@@ -1,5 +1,4 @@
 """Console script for workedon."""
-import functools
 import warnings
 
 import click
