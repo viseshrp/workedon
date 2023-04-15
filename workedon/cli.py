@@ -8,7 +8,7 @@ from . import __version__ as _version
 from .conf import CONF_PATH, settings
 from .models import DB_PATH, get_or_create_db, truncate_all_tables
 from .utils import add_options, load_settings
-from .workedon import fetch_work, save_work
+from .workedon import fetch_tags, fetch_work, save_work
 
 warnings.filterwarnings("ignore")
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
@@ -52,37 +52,12 @@ settings_options = [
     ),
 ]
 
-default_options = [
-    click.option(
-        "--tag", "tags", multiple=True, required=False, type=click.STRING, help="Tag to filter by."
-    ),
-    click.option(
-        "--print-settings",
-        "print_settings",
-        is_flag=True,
-        required=False,
-        default=False,
-        show_default=True,
-        help="Print all the current settings, including defaults.",
-    ),
-    click.option(
-        "--print-settings-path",
-        "settings_path",
-        is_flag=True,
-        required=False,
-        default=False,
-        show_default=True,
-        help="Print the location of the settings file.",
-    ),
-]
-
 
 @click.group(
     cls=DefaultGroup,
     context_settings=CONTEXT_SETTINGS,
 )
 @click.version_option(_version, "-v", "--version")
-@add_options(default_options)
 def main():
     """
     Work tracking from your shell.
@@ -113,6 +88,15 @@ def main():
     type=click.STRING,
 )
 @click.option(
+    "--db-version",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    hidden=True,
+    help="Print the version of SQLite being used.",
+)
+@click.option(
     "--print-db-path",
     "db_path",
     is_flag=True,
@@ -141,26 +125,47 @@ def main():
     help="Delete all data since the beginning of time.",
 )
 @click.option(
-    "--db-version",
+    "--print-settings",
+    "print_settings",
     is_flag=True,
     required=False,
     default=False,
     show_default=True,
-    hidden=True,
-    help="Print the version of SQLite being used.",
+    help="Print all the current settings, including defaults.",
 )
-@add_options(default_options)
+@click.option(
+    "--print-settings-path",
+    "settings_path",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print the location of the settings file.",
+)
+@click.option(
+    "--tag", "tags", multiple=True, required=False, type=click.STRING, help="Tag to filter by."
+)
+@click.option(
+    "--list-tags",
+    "list_tags",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print all saved tags.",
+)
 @add_options(settings_options)
 @load_settings
 def workedon(
     stuff,
-    tags,
-    settings_path,
-    print_settings,
+    db_version,
     db_path,
     vacuum_db,
     truncate_db,
-    db_version,
+    print_settings,
+    settings_path,
+    tags,
+    list_tags,
     **kwargs,
 ):
     """
@@ -168,14 +173,7 @@ def workedon(
 
     Options are for advanced users only.
     """
-    if settings_path:
-        return click.echo(CONF_PATH)
-    elif print_settings:
-        for key, value in settings.items():
-            if key.isupper():
-                click.echo(f'{key}="{value}"')
-        return
-    elif db_path:
+    if db_path:
         return click.echo(DB_PATH)
     elif vacuum_db:
         click.echo("Performing VACUUM...")
@@ -189,6 +187,16 @@ def workedon(
     elif db_version:
         server_version = ".".join([str(num) for num in get_or_create_db().server_version])
         return click.echo(f"SQLite version: {server_version}")
+    elif print_settings:
+        for key, value in settings.items():
+            if key.isupper():
+                click.echo(f'{key}="{value}"')
+        return
+    elif settings_path:
+        return click.echo(CONF_PATH)
+    elif list_tags:
+        for tag in fetch_tags():
+            click.echo(tag, nl=False)
     else:
         save_work(stuff, tags)
 

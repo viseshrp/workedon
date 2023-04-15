@@ -105,6 +105,9 @@ class Tag(Model):
         database = db
         table_name = "tag"
 
+    def __str__(self):
+        return f'{click.style(f"* {self.name}", fg="white")}\n'
+
 
 class WorkTag(Model):
     """

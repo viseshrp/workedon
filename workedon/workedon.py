@@ -129,7 +129,7 @@ def fetch_work(
         work_set = work_set.where(Work.uuid == work_id)
     else:
         if tag:
-            work_set = Work.select(*fields).join(WorkTag).join(Tag).where(Tag.name == tag)
+            work_set = work_set.join(WorkTag).join(Tag).where(Tag.name == tag)
         # date
         start, end = _get_date_range(start_date, end_date, since, period, on, at)
         if start and end:
@@ -182,3 +182,7 @@ def fetch_work(
                 click.echo("Nothing to show, slacker.")
     except Exception as e:
         raise CannotFetchWorkError(extra_detail=str(e))
+
+
+def fetch_tags():
+    return Tag.select(Tag.name)
