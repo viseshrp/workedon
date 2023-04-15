@@ -39,7 +39,7 @@ class InputParser:
         return parsed_dt
 
     def parse_tags(self, work):
-        return re.findall(self.TAG_REGEX, work)
+        return set(re.findall(self.TAG_REGEX, work))
 
     def parse(self, work_desc):
         if self.WORK_DATE_SEPARATOR in work_desc:

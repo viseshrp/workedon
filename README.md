@@ -158,8 +158,11 @@ Usage: workedon [OPTIONS] COMMAND [ARGS]...
   workedon what --past-month
 
 Options:
-  -v, --version  Show the version and exit.
-  -h, --help     Show this message and exit.
+  -v, --version          Show the version and exit.
+  --tag TEXT             Tag to filter by.
+  --print-settings       Print all the current settings, including defaults.
+  --print-settings-path  Print the location of the settings file.
+  -h, --help             Show this message and exit.
 
 Commands:
   what  Fetch and display logged work.
@@ -193,6 +196,7 @@ Options:
   --delete                Delete fetched work.
   -g, --no-page           Don't page the output.
   -l, --text-only         Output the work log text only.
+  --tag TEXT              Tag to filter by.
   --date-format TEXT      Set the date format of the output. Must be a valid
                           Python strftime string.
   --time-format TEXT      Set the time format of the output. Must be a valid
