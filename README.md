@@ -158,11 +158,23 @@ Usage: workedon [OPTIONS] COMMAND [ARGS]...
   workedon what --past-month
 
 Options:
-  -v, --version          Show the version and exit.
-  --tag TEXT             Tag to filter by.
-  --print-settings       Print all the current settings, including defaults.
-  --print-settings-path  Print the location of the settings file.
-  -h, --help             Show this message and exit.
+  -v, --version           Show the version and exit.
+  --print-settings-path   Print the location of the settings file.
+  --print-settings        Print all the current settings, including defaults.
+  --list-tags             Print all saved tags.
+  --tag TEXT              Tag to add to your work log.
+  --date-format TEXT      Set the date format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_DATE_FORMAT]
+  --time-format TEXT      Set the time format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_TIME_FORMAT]
+  --datetime-format TEXT  Set the datetime format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_DATETIME_FORMAT]
+  --time-zone TEXT        Set the timezone of the output. Must be a valid
+                          timezone string.
+  -h, --help              Show this message and exit.
 
 Commands:
   what  Fetch and display logged work.
@@ -198,11 +210,14 @@ Options:
   -l, --text-only         Output the work log text only.
   --tag TEXT              Tag to filter by.
   --date-format TEXT      Set the date format of the output. Must be a valid
-                          Python strftime string.
+                          Python strftime string.  [env var:
+                          WORKEDON_DATE_FORMAT]
   --time-format TEXT      Set the time format of the output. Must be a valid
-                          Python strftime string.
+                          Python strftime string.  [env var:
+                          WORKEDON_TIME_FORMAT]
   --datetime-format TEXT  Set the datetime format of the output. Must be a valid
-                          Python strftime string.
+                          Python strftime string.  [env var:
+                          WORKEDON_DATETIME_FORMAT]
   --time-zone TEXT        Set the timezone of the output. Must be a valid
                           timezone string.
   --help                  Show this message and exit.

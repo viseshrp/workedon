@@ -21,6 +21,7 @@ settings_options = [
         default="",
         type=click.STRING,
         envvar="WORKEDON_DATE_FORMAT",
+        show_envvar=True,
         help="Set the date format of the output. Must be a valid Python strftime string.",
     ),
     click.option(
@@ -30,6 +31,7 @@ settings_options = [
         default="",
         type=click.STRING,
         envvar="WORKEDON_TIME_FORMAT",
+        show_envvar=True,
         help="Set the time format of the output. Must be a valid Python strftime string.",
     ),
     click.option(
@@ -39,6 +41,7 @@ settings_options = [
         default="",
         type=click.STRING,
         envvar="WORKEDON_DATETIME_FORMAT",
+        show_envvar=True,
         help="Set the datetime format of the output. Must be a valid Python strftime string.",
     ),
     click.option(
@@ -51,41 +54,51 @@ settings_options = [
         help="Set the timezone of the output. Must be a valid timezone string.",
     ),
 ]
+main_options = [
+    click.option(
+        "--tag",
+        "tags",
+        multiple=True,
+        required=False,
+        type=click.STRING,
+        help="Tag to add to your work log.",
+    ),
+    *settings_options,
+]
 
 
 @click.group(
     cls=DefaultGroup,
     context_settings=CONTEXT_SETTINGS,
+    invoke_without_command=True,
+    default_if_no_args=True,
 )
 @click.version_option(_version, "-v", "--version")
-def main():
-    """
-    Work tracking from your shell.
-
-    \b
-    Example usages:
-    1. Logging work:
-    workedon painting the garage
-    workedon studying for the SAT @ June 23 2010
-    workedon pissing my wife off @ 2pm yesterday
-
-    \b
-    2. Fetching work:
-    workedon what
-    workedon what --from "2pm yesterday" --to "9am today"
-    workedon what --today
-    workedon what --past-month
-    """
-    pass
-
-
-@main.command(default=True, hidden=True)
-@click.argument(
-    "stuff",
-    metavar="<what_you_worked_on>",
-    nargs=-1,
+@click.option(
+    "--print-settings-path",
+    "settings_path",
+    is_flag=True,
     required=False,
-    type=click.STRING,
+    default=False,
+    show_default=True,
+    help="Print the location of the settings file.",
+)
+@click.option(
+    "--print-settings",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print all the current settings, including defaults.",
+)
+@click.option(
+    "--list-tags",
+    "list_tags",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print all saved tags.",
 )
 @click.option(
     "--db-version",
@@ -98,7 +111,6 @@ def main():
 )
 @click.option(
     "--print-db-path",
-    "db_path",
     is_flag=True,
     required=False,
     default=False,
@@ -124,81 +136,78 @@ def main():
     hidden=True,
     help="Delete all data since the beginning of time.",
 )
-@click.option(
-    "--print-settings",
-    "print_settings",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Print all the current settings, including defaults.",
-)
-@click.option(
-    "--print-settings-path",
-    "settings_path",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Print the location of the settings file.",
-)
-@click.option(
-    "--tag", "tags", multiple=True, required=False, type=click.STRING, help="Tag to filter by."
-)
-@click.option(
-    "--list-tags",
-    "list_tags",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Print all saved tags.",
-)
-@add_options(settings_options)
+@add_options(main_options)
+@click.pass_context
 @load_settings
-def workedon(
-    stuff,
+def main(
+    ctx,
+    settings_path,
+    print_settings,
+    list_tags,
     db_version,
-    db_path,
+    print_db_path,
     vacuum_db,
     truncate_db,
-    print_settings,
-    settings_path,
-    tags,
-    list_tags,
     **kwargs,
 ):
     """
-    Specify what you worked on, with optional date/time. See examples.
+    Work tracking from your shell.
 
-    Options are for advanced users only.
+    \b
+    Example usages:
+    1. Logging work:
+    workedon painting the garage
+    workedon studying for the SAT @ June 23 2010
+    workedon pissing my wife off @ 2pm yesterday
+
+    \b
+    2. Fetching work:
+    workedon what
+    workedon what --from "2pm yesterday" --to "9am today"
+    workedon what --today
+    workedon what --past-month
     """
-    if db_path:
-        return click.echo(DB_PATH)
-    elif vacuum_db:
-        click.echo("Performing VACUUM...")
-        get_or_create_db().execute_sql("VACUUM;")
-        return click.echo("VACUUM complete.")
-    elif truncate_db:
-        if click.confirm("Continue deleting all saved data? There's no going back."):
-            click.echo("Deleting...")
-            truncate_all_tables()
-            return click.echo("Deletion successful.")
-    elif db_version:
-        server_version = ".".join([str(num) for num in get_or_create_db().server_version])
-        return click.echo(f"SQLite version: {server_version}")
-    elif print_settings:
-        for key, value in settings.items():
-            if key.isupper():
-                click.echo(f'{key}="{value}"')
-        return
-    elif settings_path:
-        return click.echo(CONF_PATH)
-    elif list_tags:
-        for tag in fetch_tags():
-            click.echo(tag, nl=False)
-    else:
-        save_work(stuff, tags)
+    if not ctx.invoked_subcommand:
+        if print_db_path:
+            return click.echo(DB_PATH)
+        elif vacuum_db:
+            click.echo("Performing VACUUM...")
+            get_or_create_db().execute_sql("VACUUM;")
+            return click.echo("VACUUM complete.")
+        elif truncate_db:
+            if click.confirm("Continue deleting all saved data? There's no going back."):
+                click.echo("Deleting...")
+                truncate_all_tables()
+                return click.echo("Deletion successful.")
+        elif db_version:
+            server_version = ".".join([str(num) for num in get_or_create_db().server_version])
+            return click.echo(f"SQLite version: {server_version}")
+        elif print_settings:
+            for key, value in settings.items():
+                if key.isupper():
+                    click.echo(f'{key}="{value}"')
+        elif settings_path:
+            return click.echo(CONF_PATH)
+        elif list_tags:
+            for tag in fetch_tags():
+                click.echo(tag, nl=False)
+
+
+@main.command(default=True, hidden=True)
+@click.argument(
+    "stuff",
+    metavar="<what_you_worked_on>",
+    nargs=-1,
+    required=False,
+    type=click.STRING,
+)
+@add_options(main_options)
+@load_settings
+def workedon(stuff, **kwargs):
+    """
+    Specify what you worked on, with optional date/time. See workedon --help.
+    """
+    save_work(stuff, kwargs["tags"])
 
 
 @main.command()
