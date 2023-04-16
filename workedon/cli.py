@@ -69,9 +69,10 @@ main_options = [
 
 @click.group(
     cls=DefaultGroup,
+    default="workedon",
+    default_if_no_args=True,
     context_settings=CONTEXT_SETTINGS,
     invoke_without_command=True,
-    default_if_no_args=True,
 )
 @click.version_option(_version, "-v", "--version")
 @click.option(
@@ -193,7 +194,7 @@ def main(
                 click.echo(tag, nl=False)
 
 
-@main.command(default=True, hidden=True)
+@main.command(hidden=True)
 @click.argument(
     "stuff",
     metavar="<what_you_worked_on>",
