@@ -5,7 +5,7 @@ All exceptions used in the code base are defined here.
 """
 
 
-class WonException(Exception):
+class WonException(Exception):  # noqa
     """
     Base exception. All other exceptions
     inherit from here.

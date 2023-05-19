@@ -2,7 +2,6 @@ from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 
 from platformdirs import user_config_dir
-from tzlocal import get_localzone
 
 from . import __name__, default_settings
 from .constants import SETTINGS_HEADER

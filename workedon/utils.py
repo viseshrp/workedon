@@ -13,6 +13,19 @@ except ImportError:  # pragma: no cover
     import zoneinfo
 
 
+def add_options(options):
+    """
+    Add a bunch of click options to a command
+    """
+
+    def _add_options(func):
+        for option in reversed(options):
+            func = option(func)
+        return func
+
+    return _add_options
+
+
 def get_unique_hash():
     """
     Generate a hash similar to git's commit id
