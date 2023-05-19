@@ -70,13 +70,6 @@ repos:
         language: system
         types: [ python ]
         args: [ --py37-plus ]
-      - id: refurb
-        name: refurb
-        description: A tool for refurbishing and modernizing Python codebases.
-        entry: refurb
-        language: system
-        types: [ python ]
-        args: [ --python-version, "3.7" ]
       - id: bandit
         name: bandit
         entry: bandit
