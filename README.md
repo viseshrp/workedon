@@ -171,7 +171,7 @@ Options:
                           Python strftime string.  [env var:
                           WORKEDON_DATETIME_FORMAT]
   --time-zone TEXT        Set the timezone of the output. Must be a valid
-                          timezone string.
+                          timezone string.  [env var: WORKEDON_TIME_ZONE]
   -h, --help              Show this message and exit.
 
 Commands:
@@ -216,7 +216,7 @@ Options:
                           Python strftime string.  [env var:
                           WORKEDON_DATETIME_FORMAT]
   --time-zone TEXT        Set the timezone of the output. Must be a valid
-                          timezone string.
+                          timezone string.  [env var: WORKEDON_TIME_ZONE]
   --help                  Show this message and exit.
 ```
 <!-- [[[end]]] -->
