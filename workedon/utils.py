@@ -69,3 +69,16 @@ def load_settings(func):
             raise click.ClickException(click.style(str(e), fg="bright_red"))
 
     return handler
+
+
+def add_options(options):
+    """
+    Add a bunch of click options to a command
+    """
+
+    def _add_options(func):
+        for option in reversed(options):
+            func = option(func)
+        return func
+
+    return _add_options
