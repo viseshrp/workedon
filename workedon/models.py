@@ -7,6 +7,7 @@ from platformdirs import user_data_dir
 
 from . import __name__ as app_name
 from .conf import settings
+from .constants import CURRENT_DB_VERSION
 from .utils import get_default_time, get_unique_hash
 
 try:
@@ -38,7 +39,7 @@ def get_or_create_db():
             "automatic_index": 1,
             "temp_store": "MEMORY",
             "analysis_limit": 1000,
-            "user_version": 1,  # SQLite makes no use of the user-version
+            "user_version": CURRENT_DB_VERSION,  # todo: use for migrations
         },
     )
 

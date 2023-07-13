@@ -17,7 +17,7 @@ from .utils import now, to_internal_dt
 try:
     from backports import zoneinfo
 except ImportError:  # pragma: no cover
-    import zoneinfo
+    import zoneinfo  # noqa
 
 WORK_CHUNK_SIZE = 100
 

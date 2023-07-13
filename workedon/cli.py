@@ -1,5 +1,5 @@
 """Console script for workedon."""
-import functools
+
 import warnings
 
 import click
@@ -8,63 +8,130 @@ from click_default_group import DefaultGroup
 from . import __version__ as _version
 from .conf import CONF_PATH, settings
 from .models import DB_PATH, Work, get_or_create_db
-from .utils import load_settings
+from .utils import add_options, load_settings
 from .workedon import fetch_work, save_work
 
 warnings.filterwarnings("ignore")
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
-
-def settings_options(func):
-    @click.option(
+settings_options = [
+    click.option(
         "--date-format",
         "DATE_FORMAT",
         required=False,
         default="",
         type=click.STRING,
         envvar="WORKEDON_DATE_FORMAT",
-        help="Sets the date format of the output. Must be a valid Python strftime string.",
-    )
-    @click.option(
+        show_envvar=True,
+        help="Set the date format of the output. Must be a valid Python strftime string.",
+    ),
+    click.option(
         "--time-format",
         "TIME_FORMAT",
         required=False,
         default="",
         type=click.STRING,
         envvar="WORKEDON_TIME_FORMAT",
-        help="Sets the time format of the output. Must be a valid Python strftime string.",
-    )
-    @click.option(
+        show_envvar=True,
+        help="Set the time format of the output. Must be a valid Python strftime string.",
+    ),
+    click.option(
         "--datetime-format",
         "DATETIME_FORMAT",
         required=False,
         default="",
         type=click.STRING,
         envvar="WORKEDON_DATETIME_FORMAT",
-        help="Sets the datetime format of the output. Must be a valid Python strftime string.",
-    )
-    @click.option(
+        show_envvar=True,
+        help="Set the datetime format of the output. Must be a valid Python strftime string.",
+    ),
+    click.option(
         "--time-zone",
         "TIME_ZONE",
         required=False,
         default="",
         type=click.STRING,
         envvar="WORKEDON_TIME_ZONE",
-        help="Sets the timezone of the output. Must be a valid timezone string.",
-    )
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return wrapper
+        show_envvar=True,
+        help="Set the timezone of the output. Must be a valid timezone string.",
+    ),
+]
 
 
 @click.group(
     cls=DefaultGroup,
+    default="workedon",
+    default_if_no_args=True,
     context_settings=CONTEXT_SETTINGS,
+    invoke_without_command=True,
 )
 @click.version_option(_version, "-v", "--version")
-def main():
+@click.option(
+    "--print-settings-path",
+    "settings_path",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print the location of the settings file.",
+)
+@click.option(
+    "--print-settings",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print all the current settings, including defaults.",
+)
+@click.option(
+    "--db-version",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    hidden=True,
+    help="Print the version of SQLite being used.",
+)
+@click.option(
+    "--print-db-path",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    hidden=True,
+    help="Print the location of the database file.",
+)
+@click.option(
+    "--vacuum-db",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    hidden=True,
+    help="Execute the VACUUM command on the database to reclaim some space.",
+)
+@click.option(
+    "--truncate-db",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    hidden=True,
+    help="Delete all data since the beginning of time.",
+)
+@add_options(settings_options)
+@click.pass_context
+@load_settings
+def main(
+    ctx,
+    settings_path,
+    print_settings,
+    db_version,
+    print_db_path,
+    vacuum_db,
+    truncate_db,
+    **kwargs,
+):
     """
     Work tracking from your shell.
 
@@ -82,86 +149,10 @@ def main():
     workedon what --today
     workedon what --past-month
     """
-    pass
-
-
-@main.command(default=True)
-@click.argument(
-    "stuff",
-    metavar="<what_you_worked_on>",
-    nargs=-1,
-    required=False,
-    type=click.STRING,
-)
-@click.option(
-    "--print-settings",
-    "print_settings",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Print all the current settings, including defaults.",
-)
-@click.option(
-    "--print-settings-path",
-    "settings_path",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Print the location of the settings file.",
-)
-@click.option(
-    "--print-db-path",
-    "db_path",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Print the location of the database file.",
-)
-@click.option(
-    "--vacuum-db",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Execute the VACUUM command on the database to reclaim some space.",
-)
-@click.option(
-    "--truncate-db",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Delete all data since the beginning of time.",
-)
-@click.option(
-    "--db-version",
-    is_flag=True,
-    required=False,
-    default=False,
-    show_default=True,
-    help="Print the version of SQLite being used.",
-)
-@settings_options
-@load_settings
-def workedon(
-    stuff, settings_path, print_settings, db_path, vacuum_db, truncate_db, db_version, **kwargs
-):
-    """
-    Specify what you worked on, with optional date/time. See examples.
-
-    Options are for advanced users only.
-    """
-    if settings_path:
-        return click.echo(CONF_PATH)
-    elif print_settings:
-        for key, value in settings.items():
-            if key.isupper():
-                click.echo(f'{key}="{value}"')
+    if ctx.invoked_subcommand:
         return
-    elif db_path:
+
+    if print_db_path:
         return click.echo(DB_PATH)
     elif vacuum_db:
         click.echo("Performing VACUUM...")
@@ -175,8 +166,29 @@ def workedon(
     elif db_version:
         server_version = ".".join([str(num) for num in get_or_create_db().server_version])
         return click.echo(f"SQLite version: {server_version}")
-    else:
-        save_work(stuff)
+    elif print_settings:
+        for key, value in settings.items():
+            if key.isupper():
+                click.echo(f'{key}="{value}"')
+    elif settings_path:
+        return click.echo(CONF_PATH)
+
+
+@main.command(hidden=True)
+@click.argument(
+    "stuff",
+    metavar="<what_you_worked_on>",
+    nargs=-1,
+    required=False,
+    type=click.STRING,
+)
+@add_options(settings_options)
+@load_settings
+def workedon(stuff, **kwargs):
+    """
+    Specify what you worked on, with optional date/time. See workedon --help.
+    """
+    save_work(stuff)
 
 
 @main.command()
@@ -319,7 +331,7 @@ def workedon(
     show_default=True,
     help="Output the work log text only.",
 )
-@settings_options
+@add_options(settings_options)
 @load_settings
 def what(
     count,

@@ -9,4 +9,3 @@ bandit>=1.7.4
 pre-commit-hooks>=4.3.0
 pyupgrade>=3.3.1
 cogapp>=3.3.0
-refurb>=1.15.0
