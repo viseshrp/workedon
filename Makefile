@@ -11,7 +11,7 @@ install:
 install-dev:
 	pip uninstall workedon -y
 	pip install -e .
-	pip install -r requirements/dev.txt
+	pip install -U -r requirements/dev.txt
 
 test:
 	pytest -rvx --setup-show
