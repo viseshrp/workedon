@@ -67,7 +67,7 @@ setup(
         "Source Code": "https://github.com/viseshrp/workedon",
         "CI": "https://github.com/viseshrp/workedon/actions",
     },
-    python_requires=">=3.7",
+    python_requires=">=3.9",
     keywords="workedon work worklog log journal",
     install_requires=REQUIREMENTS,
     entry_points={
