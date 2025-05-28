@@ -147,7 +147,7 @@ def main(
     workedon what --past-month
     """
     if ctx.invoked_subcommand:
-        return
+        return None
 
     if print_db_path:
         return click.echo(DB_PATH)
@@ -169,6 +169,7 @@ def main(
                 click.echo(f'{key}="{value}"')
     elif settings_path:
         return click.echo(CONF_PATH)
+    return None
 
 
 @main.command(hidden=True)

@@ -21,6 +21,7 @@ class InputParser:
         dt_obj = self._date_parser.get_date_data(date_time)
         if dt_obj:
             return dt_obj["date_obj"]
+        return None
 
     def parse_datetime(self, date_time):
         dt = date_time.strip()
