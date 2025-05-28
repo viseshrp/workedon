@@ -40,7 +40,7 @@ jobs:
         ls -lah
     - name: Upload coverage report
       if: ${{ !env.ACT }}
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: coverage.xml
