@@ -1,141 +1,249 @@
-# History
+# Changelog
 
-## 0.7.0 (2023-04-07)
+All notable changes to this project will be documented in this file.
 
-- add option and environment variable alternatives for all settings
-- add setting to specify timezone for display
-  - setting : `TIME_ZONE`
-  - option: `--time-zone <value>`
-  - environment variable: `WORKEDON_TIME_ZONE`
-- fix usage of date/time formatting settings
-- BREAKING (for advanced users only): removed the `db` and `conf`
-  subcommands and moved their options under the main `workedon`
-  command to free up reserved keywords `db` and `conf`.
-  - `workedon db --print-path` is now `workedon --print-db-path`
-  - `workedon db --vacuum` is now `workedon --vacuum-db`
-  - `workedon db --truncate` is now `workedon --truncate-db`
-  - `workedon db --version` is now `workedon --db-version`
-  - `workedon conf --print-path` is now `workedon --print-settings-path`
-  - `workedon conf --print` is now `workedon --print-settings`
-  - all above options are now hidden from the user
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),  
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.6.3 (2023-04-02)
+## [Unreleased]
 
-- enable the settings file `wonfile.py`
-- allow  settings `DATE_FORMAT`, `TIME_FORMAT`, `DATETIME_FORMAT`
-- add a `conf` command to view the settings
-- fix load_module deprecation
-- change default date/time format
+### Added
 
-## 0.6.2 (2023-03-21)
+-
 
-- more database optimizations
-- add --version for the db subcommand to print current SQLite version
+### Changed
 
-## 0.6.1 (2023-03-20)
+-
 
-- add some database optimizations
-- add a new "db" subcommand for database maintenance (advanced users only)
-- add --print-path to print database file path
-- add --vacuum to run VACUUM on the database
-- add --truncate to delete all saved work
-- Remove usage of reserved keyword "work" and make it available
+### Fixed
 
-## 0.6.0 (2023-02-05)
+-
 
-- add fetching by id using --id/-i
+### Removed
 
-## 0.5.9 (2023-02-05)
+-
 
-- make --count work with all other options
+---
 
-## 0.5.8 (2023-01-27)
+## [0.7.0] - 2023-04-07
 
-- fix hash generation
+### Added
 
-## 0.5.7 (2023-01-26)
+- Option and environment variable alternatives for all settings
+- Setting to specify timezone for display  
+  - Setting: `TIME_ZONE`  
+  - Option: `--time-zone <value>`  
+  - Env var: `WORKEDON_TIME_ZONE`
 
-- fix deletion
+### Changed
 
-## 0.5.6 (2023-01-25)
+- Usage of date/time formatting settings
 
-- add --since as alternative for --from
-- fix formatting in shell
+### Removed
 
-## 0.5.5 (2023-01-23)
+- ⚠️ **Breaking** (for advanced users only): Removed `db` and `conf` subcommands  
+  - `workedon db --print-path` → `workedon --print-db-path`  
+  - `workedon db --vacuum` → `workedon --vacuum-db`  
+  - `workedon db --truncate` → `workedon --truncate-db`  
+  - `workedon db --version` → `workedon --db-version`  
+  - `workedon conf --print-path` → `workedon --print-settings-path`  
+  - `workedon conf --print` → `workedon --print-settings`  
+  - All these options are now hidden from the help output
 
-- add -l/--text-only for text-only output
-- remove -d used as alternative for --delete
+## [0.6.3] - 2023-04-02
 
-## 0.5.4 (2023-01-22)
+### Added
 
-- add -g as alternative for no-page
-- fix help text
-- update README
-- hashlib: set usedforsecurity
+- Enable settings file `wonfile.py`
+- Settings: `DATE_FORMAT`, `TIME_FORMAT`, `DATETIME_FORMAT`
+- `conf` command to view settings
 
-## 0.5.3 (2023-01-18)
+### Fixed
 
-- allow reverse sorting using -r/--reverse
+- `load_module` deprecation
+- Default date/time format
 
-## 0.5.2 (2023-01-18)
+## [0.6.2] - 2023-03-21
 
-- remove recording seconds for simple querying
-- add --no-page to avoid paging
-- improve deleting
+### Added
 
-## 0.5.1 (2023-01-18)
+- `--version` for the `db` subcommand to print current SQLite version
 
-- fix start \> end check
-- add --at to fetch work done at a particular time on a particular
-    date/day
+### Changed
 
-## 0.5.0 (2023-01-14)
+- More database optimizations
 
-- Breaking: rename database to won.db
-(A new database will be created and the old one will no longer be used.)
+## [0.6.1] - 2023-03-20
 
-## 0.4.5 (2023-01-13)
+### Added
 
-- fix error message
+- Database optimizations
+- New `db` subcommand for maintenance
+- `--print-path` to print database file path
+- `--vacuum` to run VACUUM
+- `--truncate` to delete all saved work
 
-## 0.4.4 (2023-01-13)
+### Changed
 
-- raise if start date is greater than end date
+- Freed up reserved keyword `work`
 
-## 0.4.3 (2023-01-12)
+## [0.6.0] - 2023-02-05
 
-- don't force color when paging
+### Added
 
-## 0.4.2 (2023-01-12)
+- Fetching by ID with `--id` / `-i`
+
+## [0.5.9] - 2023-02-05
+
+### Changed
+
+- `--count` works with all other options
+
+## [0.5.8] - 2023-01-27
+
+### Fixed
+
+- Hash generation
+
+## [0.5.7] - 2023-01-26
+
+### Fixed
+
+- Deletion behavior
+
+## [0.5.6] - 2023-01-25
+
+### Added
+
+- `--since` as alternative for `--from`
+
+### Fixed
+
+- Shell formatting
+
+## [0.5.5] - 2023-01-23
+
+### Added
+
+- `-l` / `--text-only` for text-only output
+
+### Removed
+
+- `-d` as alias for `--delete`
+
+## [0.5.4] - 2023-01-22
+
+### Added
+
+- `-g` as alternative for `--no-page`
+
+### Fixed
+
+- Help text
+- README update
+- `usedforsecurity` in `hashlib`
+
+## [0.5.3] - 2023-01-18
+
+### Added
+
+- Reverse sorting with `-r` / `--reverse`
+
+## [0.5.2] - 2023-01-18
+
+### Added
+
+- `--no-page` to avoid paging
+
+### Changed
+
+- Removed seconds in timestamps for simpler querying
+- Improved deletion
+
+## [0.5.1] - 2023-01-18
+
+### Added
+
+- `--at` to fetch work done at a specific time and date
+
+### Fixed
+
+- Validation for `start > end`
+
+## [0.5.0] - 2023-01-14
+
+### Changed
+
+- ⚠️ Breaking: Rename database file to `won.db`  
+  (New DB will be created; old one becomes obsolete)
+
+## [0.4.5] - 2023-01-13
+
+### Fixed
+
+- Error messages
+
+## [0.4.4] - 2023-01-13
+
+### Fixed
+
+- Raise error if start date is after end date
+
+## [0.4.3] - 2023-01-12
+
+### Fixed
+
+- No forced color when paging
+
+## [0.4.2] - 2023-01-12
+
+### Added
 
 - Python 3.11 support
 
-## 0.4.1 (2023-01-12)
+## [0.4.1] - 2023-01-12
 
-- ask for deletion only if there's something
-- use tz aware now() for comparison
+### Changed
 
-## 0.4.0 (2023-01-11)
+- Ask for deletion only if there's data
+- Use timezone-aware `now()` for comparisons
 
-- Breaking: rename database to wondb.sqlite3
-- force colored output on windows
-- use tz aware RELATIVE\_BASE
+## [0.4.0] - 2023-01-11
 
-## 0.3.3 (2023-01-09)
+### Changed
 
-- add --delete/-d for deletion
-- add --on to fetch work done on a particular date/day
-- add --last/-s to fetch the last entered work log
+- ⚠️ Breaking: Rename DB to `wondb.sqlite3`
+- Force colored output on Windows
+- Use timezone-aware `RELATIVE_BASE`
 
-## 0.3.2 (2023-01-08)
+## [0.3.3] - 2023-01-09
 
-- make dependency versions flexible
+### Added
 
-## 0.3.1 (2023-01-08)
+- `--delete` / `-d` for deletion
+- `--on` for filtering by date
+- `--last` / `-s` to show last work log
 
-- Fixed README
+## [0.3.2] - 2023-01-08
 
-## 0.3.0 (2023-01-08)
+### Changed
 
-- First release on PyPI.
+- Made dependency versions flexible
+
+## [0.3.1] - 2023-01-08
+
+### Fixed
+
+- README content
+
+## [0.3.0] - 2023-01-08
+
+### Added
+
+- First PyPI release
+
+## [0.0.1] - 2022-01-01
+
+### Added
+
+- Stub release
