@@ -59,44 +59,104 @@ pip install workedon
 
 ## 🧪 Usage
 
+
 <!-- [[[cog
 import cog
-from whatsonpypi import cli
+from workedon import cli
 from click.testing import CliRunner
 runner = CliRunner()
 result = runner.invoke(cli.main, ["--help"])
-out = result.output.replace("Usage: main", "Usage: whatsonpypi")
+out = result.output.replace("Usage: main", "Usage: workedon")
+result = runner.invoke(cli.what, ["--help"])
+what_out = result.output
 cog.out(
     "``` {{.bash}}\n"
-    "$ whatsonpypi --help\n"
+    "$ workedon --help\n"
     "{}\n"
-    "```".format(out)
+    "$ workedon what --help\n"
+    "{}"
+    "```".format(out, what_out)
 )
 ]]] -->
 ``` {.bash}
-$ whatsonpypi --help
-Usage: whatsonpypi [OPTIONS] PACKAGE
+$ workedon --help
+Usage: workedon [OPTIONS] COMMAND [ARGS]...
 
-  A CLI tool to get package info from PyPI.
+  Work tracking from your shell.
 
   Example usages:
+  1. Logging work:
+  workedon painting the garage
+  workedon studying for the SAT @ June 23 2010
+  workedon pissing my wife off @ 2pm yesterday
 
-  $ whatsonpypi django
-
-  OR
-
-  $ wopp django
+  2. Fetching work:
+  workedon what
+  workedon what --from "2pm yesterday" --to "9am today"
+  workedon what --today
+  workedon what --past-month
 
 Options:
-  -v, --version          Show the version and exit.
-  -m, --more             Flag to enable expanded output
-  -d, --docs             Flag to open docs or homepage of project
-  -o, --open             Flag to open PyPI page
-  -H, --history INTEGER  Show release history. Use positive number for most
-                         recent, negative for oldest. E.g. '--history -10' or '
-                         --history 10'
-  -h, --help             Show this message and exit.
+  -v, --version           Show the version and exit.
+  --print-settings-path   Print the location of the settings file.
+  --print-settings        Print all the current settings, including defaults.
+  --date-format TEXT      Set the date format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_DATE_FORMAT]
+  --time-format TEXT      Set the time format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_TIME_FORMAT]
+  --datetime-format TEXT  Set the datetime format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_DATETIME_FORMAT]
+  --time-zone TEXT        Set the timezone of the output. Must be a valid
+                          timezone string.  [env var: WORKEDON_TIME_ZONE]
+  -h, --help              Show this message and exit.
 
+Commands:
+  what  Fetch and display logged work.
+
+$ workedon what --help
+Usage: what [OPTIONS]
+
+  Fetch and display logged work.
+
+  If no options are provided, work
+  from the past week is returned.
+
+Options:
+  -r, --reverse           Reverse order while sorting.
+  -n, --count INTEGER     Number of entries to return.
+  -s, --last              Fetch the last thing you worked on
+  -i, --id TEXT           id to fetch with.
+  -f, --from TEXT         Start date-time to filter with.
+  -t, --to TEXT           End date-time to filter with.
+  --since TEXT            Fetch work done since a specified date-time in the
+                          past.
+  -d, --past-day          Fetch work done in the past 24 hours.
+  -w, --past-week         Fetch work done in the past week.
+  -m, --past-month        Fetch work done in the past month.
+  -y, --past-year         Fetch work done in the past year.
+  -e, --yesterday         Fetch work done yesterday.
+  -o, --today             Fetch work done today.
+  --on TEXT               Fetch work done on a particular date/day.
+  --at TEXT               Fetch work done at a particular time on a particular
+                          date/day.
+  --delete                Delete fetched work.
+  -g, --no-page           Don't page the output.
+  -l, --text-only         Output the work log text only.
+  --date-format TEXT      Set the date format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_DATE_FORMAT]
+  --time-format TEXT      Set the time format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_TIME_FORMAT]
+  --datetime-format TEXT  Set the datetime format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_DATETIME_FORMAT]
+  --time-zone TEXT        Set the timezone of the output. Must be a valid
+                          timezone string.  [env var: WORKEDON_TIME_ZONE]
+  --help                  Show this message and exit.
 ```
 <!-- [[[end]]] -->
 
