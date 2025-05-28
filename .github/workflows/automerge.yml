@@ -1,0 +1,44 @@
+name: Automerge
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - labeled
+      - synchronize
+      - opened
+      - reopened
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  automerge:
+    if: contains(github.event.pull_request.labels.*.name, 'automerge')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug PR info
+        run: |
+          echo "PR author: ${{ github.event.pull_request.user.login }}"
+          echo "Labels: ${{ toJson(github.event.pull_request.labels) }}"
+
+      - name: Auto-approve
+        if: |
+          github.event.pull_request.user.login == 'github-actions[bot]' ||
+          github.event.pull_request.user.login == 'dependabot[bot]' ||
+          github.event.pull_request.user.login == 'viseshrp'
+        uses: hmarr/auto-approve-action@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ github.event.pull_request.number }}
+
+      - name: Enable auto-merge
+        uses: peter-evans/enable-pull-request-automerge@v3
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          merge-method: squash
+          pull-request-number: ${{ github.event.pull_request.number }}

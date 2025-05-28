@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  release:
+    types: [ published ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read  # just checkout code
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for hatch-vcs to generate full version
+          fetch-tags: true
+
+      - name: Set up Python Env
+        uses: ./.github/actions/setup-python-env
+
+      - name: Run version checks
+        run: make check-version
+
+      - name: Build project
+        run: make build
+
+      - name: Check dist
+        run: make check-dist
+
+      - name: Publish package to PyPI
+        run: make publish
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}

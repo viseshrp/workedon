@@ -1,0 +1,52 @@
+name: Create Draft Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  draft-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # needed to create a release & upload artifacts
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Python Env
+        uses: ./.github/actions/setup-python-env
+
+      - name: Run version checks
+        run: make check-version
+
+      - name: Build package
+        run: make build
+
+      - name: Check for existing release
+        run: |
+          if gh release view "${{ github.ref_name }}" > /dev/null 2>&1; then
+            echo "❌ Release for tag '${{ github.ref_name }}' already exists."
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - name: Create Draft GitHub Release with Artifacts
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --title "Release ${GITHUB_REF_NAME}" \
+            --notes "See [CHANGELOG.md](./CHANGELOG.md)" \
+            --draft \
+            dist/*
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
