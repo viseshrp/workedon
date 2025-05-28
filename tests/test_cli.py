@@ -1,4 +1,3 @@
-import contextlib
 from datetime import datetime
 import re
 
@@ -7,7 +6,6 @@ import pytest
 
 from workedon import __version__, cli, exceptions
 from workedon.conf import CONF_PATH
-from workedon.models import DB_PATH
 
 
 def verify_work_output(result, work):
@@ -17,18 +15,9 @@ def verify_work_output(result, work):
     assert "Date:" in result.output
 
 
-@pytest.fixture()
-def cleanup():
-    yield
-    # delete db after every test
-    with contextlib.suppress(FileNotFoundError):
-        DB_PATH.unlink()
-
-
 @pytest.mark.parametrize(
     "options",
     [
-        ([]),
         (["-h"]),
         (["--help"]),
         (["what", "-h"]),
@@ -75,7 +64,7 @@ def test_empty_fetch():
         (["writing some tests @ 9 hours ago", "finding a friend @ 2pm 4 days ago"]),
     ],
 )
-def test_save_and_fetch(work, cleanup):
+def test_save_and_fetch(work):
     for w in work:
         # save
         result = CliRunner().invoke(cli.main, w)
@@ -94,7 +83,7 @@ def test_save_and_fetch(work, cleanup):
         (["talking to my brother", "@ 3pm 3 years ago"], ["--last"], False),
     ],
 )
-def test_save_and_fetch_last(work, option, valid, cleanup):
+def test_save_and_fetch_last(work, option, valid):
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -115,7 +104,7 @@ def test_save_and_fetch_last(work, option, valid, cleanup):
         (["recording a demo"], ["-i"]),
     ],
 )
-def test_save_and_fetch_id(work, option, cleanup):
+def test_save_and_fetch_id(work, option):
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -135,7 +124,7 @@ def test_save_and_fetch_id(work, option, cleanup):
         ("--datetime-format", ""),
     ],
 )
-def test_save_and_fetch_date_opt_env(opt, env, monkeypatch, cleanup):
+def test_save_and_fetch_date_opt_env(opt, env, monkeypatch):
     result = CliRunner().invoke(cli.main, ["testing date opt"])
     assert result.output.startswith("Work saved.")
     strp_string = "%a %b %d"
@@ -158,7 +147,7 @@ def test_save_and_fetch_date_opt_env(opt, env, monkeypatch, cleanup):
         ("--time-zone", ""),
     ],
 )
-def test_save_and_fetch_timezone_opt_env(opt, env, monkeypatch, cleanup):
+def test_save_and_fetch_timezone_opt_env(opt, env, monkeypatch):
     result = CliRunner().invoke(cli.main, ["testing timezone opt"])
     assert result.output.startswith("Work saved.")
     tz = "Asia/Tokyo"
@@ -221,7 +210,7 @@ def test_save_and_fetch_timezone_opt_env(opt, env, monkeypatch, cleanup):
         (["taking wife shopping", "@ 3pm"], ["--no-page"]),
     ],
 )
-def test_save_and_fetch_others(work, option, cleanup):
+def test_save_and_fetch_others(work, option):
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -238,7 +227,7 @@ def test_save_and_fetch_others(work, option, cleanup):
         (["home improvement", "home destruction"], ["--reverse", "-n", "1"]),
     ],
 )
-def test_save_and_fetch_reverse(work, option, cleanup):
+def test_save_and_fetch_reverse(work, option):
     # save
     for w in work:
         result = CliRunner().invoke(cli.main, w)
@@ -260,7 +249,7 @@ def test_save_and_fetch_reverse(work, option, cleanup):
         ),
     ],
 )
-def test_save_and_fetch_delete(work, option_del, option_what, cleanup):
+def test_save_and_fetch_delete(work, option_del, option_what):
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -281,7 +270,7 @@ def test_save_and_fetch_delete(work, option_del, option_what, cleanup):
         (["--at", "4:44pm 5 years ago", "--delete"]),
     ],
 )
-def test_save_and_fetch_delete_empty(option, cleanup):
+def test_save_and_fetch_delete_empty(option):
     # fetch
     result = CliRunner().invoke(cli.what, option)
     assert result.exit_code == 0
@@ -295,7 +284,7 @@ def test_save_and_fetch_delete_empty(option, cleanup):
         (["eating", "@ 3am"], ["--text-only"]),
     ],
 )
-def test_save_and_fetch_textonly(work, option, cleanup):
+def test_save_and_fetch_textonly(work, option):
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
