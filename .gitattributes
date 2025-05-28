@@ -1,0 +1,16 @@
+# Always use LF line endings in the repository, normalize line endings
+* text=auto eol=lf
+
+# Explicitly set for Python files
+*.py text eol=lf
+
+# Explicitly set for Markdown and YAML
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Set for TOML
+*.toml text eol=lf
+
+# Set for GitHub Actions
+.github/** text eol=lf
