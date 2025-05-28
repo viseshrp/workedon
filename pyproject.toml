@@ -61,22 +61,26 @@ dev = [
 ]
 
 [build-system]
-requires = ["hatchling", "hatch-vcs"]
+requires = ["hatchling", "hatch-timestamp-version"]
 build-backend = "hatchling.build"
 
 [tool.hatch.version]
-source = "vcs"
 path = "workedon/_version.py"
+source = "vcs-dev-timestamp"
+validate-bump = true
 
 [tool.hatch.version.raw-options]
 local_scheme = "no-local-version"
-version_scheme = "guess-next-dev"
+timestamp_format = "long"
 
 [tool.hatch.build.targets.wheel]
 packages = ["workedon"]
 
 [tool.hatch.build.targets.editable]
 packages = ["workedon"]
+
+[tool.hatch.envs.default]
+path = ".venv"
 
 [tool.uv]
 default-groups = "all"
