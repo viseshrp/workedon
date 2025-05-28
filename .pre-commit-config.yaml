@@ -1,95 +1,90 @@
 repos:
+  # 🧰 Built-in hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        exclude: \.py$  # Ruff handles Python files
+
+  # ✨ Ruff for lint + format
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.10
+    hooks:
+      # Run the linter alone
+      - id: ruff-check
+
+  # 🧪 Typing, dependency, security checks
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.9.0
+    hooks:
+      - id: pip-audit
+        args: [ "--strict" ]
+        pass_filenames: false
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.3
+    hooks:
+      - id: bandit
+        args: [
+          "-c", "pyproject.toml",
+          "-r",
+          "-n", "3",
+          "--severity-level", "high"
+        ]
+        additional_dependencies: [ "bandit[toml]" ]
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+      - id: codespell
+
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.44.0
+    hooks:
+      - id: markdownlint
+        args: [ --fix, --disable, MD024 ]
+
+  # 🧱 Local system hooks (for tools with no mirrors or your preference)
   - repo: local
     hooks:
-      - id: check-yaml
-        name: check-yaml
-        entry: check-yaml
+      - id: mypy
+        name: mypy
+        entry: mypy
         language: system
-        types: [ yaml ]
-      - id: check-case-conflict
-        name: check-case-conflict
-        entry: check-case-conflict
+        types: [ python ]
+        args: [ "--config-file=pyproject.toml" ]
+
+      - id: vulture
+        name: vulture
+        entry: vulture
         language: system
-      - id: codespell
-        name: codespell
-        entry: codespell
-        language: system
-      - id: trailing-whitespace
-        name: Trim Trailing Whitespace
-        entry: trailing-whitespace-fixer
-        language: system
-        types: [ text ]
+        types: [ python ]
+        args: [ "--config", "pyproject.toml" ]
+        pass_filenames: false
+
+      - id: deptry
+        name: deptry
+        entry: uv run deptry .
+        language: python
+        language_version: python3
+        types: [ python ]
+        args: [ "--config", "pyproject.toml" ]
+        pass_filenames: false
+
       - id: cog
         name: cog
         entry: cog
         language: system
         types: [ markdown ]
         require_serial: true
-        args: [ -r, "README.md", ]
-      - id: debug-statements
-        name: debug-statements
-        entry: debug-statement-hook
-        language: system
-        types: [ python ]
-      - id: black
-        name: black
-        entry: black
-        language: system
-        types: [ python ]
-        require_serial: true
-        args: [ # black ignores files in .gitignore by default
-          --line-length, "100",
-          --target-version, "py37",
-          workedon, tests
-        ]
-      - id: isort
-        name: isort
-        entry: isort
-        language: system
-        types_or: [ cython, pyi, python ]
-        require_serial: true
-        args: [
-          --profile, black,
-          --skip-gitignore,
-          --force-sort-within-sections,
-          --line-length, "100",
-          --section-default, THIRDPARTY,
-          --filter-files,
-          --project, workedon, tests
-        ]
-      - id: flake8
-        name: flake8
-        entry: flake8
-        language: system
-        types: [ python ]
-        require_serial: true
-      - id: pyupgrade
-        name: pyupgrade
-        description: Automatically upgrade syntax for newer versions.
-        entry: pyupgrade
-        language: system
-        types: [ python ]
-        args: [ --py37-plus ]
-      - id: bandit
-        name: bandit
-        entry: bandit
-        language: system
-        types: [ python ]
-        require_serial: true
-        args: [
-          -lll,
-          -n, "3",
-          -r,
-          -x, "venv/*,setup.py,tests/*"
-        ]
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.33.0
-    hooks:
-      - id: markdownlint
-        name: markdownlint
-        entry: markdownlint
-        language: node
-        types: [ markdown ]
-        args: [
-          --fix,
-        ]
+        args: [ "-r", "README.md" ]
