@@ -46,7 +46,7 @@ human-readable date/times. The same parser is used again to parse into datetime
 objects which are used to query the database. The output uses the current
 shell's pager to display a paged list similar to `git log`
 (your output may slightly vary based on your shell).
-        
+
 ## 📐 Requirements
 
 * Python >= 3.9
@@ -61,22 +61,44 @@ pip install workedon
 
 <!-- [[[cog
 import cog
-from workedon import cli
+from whatsonpypi import cli
 from click.testing import CliRunner
 runner = CliRunner()
 result = runner.invoke(cli.main, ["--help"])
-out = result.output.replace("Usage: main", "Usage: workedon")
-result = runner.invoke(cli.what, ["--help"])
-what_out = result.output
+out = result.output.replace("Usage: main", "Usage: whatsonpypi")
 cog.out(
     "``` {{.bash}}\n"
-    "$ workedon --help\n"
+    "$ whatsonpypi --help\n"
     "{}\n"
-    "$ workedon what --help\n"
-    "{}"
-    "```".format(out, what_out)
+    "```".format(out)
 )
 ]]] -->
+``` {.bash}
+$ whatsonpypi --help
+Usage: whatsonpypi [OPTIONS] PACKAGE
+
+  A CLI tool to get package info from PyPI.
+
+  Example usages:
+
+  $ whatsonpypi django
+
+  OR
+
+  $ wopp django
+
+Options:
+  -v, --version          Show the version and exit.
+  -m, --more             Flag to enable expanded output
+  -d, --docs             Flag to open docs or homepage of project
+  -o, --open             Flag to open PyPI page
+  -H, --history INTEGER  Show release history. Use positive number for most
+                         recent, negative for oldest. E.g. '--history -10' or '
+                         --history 10'
+  -h, --help             Show this message and exit.
+
+```
+<!-- [[[end]]] -->
 
 ## 🛠️ Features
 
