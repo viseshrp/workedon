@@ -58,6 +58,7 @@ dev = [
     "cogapp>=3.4.1",
     "twine>=6.1.0",
     "ipdb>=0.13.13",
+    "hatch>=1.14.1",
 ]
 
 [build-system]

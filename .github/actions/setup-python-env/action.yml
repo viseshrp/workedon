@@ -42,6 +42,11 @@ runs:
       run: make install
       shell: bash
 
-    - name: Add .venv/bin to PATH
-      run: echo "$(pwd)/.venv/bin" >> $GITHUB_PATH
+    - name: Add .venv to PATH (cross-platform)
+      run: |
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          echo "$(pwd)/.venv/Scripts" >> $GITHUB_PATH
+        else
+          echo "$(pwd)/.venv/bin" >> $GITHUB_PATH
+        fi
       shell: bash
