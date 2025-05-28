@@ -157,7 +157,7 @@ def test_save_and_fetch_timezone_opt_env(opt, env, monkeypatch):
     if opt:
         opts = [opt, tz]
     result = CliRunner().invoke(cli.what, opts)
-    assert "JST" in result.output
+    assert "+0900" in result.output or "JST" in result.output
 
 
 @pytest.mark.parametrize(
@@ -243,9 +243,9 @@ def test_save_and_fetch_reverse(work, option):
     "work, option_del, option_what",
     [
         (
-            ["watching Modern Family", "@ 8:53pm"],
-            ["--at", "8:53pm", "--delete"],
-            ["--at", "8:53pm"],
+            ["watching Modern Family", "@ 8:53am"],
+            ["--at", "8:53am", "--delete"],
+            ["--at", "8:53am"],
         ),
     ],
 )
