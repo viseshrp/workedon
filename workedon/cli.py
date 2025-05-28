@@ -5,7 +5,7 @@ from click_default_group import DefaultGroup
 
 from . import __version__ as _version
 from .conf import CONF_PATH, settings
-from .models import DB_PATH, Work, get_or_create_db
+from .models import DB_PATH, Work, get_or_create_db, init_db
 from .utils import add_options, load_settings
 from .workedon import fetch_work, save_work
 
@@ -153,12 +153,14 @@ def main(
         return click.echo(DB_PATH)
     elif vacuum_db:
         click.echo("Performing VACUUM...")
-        get_or_create_db().execute_sql("VACUUM;")
+        with init_db():
+            get_or_create_db().execute_sql("VACUUM;")
         return click.echo("VACUUM complete.")
     elif truncate_db:
         if click.confirm("Continue deleting all saved data? There's no going back."):
             click.echo("Deleting...")
-            Work.truncate_table()
+            with init_db():
+                Work.truncate_table()
             return click.echo("Deletion successful.")
     elif db_version:
         server_version = ".".join([str(num) for num in get_or_create_db().server_version])
