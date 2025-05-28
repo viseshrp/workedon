@@ -1,19 +1,221 @@
-[build-system]
-requires = [
-    "setuptools >= 45",
-    "wheel",
-    "versioningit",
+[project]
+name = "workedon"
+dynamic = ["version"]
+description = "Work tracking from your shell."
+authors = [{ name = "Visesh Prasad", email = "viseshrprasad@gmail.com" }]
+readme = "README.md"
+keywords = ["python"]
+requires-python = ">=3.9,<4.0"
+dependencies = ["click>=8.1.1", ]
+license = { text = "MIT" }
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Environment :: Console",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
-build-backend = "setuptools.build_meta"
 
-[tool.versioningit]
-vcs = { method = "git", default-tag = "0.0.0" }
-write = { file = "workedon/_version.py" }
+[project.urls]
+Homepage = "https://github.com/viseshrp/workedon"
+Repository = "https://github.com/viseshrp/workedon"
+Documentation = "https://github.com/viseshrp/workedon/blob/main/README.md"
+Changelog = "https://github.com/viseshrp/workedon/blob/main/CHANGELOG.md"
+Bug-Tracker = "https://github.com/viseshrp/workedon/issues"
+CI = "https://github.com/viseshrp/workedon/actions"
 
-[tool.versioningit.next-version]
-method = "smallest"
+[project.scripts]
+workedon = "workedon.__main__:main"
 
-[tool.versioningit.format]
-distance = "{next_version}.dev{build_date:%Y%m%d%H%M%S}"
-dirty = "{base_version}.dev{build_date:%Y%m%d%H%M%S}+dirty"
-distance-dirty = "{next_version}.dev{build_date:%Y%m%d%H%M%S}+dirty"
+[dependency-groups]
+dev = [
+    "pre-commit>=4.2.0",
+    "uv>=0.6.17",
+    "tox>=4.25.0",
+    "tox-uv>=1.25.0",
+    "tox-gh-actions>=3.3.0",
+    "mypy>=1.15.0",
+    "deptry>=0.23.0",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "vulture>=2.14",
+    "cogapp>=3.4.1",
+    "twine>=6.1.0",
+    "ipdb>=0.13.13",
+]
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "vcs"
+path = "workedon/_version.py"
+
+[tool.hatch.version.raw-options]
+local_scheme = "no-local-version"
+version_scheme = "guess-next-dev"
+
+[tool.hatch.build.targets.wheel]
+packages = ["workedon"]
+
+[tool.hatch.build.targets.editable]
+packages = ["workedon"]
+
+[tool.uv]
+default-groups = "all"
+
+[tool.mypy]
+files = [
+    "workedon"
+]
+disallow_untyped_defs = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+warn_unused_ignores = true
+show_error_codes = true
+ignore_missing_imports = true
+follow_imports = "silent"
+disable_error_code = ["import-untyped"]
+
+[tool.pytest.ini_options]
+tmp_path_retention_policy = "failed"
+testpaths = ["tests"]
+addopts = "--capture=tee-sys --tb=native -p no:warnings -ra -vv"
+markers = [
+    "integration:Run integration tests",
+    "smoke:Run the smoke tests",
+    "unit:Run the unit tests",
+]
+norecursedirs = [
+    ".git",
+    ".idea",
+]
+filterwarnings = [
+    "ignore:.+:DeprecationWarning"
+]
+
+# Configuration for coverage.py
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+# Regexes for lines to exclude from consideration
+exclude_lines = [
+    # Have to re-enable the standard pragma
+    "pragma: no cover",
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.coverage.run]
+branch = true
+omit = ["workedon/__main__.py"]
+source = [
+    "workedon"
+]
+
+[tool.coverage.html]
+show_contexts = true
+
+[tool.ruff]
+target-version = "py39"
+line-length = 100
+fix = true
+exclude = [".venv", "__init__.py"]
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+select = [
+    # flake8-2020
+    "YTT",
+    # flake8-bandit
+    "S",
+    # flake8-bugbear
+    "B",
+    # flake8-builtins
+    "A",
+    # flake8-comprehensions
+    "C4",
+    # flake8-debugger
+    "T10",
+    # flake8-simplify
+    "SIM",
+    # isort (keep this if you want Ruff to sort imports)
+    "I",
+    # mccabe
+    "C90",
+    # pycodestyle
+    "E", "W",
+    # pep8-naming rules
+    "N",
+    # pyflakes
+    "F",
+    # pygrep-hooks
+    "PGH",
+    # pyupgrade
+    "UP",
+    # ruff-native rules
+    "RUF",
+    # try/except linting
+    "TRY",
+    # Disallow print statements
+    "T201",
+]
+ignore = [
+    "C901", # Function is too complex
+    "PGH003" # blanket-type-ignore
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["workedon", "tests"]
+force-sort-within-sections = true
+
+[tool.black]
+line-length = 100
+target-version = ["py39"]
+
+[tool.codespell]
+ignore-words = "codespell.txt"
+skip = '*.pyc,*.xml,*.gif,*.png,*.jpg,*.js,*.html,*.json,*.gz,Makefile'
+quiet-level = 3
+
+[tool.bandit]
+targets = ["workedon"]
+exclude_dirs = ["venv", ".venv", "tests"]
+
+[tool.vulture]
+paths = ["workedon", "tests"]
+min_confidence = 80
+sort_by_size = true
+exclude = ["venv/", ".venv/"]
+
+[tool.deptry]
+exclude = ["venv/.*", ".venv/.*", "tests/.*"]
+
+[tool.pre-commit.default_language_versions]
+python = "3.13"
