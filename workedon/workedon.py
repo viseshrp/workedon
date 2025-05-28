@@ -14,11 +14,6 @@ from .models import Work, init_db
 from .parser import InputParser
 from .utils import now, to_internal_dt
 
-try:
-    from backports import zoneinfo
-except ImportError:  # pragma: no cover
-    import zoneinfo  # noqa
-
 WORK_CHUNK_SIZE = 100
 
 

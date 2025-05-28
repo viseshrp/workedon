@@ -10,10 +10,7 @@ from .conf import settings
 from .constants import CURRENT_DB_VERSION
 from .utils import get_default_time, get_unique_hash
 
-try:
-    from backports import zoneinfo
-except ImportError:  # pragma: no cover
-    import zoneinfo
+import zoneinfo
 
 
 DB_PATH = Path(user_data_dir(app_name, roaming=True)) / "won.db"

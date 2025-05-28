@@ -7,10 +7,7 @@ import click
 
 from .conf import settings
 
-try:
-    from backports import zoneinfo
-except ImportError:  # pragma: no cover
-    import zoneinfo
+import zoneinfo
 
 
 def get_unique_hash():
