@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),  
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
@@ -30,9 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Option and environment variable alternatives for all settings
-- Setting to specify timezone for display  
-  - Setting: `TIME_ZONE`  
-  - Option: `--time-zone <value>`  
+- Setting to specify timezone for display
+  - Setting: `TIME_ZONE`
+  - Option: `--time-zone <value>`
   - Env var: `WORKEDON_TIME_ZONE`
 
 ### Changed
@@ -41,13 +41,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- ⚠️ **Breaking** (for advanced users only): Removed `db` and `conf` subcommands  
-  - `workedon db --print-path` → `workedon --print-db-path`  
-  - `workedon db --vacuum` → `workedon --vacuum-db`  
-  - `workedon db --truncate` → `workedon --truncate-db`  
-  - `workedon db --version` → `workedon --db-version`  
-  - `workedon conf --print-path` → `workedon --print-settings-path`  
-  - `workedon conf --print` → `workedon --print-settings`  
+- ⚠️ **Breaking** (for advanced users only): Removed `db` and `conf` subcommands
+  - `workedon db --print-path` → `workedon --print-db-path`
+  - `workedon db --vacuum` → `workedon --vacuum-db`
+  - `workedon db --truncate` → `workedon --truncate-db`
+  - `workedon db --version` → `workedon --db-version`
+  - `workedon conf --print-path` → `workedon --print-settings-path`
+  - `workedon conf --print` → `workedon --print-settings`
   - All these options are now hidden from the help output
 
 ## [0.6.3] - 2023-04-02
@@ -174,7 +174,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- ⚠️ Breaking: Rename database file to `won.db`  
+- ⚠️ Breaking: Rename database file to `won.db`
   (New DB will be created; old one becomes obsolete)
 
 ## [0.4.5] - 2023-01-13
