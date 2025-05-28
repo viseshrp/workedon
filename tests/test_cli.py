@@ -305,7 +305,7 @@ def test_save_and_fetch_textonly(work, option):
     ],
 )
 def test_db_print_path(options):
-    result = CliRunner().invoke(cli.workedon, options)
+    result = CliRunner().invoke(cli.main, options)
     assert result.exit_code == 0
     assert "won.db" in result.output
 
@@ -317,7 +317,7 @@ def test_db_print_path(options):
     ],
 )
 def test_db_vacuum(options):
-    result = CliRunner().invoke(cli.workedon, options)
+    result = CliRunner().invoke(cli.main, options)
     assert result.exit_code == 0
     assert "VACUUM complete." in result.output
 
@@ -334,7 +334,7 @@ def test_db_truncate(work, option_db, option_what):
     verify_work_output(result, work)
     assert result.output.startswith("Work saved.")
     # trunc
-    result = CliRunner().invoke(cli.workedon, option_db, input="y")
+    result = CliRunner().invoke(cli.main, option_db, input="y")
     assert result.exit_code == 0
     assert "Deletion successful." in result.output
     # check
@@ -350,7 +350,7 @@ def test_db_truncate(work, option_db, option_what):
     ],
 )
 def test_db_version(options):
-    result = CliRunner().invoke(cli.workedon, options)
+    result = CliRunner().invoke(cli.main, options)
     assert result.exit_code == 0
     assert result.output.startswith("SQLite version: ")
 
@@ -364,7 +364,7 @@ def test_db_version(options):
 )
 def test_conf_print_path(options, capsys):
     with capsys.disabled():
-        result = CliRunner().invoke(cli.workedon, options)
+        result = CliRunner().invoke(cli.main, options)
         assert result.exit_code == 0
         assert "wonfile.py" in result.output
 
@@ -378,7 +378,7 @@ def test_conf_print_path(options, capsys):
 def test_conf_print_settings(options):
     with CONF_PATH.open("a") as f:
         f.write('TIME_FORMAT = "%H:%M %z"\n')
-    result = CliRunner().invoke(cli.workedon, options)
+    result = CliRunner().invoke(cli.main, options)
     assert result.exit_code == 0
     assert 'TIME_FORMAT="%H:%M %z"' in result.output
 
