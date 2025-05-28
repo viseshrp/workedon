@@ -1,6 +1,5 @@
 from datetime import datetime
 from functools import wraps
-import hashlib
 import uuid
 import zoneinfo
 
@@ -13,8 +12,7 @@ def get_unique_hash():
     """
     Generate a hash similar to git's commit id
     """
-    unique_id = str(uuid.uuid4()).encode("utf-8")
-    return hashlib.sha1(unique_id).hexdigest()  # noqa: S324  # nosec B324
+    return uuid.uuid4().hex
 
 
 def to_internal_dt(date_time):
