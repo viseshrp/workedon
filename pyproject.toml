@@ -9,13 +9,12 @@ keywords = ["workedon", "work", "worklog", "log", "journal"]
 requires-python = ">=3.9,<4.0"
 dependencies = [
     "click>=8.1.1",
-    "colorama>=0.4.4",
-    "dateparser>=1.1.4",
-    "tzlocal>=4.0",
-    "backports.zoneinfo>=0.2.1; python_version < '3.9'",
-    "click-default-group>=1.2.2",
-    "peewee>=3.15.2",
-    "platformdirs>=2.6.0",
+    "colorama>=0.4.6",
+    "dateparser>=1.2.1",
+    "tzlocal>=5.3.1",
+    "click-default-group>=1.2.4",
+    "peewee>=3.18.1",
+    "platformdirs>=4.3.8",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
