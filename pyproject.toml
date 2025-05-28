@@ -8,8 +8,7 @@ license = { text = "MIT" }
 keywords = ["workedon", "work", "worklog", "log", "journal"]
 requires-python = ">=3.9,<4.0"
 dependencies = [
-    "click>=8.1.1",
-    "colorama>=0.4.6",
+    "click>=8.1.8",
     "dateparser>=1.2.1",
     "tzlocal>=5.3.1",
     "click-default-group>=1.2.4",
