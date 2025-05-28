@@ -6,12 +6,11 @@ import click
 from peewee import CharField, DateTimeField, Model, SqliteDatabase, TextField
 from platformdirs import user_data_dir
 
-from . import __name__ as app_name
 from .conf import settings
-from .constants import CURRENT_DB_VERSION
+from .constants import APP_NAME, CURRENT_DB_VERSION
 from .utils import get_default_time, get_unique_hash
 
-DB_PATH = Path(user_data_dir(app_name, roaming=True)) / "won.db"
+DB_PATH = Path(user_data_dir(APP_NAME, roaming=True)) / "won.db"
 
 
 def get_or_create_db():

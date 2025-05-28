@@ -1,7 +1,5 @@
 """Console script for workedon."""
 
-import warnings
-
 import click
 from click_default_group import DefaultGroup
 
@@ -11,7 +9,6 @@ from .models import DB_PATH, Work, get_or_create_db
 from .utils import add_options, load_settings
 from .workedon import fetch_work, save_work
 
-warnings.filterwarnings("ignore")
 CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}
 
 settings_options = [

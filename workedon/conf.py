@@ -3,11 +3,11 @@ from pathlib import Path
 
 from platformdirs import user_config_dir
 
-from . import __name__, default_settings
-from .constants import SETTINGS_HEADER
+from . import default_settings
+from .constants import APP_NAME, SETTINGS_HEADER
 from .exceptions import CannotCreateSettingsError, CannotLoadSettingsError
 
-CONF_PATH = Path(user_config_dir(__name__)) / "wonfile.py"
+CONF_PATH = Path(user_config_dir(APP_NAME)) / "wonfile.py"
 
 
 class Settings(dict):
