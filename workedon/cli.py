@@ -12,7 +12,7 @@ from .utils import add_options, load_settings
 from .workedon import fetch_work, save_work
 
 warnings.filterwarnings("ignore")
-CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
+CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}
 
 settings_options = [
     click.option(

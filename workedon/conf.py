@@ -44,7 +44,7 @@ class Settings(dict):
             try:
                 self._create_settings_file()
             except Exception as e:
-                raise CannotCreateSettingsError(extra_detail=str(e))
+                raise CannotCreateSettingsError(extra_detail=str(e)) from e
         else:
             # load user settings module
             try:
@@ -52,7 +52,7 @@ class Settings(dict):
                 user_settings_module = module_from_spec(spec)
                 spec.loader.exec_module(user_settings_module)
             except Exception as e:
-                raise CannotLoadSettingsError(extra_detail=str(e))
+                raise CannotLoadSettingsError(extra_detail=str(e)) from e
 
         # save to the current object
         for setting in dir(default_settings):

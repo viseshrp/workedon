@@ -2,12 +2,11 @@ from datetime import datetime
 from functools import wraps
 import hashlib
 import uuid
+import zoneinfo
 
 import click
 
 from .conf import settings
-
-import zoneinfo
 
 
 def get_unique_hash():
@@ -15,7 +14,7 @@ def get_unique_hash():
     Generate a hash similar to git's commit id
     """
     unique_id = str(uuid.uuid4()).encode("utf-8")
-    return hashlib.sha1(unique_id).hexdigest()  # nosec B324
+    return hashlib.sha1(unique_id).hexdigest()
 
 
 def to_internal_dt(date_time):
@@ -63,7 +62,7 @@ def load_settings(func):
 
             func(*args, **kwargs)
         except Exception as e:
-            raise click.ClickException(click.style(str(e), fg="bright_red"))
+            raise click.ClickException(click.style(str(e), fg="bright_red")) from e
 
     return handler
 

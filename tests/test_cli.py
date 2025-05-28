@@ -376,7 +376,6 @@ def test_db_version(options):
 def test_conf_print_path(options, capsys):
     with capsys.disabled():
         result = CliRunner().invoke(cli.workedon, options)
-        print(result.output)
         assert result.exit_code == 0
         assert "wonfile.py" in result.output
 

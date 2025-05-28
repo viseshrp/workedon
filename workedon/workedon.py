@@ -1,4 +1,5 @@
 """Main module."""
+
 import datetime
 
 import click
@@ -32,7 +33,7 @@ def save_work(work):
             click.echo("Work saved.\n")
             click.echo(w, nl=False)
     except Exception as e:
-        raise CannotSaveWorkError(extra_detail=str(e))
+        raise CannotSaveWorkError(extra_detail=str(e)) from e
 
 
 def _generate_work(result):
@@ -150,4 +151,4 @@ def fetch_work(
             else:
                 click.echo("Nothing to show, slacker.")
     except Exception as e:
-        raise CannotFetchWorkError(extra_detail=str(e))
+        raise CannotFetchWorkError(extra_detail=str(e)) from e
