@@ -1,3 +1,4 @@
+from collections.abc import Generator
 import contextlib
 from pathlib import Path
 import zoneinfo
@@ -10,10 +11,10 @@ from .conf import settings
 from .constants import APP_NAME, CURRENT_DB_VERSION
 from .utils import get_default_time, get_unique_hash
 
-DB_PATH = Path(user_data_dir(APP_NAME, roaming=True)) / "won.db"
+DB_PATH: Path = Path(user_data_dir(APP_NAME, roaming=True)) / "won.db"
 
 
-def get_or_create_db():
+def get_or_create_db() -> SqliteDatabase:
     """
     Create the database and return the connection
     """
@@ -38,11 +39,11 @@ def get_or_create_db():
     )
 
 
-db = get_or_create_db()
+db: SqliteDatabase = get_or_create_db()
 
 
 @contextlib.contextmanager
-def init_db():
+def init_db() -> Generator[None, None, None]:
     """
     Context manager to init
     and close the database
@@ -61,12 +62,12 @@ class Work(Model):
     Model that represents a Work item
     """
 
-    uuid = CharField(primary_key=True, null=False, default=get_unique_hash)
-    created = DateTimeField(
+    uuid: CharField = CharField(primary_key=True, null=False, default=get_unique_hash)
+    created: DateTimeField = DateTimeField(
         null=False, formats=[settings.internal_dt_format], default=get_default_time
     )
-    work = TextField(null=False)
-    timestamp = DateTimeField(
+    work: TextField = TextField(null=False)
+    timestamp: DateTimeField = DateTimeField(
         null=False,
         formats=[settings.internal_dt_format],
         index=True,
@@ -77,7 +78,7 @@ class Work(Model):
         database = db
         table_name = "work"
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Format the object for display.
         Uses a git log like structure.
