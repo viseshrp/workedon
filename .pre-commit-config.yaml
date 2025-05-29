@@ -11,18 +11,18 @@ repos:
       - id: trailing-whitespace
         exclude: \.py$  # Ruff handles Python files
 
+  # 🧪 Typing, dependency, security checks
+  - repo: https://github.com/psf/black
+    rev: 25.1.0
+    hooks:
+      - id: black
+
   # ✨ Ruff for lint + format
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.11.10
     hooks:
       # Run the linter alone
       - id: ruff-check
-
-  # 🧪 Typing, dependency, security checks
-  - repo: https://github.com/psf/black
-    rev: 25.1.0
-    hooks:
-      - id: black
 
   - repo: https://github.com/pypa/pip-audit
     rev: v2.9.0
