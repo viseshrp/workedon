@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from datetime import datetime
+
 from dateparser import DateDataParser
 
 from .exceptions import DateTimeInFutureError, InvalidDateTimeError, InvalidWorkError
@@ -5,7 +9,9 @@ from .utils import now
 
 
 class InputParser:
-    def __init__(self):
+    _date_parser: DateDataParser
+
+    def __init__(self) -> None:
         self._date_parser = DateDataParser(
             languages=["en"],
             settings={
@@ -17,13 +23,14 @@ class InputParser:
             },
         )
 
-    def _as_datetime(self, date_time):
+    def _as_datetime(self, date_time: str) -> datetime | None:
         dt_obj = self._date_parser.get_date_data(date_time)
         if dt_obj:
-            return dt_obj["date_obj"]
+            date_obj: datetime = dt_obj["date_obj"]
+            return date_obj
         return None
 
-    def parse_datetime(self, date_time):
+    def parse_datetime(self, date_time: str) -> datetime | None:
         dt = date_time.strip()
         if not dt:
             return None
@@ -34,14 +41,14 @@ class InputParser:
             raise DateTimeInFutureError
         return parsed_dt
 
-    def parse(self, work_desc):
+    def parse(self, work_desc: str) -> tuple[str, datetime | None]:
         if "@" in work_desc:
             work, _, date_time = work_desc.rpartition("@")
         else:
-            work, date_time = (work_desc, "")
+            work, date_time = work_desc, ""
         work = work.strip()
         date_time = date_time.strip()
         if not work:
             raise InvalidWorkError
-        date_time = self.parse_datetime(date_time)
-        return work, date_time
+        date_time_parsed = self.parse_datetime(date_time)
+        return work, date_time_parsed
