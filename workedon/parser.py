@@ -30,18 +30,19 @@ class InputParser:
             return date_obj
         return None
 
-    def parse_datetime(self, date_time: str) -> datetime | None:
+    def parse_datetime(self, date_time: str) -> datetime:
         dt = date_time.strip()
+        # empty date_time is a no-op: return “now” so callers always get a datetime.
         if not dt:
-            return None
+            return now()
         parsed_dt = self._as_datetime(dt)
         if not parsed_dt:
-            raise InvalidDateTimeError
+            raise InvalidDateTimeError()
         if parsed_dt > now():
-            raise DateTimeInFutureError
+            raise DateTimeInFutureError()
         return parsed_dt
 
-    def parse(self, work_desc: str) -> tuple[str, datetime | None]:
+    def parse(self, work_desc: str) -> tuple[str, datetime]:
         if "@" in work_desc:
             work, _, date_time = work_desc.rpartition("@")
         else:
