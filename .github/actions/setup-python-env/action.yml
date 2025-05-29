@@ -1,0 +1,52 @@
+name: "Setup Python Environment"
+description: "Set up Python environment for the given Python version"
+
+inputs:
+  python-version:
+    description: "Python version to use"
+    required: false
+    default: "3.13"
+  uv-version:
+    description: "uv version to use"
+    required: false
+    default: "latest"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        version: ${{ inputs.uv-version }}
+        enable-cache: true
+        cache-suffix: ${{ inputs.python-version }}
+
+    - name: Cache .venv directory
+      uses: actions/cache@v4
+      with:
+        path: .venv
+        key: uv-venv-${{ inputs.python-version }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
+        restore-keys: |
+          uv-venv-${{ inputs.python-version }}-
+
+    - name: Disable pip version check (optional)
+      run: echo "PIP_DISABLE_PIP_VERSION_CHECK=1" >> $GITHUB_ENV
+      shell: bash
+
+    - name: Install Python dependencies
+      run: make install
+      shell: bash
+
+    - name: Add .venv to PATH (cross-platform)
+      run: |
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          echo "$(pwd)/.venv/Scripts" >> $GITHUB_PATH
+        else
+          echo "$(pwd)/.venv/bin" >> $GITHUB_PATH
+        fi
+      shell: bash

@@ -1,11 +1,7 @@
-"""
-workedon.exceptions
------------------------
-All exceptions used in the code base are defined here.
-"""
+from __future__ import annotations
 
 
-class WonException(Exception):
+class WorkedOnError(Exception):
     """
     Base exception. All other exceptions
     inherit from here.
@@ -13,17 +9,17 @@ class WonException(Exception):
 
     detail = "An error occurred."
 
-    def __init__(self, extra_detail=None):
+    def __init__(self, extra_detail: str | None = None) -> None:
         super().__init__()
         self.extra_detail = extra_detail
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.extra_detail:
             return f"{self.detail} :: {self.extra_detail}"
         return self.detail
 
 
-class CannotCreateSettingsError(WonException):
+class CannotCreateSettingsError(WorkedOnError):
     """
     Exception raised if settings file could not be created
     """
@@ -31,7 +27,7 @@ class CannotCreateSettingsError(WonException):
     detail = "Unable to create settings file."
 
 
-class CannotLoadSettingsError(WonException):
+class CannotLoadSettingsError(WorkedOnError):
     """
     Exception raised if settings file could not be loaded
     """
@@ -39,7 +35,7 @@ class CannotLoadSettingsError(WonException):
     detail = "Unable to load settings file."
 
 
-class InvalidWorkError(WonException):
+class InvalidWorkError(WorkedOnError):
     """
     Exception raised if the work text is empty
     """
@@ -47,7 +43,7 @@ class InvalidWorkError(WonException):
     detail = "The provided work text is invalid."
 
 
-class InvalidDateTimeError(WonException):
+class InvalidDateTimeError(WorkedOnError):
     """
     Exception raised if the given datetime string is invalid
     """
@@ -55,7 +51,7 @@ class InvalidDateTimeError(WonException):
     detail = "The provided date/time is invalid. Please refer the docs for valid phrases."
 
 
-class DateTimeInFutureError(WonException):
+class DateTimeInFutureError(WorkedOnError):
     """
     Exception raised if the given datetime is in the future
     """
@@ -63,7 +59,7 @@ class DateTimeInFutureError(WonException):
     detail = "The provided date/time is in the future."
 
 
-class StartDateAbsentError(WonException):
+class StartDateAbsentError(WorkedOnError):
     """
     Exception raised if start date is not provided
     """
@@ -71,7 +67,7 @@ class StartDateAbsentError(WonException):
     detail = "Please provide a start date/time."
 
 
-class StartDateGreaterError(WonException):
+class StartDateGreaterError(WorkedOnError):
     """
     Exception raised if start date is greater than end date
     """
@@ -79,7 +75,7 @@ class StartDateGreaterError(WonException):
     detail = "The provided start date/time is greater than the end date/time."
 
 
-class CannotSaveWorkError(WonException):
+class CannotSaveWorkError(WorkedOnError):
     """
     Exception raised if work could not be saved
     """
@@ -87,7 +83,7 @@ class CannotSaveWorkError(WonException):
     detail = "Unable to save your work."
 
 
-class CannotFetchWorkError(WonException):
+class CannotFetchWorkError(WorkedOnError):
     """
     Exception raised if work could not be fetched
     """

@@ -1,0 +1,98 @@
+name: Main
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    tags:
+      - "v*"
+    branches:
+      - main
+      - release/*
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  MAIN_PYTHON_VERSION: '3.13'
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache pre-commit hooks
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Set up Python + Environment
+        uses: ./.github/actions/setup-python-env
+
+      - name: Run code quality checks
+        run: make check
+
+  tests:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        python-version: [ "3.9", "3.10", "3.11", "3.12", "3.13" ]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python + Environment
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run tests
+        run: make test
+
+      - name: Upload coverage to Codecov
+        if: ${{ matrix.python-version == env.MAIN_PYTHON_VERSION && matrix.os == 'ubuntu-latest' }}
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  publish-to-testpypi:
+    if: github.ref == 'refs/heads/main'
+    needs: [ quality, tests ]
+    runs-on: ubuntu-latest
+    environment:
+      name: test-pypi
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for hatch-vcs to generate full version
+          fetch-tags: true
+
+      - name: Set up Python + Environment
+        uses: ./.github/actions/setup-python-env
+
+      - name: Run version checks
+        run: make check-version
+
+      - name: Build project
+        run: make build
+
+      - name: Check dist
+        run: make check-dist
+
+      - name: Publish to TestPyPI
+        run: make publish-test
+        env:
+          TEST_PYPI_TOKEN: ${{ secrets.TEST_PYPI_TOKEN }}

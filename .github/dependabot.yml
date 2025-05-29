@@ -1,17 +1,23 @@
 version: 2
 updates:
-  - package-ecosystem: "pip" # See documentation for possible values
-    directory: "/requirements" # Location of package manifests
-    insecure-external-code-execution: allow
+  # 1. Python dependencies from pyproject.toml
+  - package-ecosystem: "pip"
+    directory: "/"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 1
     labels:
-      - "Maintenance"
-      - "Dependencies"
-    ignore:
-      - dependency-name: "whatsonpypi"
+      - "dependencies"
+      - "automerge"
 
+  # 2. GitHub-hosted things:
+  #    - GitHub Actions in .github/workflows/
+  #    - pre-commit hook revs in .pre-commit-config.yaml
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
+    open-pull-requests-limit: 1
+    labels:
+      - "dependencies"
+      - "automerge"

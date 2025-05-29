@@ -1,0 +1,48 @@
+name: "CodeQL Python"
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    # Every night at 11:00 PM Eastern / 04:00 AM UTC
+    - cron: '0 4 * * *'
+
+jobs:
+  analyze:
+    name: CodeQL Python Analysis
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Required to upload code scanning results
+      security-events: write
+
+      # Only needed if you pull in private/internal packs
+      packages: read
+
+      # Required to read your repo’s contents
+      actions: read
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python + Environment
+        uses: ./.github/actions/setup-python-env
+
+      - name: Initialize CodeQL for Python
+        uses: github/codeql-action/init@v3
+        with:
+          languages: python
+          # Python is interpreted; no build step required
+          build-mode: none
+          queries: +security-extended,security-and-quality
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          # Tag results clearly for Python
+          category: "/language:python"

@@ -1,19 +1,19 @@
-workedon
-========
+# workedon
 
-[![image](https://img.shields.io/pypi/v/workedon.svg)](https://pypi.python.org/pypi/workedon)
+[![PyPI version](https://img.shields.io/pypi/v/workedon.svg)](https://pypi.org/project/workedon/)
 [![Python versions](https://img.shields.io/pypi/pyversions/workedon.svg?logo=python&logoColor=white)](https://pypi.org/project/workedon/)
-[![Tests status](https://github.com/viseshrp/workedon/workflows/Test/badge.svg)](https://github.com/viseshrp/workedon/actions?query=workflow%3ATest)
-[![Coverage](https://codecov.io/gh/viseshrp/workedon/branch/develop/graph/badge.svg)](https://codecov.io/gh/viseshrp/workedon)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/viseshrp/workedon/blob/develop/LICENSE)
-[![Downloads](https://pepy.tech/badge/workedon)](https://pepy.tech/project/workedon)
+[![CI](https://github.com/viseshrp/workedon/actions/workflows/main.yml/badge.svg)](https://github.com/viseshrp/workedon/actions/workflows/main.yml)
+[![Coverage](https://codecov.io/gh/viseshrp/workedon/branch/main/graph/badge.svg)](https://codecov.io/gh/viseshrp/workedon)
+[![License: MIT](https://img.shields.io/github/license/viseshrp/workedon)](https://github.com/viseshrp/workedon/blob/main/LICENSE)
+[![Code Style: Black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://black.readthedocs.io/en/stable/)
+[![Lint: Ruff](https://img.shields.io/badge/lint-ruff-000000.svg)](https://docs.astral.sh/ruff/)
+[![Typing: mypy](https://img.shields.io/badge/typing-checked-blue.svg)](https://mypy.readthedocs.io/en/stable/)
 
-Work tracking from your shell.
+> Work tracking from your shell.
 
-![demo](https://raw.githubusercontent.com/viseshrp/workedon/develop/demo.gif)
+![Demo](https://raw.githubusercontent.com/viseshrp/workedon/main/demo.gif)
 
-Why build this
---------------
+## 🚀 Why this project exists
 
 I believe tracking your work is an important way of measuring productivity
 and is a habit that is very helpful to develop. But the thing about habits
@@ -31,8 +31,7 @@ for example, how productive I was in the past week?
 `workedon` is another attempt of mine to make work logging a habit and
 improve my productivity.
 
-How it works
-------------
+## 🧠 How this project works
 
 This tool is useful in two ways - for logging work and fetching logged work.
 The implementation is very simple. Work is logged in the form of
@@ -48,20 +47,120 @@ objects which are used to query the database. The output uses the current
 shell's pager to display a paged list similar to `git log`
 (your output may slightly vary based on your shell).
 
-Installation
-------------
+## 📐 Requirements
 
-``` {.bash}
+* Python >= 3.9
+
+## 📦 Installation
+
+```bash
 pip install workedon
 ```
 
-Requirements
-------------
+## 🧪 Usage
 
-- Python 3.7+
 
-Features
---------
+<!-- [[[cog
+import cog
+from workedon import cli
+from click.testing import CliRunner
+runner = CliRunner()
+result = runner.invoke(cli.main, ["--help"])
+out = result.output.replace("Usage: main", "Usage: workedon")
+result = runner.invoke(cli.what, ["--help"])
+what_out = result.output
+cog.out(
+    "``` {{.bash}}\n"
+    "$ workedon --help\n"
+    "{}\n"
+    "$ workedon what --help\n"
+    "{}"
+    "```".format(out, what_out)
+)
+]]] -->
+``` {.bash}
+$ workedon --help
+Usage: workedon [OPTIONS] COMMAND [ARGS]...
+
+  Work tracking from your shell.
+
+  Example usages:
+  1. Logging work:
+  workedon painting the garage
+  workedon studying for the SAT @ June 23 2010
+  workedon pissing my wife off @ 2pm yesterday
+
+  2. Fetching work:
+  workedon what
+  workedon what --from "2pm yesterday" --to "9am today"
+  workedon what --today
+  workedon what --past-month
+
+Options:
+  -v, --version           Show the version and exit.
+  --print-settings-path   Print the location of the settings file.
+  --print-settings        Print all the current settings, including defaults.
+  --date-format TEXT      Set the date format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_DATE_FORMAT]
+  --time-format TEXT      Set the time format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_TIME_FORMAT]
+  --datetime-format TEXT  Set the datetime format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_DATETIME_FORMAT]
+  --time-zone TEXT        Set the timezone of the output. Must be a valid
+                          timezone string.  [env var: WORKEDON_TIME_ZONE]
+  -h, --help              Show this message and exit.
+
+Commands:
+  what  Fetch and display logged work.
+
+$ workedon what --help
+Usage: what [OPTIONS]
+
+  Fetch and display logged work.
+
+  If no options are provided, work
+  from the past week is returned.
+
+Options:
+  -r, --reverse           Reverse order while sorting.
+  -n, --count INTEGER     Number of entries to return.
+  -s, --last              Fetch the last thing you worked on
+  -i, --id TEXT           id to fetch with.
+  -f, --from TEXT         Start date-time to filter with.
+  -t, --to TEXT           End date-time to filter with.
+  --since TEXT            Fetch work done since a specified date-time in the
+                          past.
+  -d, --past-day          Fetch work done in the past 24 hours.
+  -w, --past-week         Fetch work done in the past week.
+  -m, --past-month        Fetch work done in the past month.
+  -y, --past-year         Fetch work done in the past year.
+  -e, --yesterday         Fetch work done yesterday.
+  -o, --today             Fetch work done today.
+  --on TEXT               Fetch work done on a particular date/day.
+  --at TEXT               Fetch work done at a particular time on a particular
+                          date/day.
+  --delete                Delete fetched work.
+  -g, --no-page           Don't page the output.
+  -l, --text-only         Output the work log text only.
+  --date-format TEXT      Set the date format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_DATE_FORMAT]
+  --time-format TEXT      Set the time format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_TIME_FORMAT]
+  --datetime-format TEXT  Set the datetime format of the output. Must be a valid
+                          Python strftime string.  [env var:
+                          WORKEDON_DATETIME_FORMAT]
+  --time-zone TEXT        Set the timezone of the output. Must be a valid
+                          timezone string.  [env var: WORKEDON_TIME_ZONE]
+  --help                  Show this message and exit.
+```
+<!-- [[[end]]] -->
+
+## 🛠️ Features
 
 - Log work from your shell in plain text with human-readable dates/times.
   - The date/time is optional. The default is the current date/time.
@@ -72,8 +171,7 @@ Features
 - Filter, sort, delete, format and display logged work on your shell.
 - Set date/time format of the output through settings.
 
-Settings
---------
+## 🔧 Settings
 
 Whenever `workedon` is run for the first time, a settings file named
 `wonfile.py` is generated at the user's configuration directory, which
@@ -116,98 +214,13 @@ workedon --print-settings
 ```
 
 Check the default settings
-[here](https://github.com/viseshrp/workedon/blob/develop/workedon/default_settings.py).
+[here](https://github.com/viseshrp/workedon/blob/main/workedon/default_settings.py).
 
-Usage
------
+## 🧾 Changelog
 
-<!-- [[[cog
-import cog
-from workedon import cli
-from click.testing import CliRunner
-runner = CliRunner()
-result = runner.invoke(cli.main, ["--help"])
-out = result.output.replace("Usage: main", "Usage: workedon")
-result = runner.invoke(cli.what, ["--help"])
-what_out = result.output
-cog.out(
-    "``` {{.bash}}\n"
-    "$ workedon --help\n"
-    "{}\n"
-    "$ workedon what --help\n"
-    "{}"
-    "```".format(out, what_out)
-)
-]]] -->
-``` {.bash}
-$ workedon --help
-Usage: workedon [OPTIONS] COMMAND [ARGS]...
+See [CHANGELOG.md](https://github.com/viseshrp/workedon/blob/main/CHANGELOG.md)
 
-  Work tracking from your shell.
-
-  Example usages:
-  1. Logging work:
-  workedon painting the garage
-  workedon studying for the SAT @ June 23 2010
-  workedon pissing my wife off @ 2pm yesterday
-
-  2. Fetching work:
-  workedon what
-  workedon what --from "2pm yesterday" --to "9am today"
-  workedon what --today
-  workedon what --past-month
-
-Options:
-  -v, --version  Show the version and exit.
-  -h, --help     Show this message and exit.
-
-Commands:
-  workedon*  Specify what you worked on, with optional date/time.
-  what       Fetch and display logged work.
-
-$ workedon what --help
-Usage: what [OPTIONS]
-
-  Fetch and display logged work.
-
-  If no options are provided, work
-  from the past week is returned.
-
-Options:
-  -r, --reverse           Reverse order while sorting.
-  -n, --count INTEGER     Number of entries to return.
-  -s, --last              Fetch the last thing you worked on
-  -i, --id TEXT           id to fetch with.
-  -f, --from TEXT         Start date-time to filter with.
-  -t, --to TEXT           End date-time to filter with.
-  --since TEXT            Fetch work done since a specified date-time in the
-                          past.
-  -d, --past-day          Fetch work done in the past 24 hours.
-  -w, --past-week         Fetch work done in the past week.
-  -m, --past-month        Fetch work done in the past month.
-  -y, --past-year         Fetch work done in the past year.
-  -e, --yesterday         Fetch work done yesterday.
-  -o, --today             Fetch work done today.
-  --on TEXT               Fetch work done on a particular date/day.
-  --at TEXT               Fetch work done at a particular time on a particular
-                          date/day.
-  --delete                Delete fetched work.
-  -g, --no-page           Don't page the output.
-  -l, --text-only         Output the work log text only.
-  --date-format TEXT      Sets the date format of the output. Must be a valid
-                          Python strftime string.
-  --time-format TEXT      Sets the time format of the output. Must be a valid
-                          Python strftime string.
-  --datetime-format TEXT  Sets the datetime format of the output. Must be a
-                          valid Python strftime string.
-  --time-zone TEXT        Sets the timezone of the output. Must be a valid
-                          timezone string.
-  --help                  Show this message and exit.
-```
-<!-- [[[end]]] -->
-
-Limitations
------------
+## Limitations
 
 - Your input is limited by your shell. Certain characters like the single
   quote `'` behave differently. Put your content within double quotes
@@ -242,8 +255,7 @@ Limitations
   workedon "what my wife asked me to do" @ 3pm 3 days ago
   ```
 
-Credits
--------
+## 🙏 Credits
 
 - [dateparser](https://github.com/scrapinghub/dateparser), for an
     amazing date parser. This project would not be possible without it.
@@ -255,3 +267,7 @@ Credits
     [fck](https://github.com/nvbn/thefuck) and
     [Simon Willison](https://github.com/simonw/sqlite-utils/) for some
     inspiration.
+
+## 📄 License
+
+MIT © [Visesh Prasad](https://github.com/viseshrp)

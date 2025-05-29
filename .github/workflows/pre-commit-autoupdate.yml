@@ -1,0 +1,71 @@
+name: Pre-commit Autoupdate
+
+on:
+  schedule:
+    - cron: '0 4 * * *'  # Daily at 4 AM UTC / 11 PM Eastern
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  contents: write
+  issues: write  # Needed to create labels
+
+jobs:
+  autoupdate:
+    if: startsWith(github.ref, 'refs/heads/main')  # Ensure we only run from main
+    name: Autoupdate Pre-commit Hooks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          fetch-depth: 0
+
+      - name: Cache pre-commit hooks
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Set up Python + Environment
+        uses: ./.github/actions/setup-python-env
+
+      - name: Run pre-commit autoupdate
+        run: uv run pre-commit autoupdate
+        continue-on-error: true
+
+      - name: Run pre-commit checks
+        run: make check
+
+      - name: Show updated hooks (if any)
+        run: git diff .pre-commit-config.yaml || true
+
+      - name: Commit changes
+        run: |
+          git add .pre-commit-config.yaml
+          git commit -m "chore(pre-commit): Update pre-commit hooks" || echo "No changes to commit"
+
+      - name: Ensure labels exist
+        run: |
+          gh label create dependencies --description "Dependency updates" --color FFCD00 || echo "Label 'dependencies' already exists"
+          gh label create chore --description "Chores and maintenance" --color 00CED1 || echo "Label 'chore' already exists"
+          gh label create automerge --description "automerge" --color 3E0651 || echo "Label 'automerge' already exists"
+        env:
+          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+      - name: Create Pull Request for Updated Hooks
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          base: main
+          branch: chore/pre-commit-update
+          title: "chore(pre-commit): Update pre-commit hooks"
+          commit-message: "chore(pre-commit): Update pre-commit hooks"
+          body: |
+            # Update pre-commit hooks
+
+            - This PR updates the versions of pre-commit hooks to their latest releases.
+          labels: dependencies, chore, automerge
+          delete-branch: true

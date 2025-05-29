@@ -1,9 +1,15 @@
 """Main module."""
+
+from __future__ import annotations
+
+from collections.abc import Iterator
 import datetime
+from typing import Any
 
 import click
 from peewee import chunked
 
+from .constants import WORK_CHUNK_SIZE
 from .exceptions import (
     CannotFetchWorkError,
     CannotSaveWorkError,
@@ -14,42 +20,40 @@ from .models import Work, init_db
 from .parser import InputParser
 from .utils import now, to_internal_dt
 
-try:
-    from backports import zoneinfo
-except ImportError:  # pragma: no cover
-    import zoneinfo
 
-WORK_CHUNK_SIZE = 100
-
-
-def save_work(work):
+def save_work(work: tuple[str, ...]) -> None:
     """
     Save work from user input
     """
     work_desc = " ".join(work).strip()
     text, dt = InputParser().parse(work_desc)
-    data = {"work": text}
-    if dt:
-        data["timestamp"] = to_internal_dt(dt)
+    data: dict[str, Any] = {"work": text, "timestamp": to_internal_dt(dt)}
     try:
         with init_db():
             w = Work.create(**data)
             click.echo("Work saved.\n")
             click.echo(w, nl=False)
     except Exception as e:
-        raise CannotSaveWorkError(extra_detail=str(e))
+        raise CannotSaveWorkError(extra_detail=str(e)) from e
 
 
-def _generate_work(result):
+def _generate_work(result: Iterator[Work]) -> Iterator[str]:
     """
-    Fetch work in chunks, loop
-    and yield.
+    Fetch work in chunks, loop and yield lines of text.
     """
     for work_set in chunked(result, WORK_CHUNK_SIZE):
-        yield from work_set
+        for work in work_set:
+            yield str(work)
 
 
-def _get_date_range(start_date, end_date, since, period, on, at):
+def _get_date_range(
+    start_date: str,
+    end_date: str,
+    since: str,
+    period: str | None,
+    on: str | None,
+    at: str | None,
+) -> tuple[datetime.datetime, datetime.datetime]:
     parser = InputParser()
     curr_dt = now()
     # past week is the default
@@ -93,24 +97,24 @@ def _get_date_range(start_date, end_date, since, period, on, at):
 
 
 def fetch_work(
-    count,
-    work_id,
-    start_date,
-    end_date,
-    since,
-    period,
-    on,
-    at,
-    delete,
-    no_page,
-    reverse,
-    text_only,
-):
+    count: int | None,
+    work_id: str,
+    start_date: str,
+    end_date: str,
+    since: str,
+    period: str | None,
+    on: str | None,
+    at: str | None,
+    delete: bool,
+    no_page: bool,
+    reverse: bool,
+    text_only: bool,
+) -> None:
     """
     Fetch saved work filtered based on user input
     """
     # filter fields
-    fields = []
+    fields: list[Any] = []
     if not delete:
         fields = [Work.work] if text_only else [Work.uuid, Work.timestamp, Work.work]
     # initial set
@@ -135,14 +139,14 @@ def fetch_work(
         with init_db():
             work_count = work_set.count()
             if delete:
-                if work_count > 0:
-                    if click.confirm(f"Continue deleting {work_count} log(s)?"):
-                        click.echo("Deleting...")
-                        deleted = Work.delete().where(Work.uuid.in_(work_set)).execute()
-                        click.echo(f"{deleted} log(s) deleted successfully.")
-                else:
+                if work_count > 0 and click.confirm(f"Continue deleting {work_count} log(s)?"):
+                    click.echo("Deleting...")
+                    deleted = Work.delete().where(Work.uuid.in_(work_set)).execute()
+                    click.echo(f"{deleted} log(s) deleted successfully.")
+                elif work_count == 0:
                     click.echo("Nothing to delete.")
                 return
+
             if work_count == 1:
                 click.echo(work_set[0], nl=False)
             elif work_count > 1:
@@ -155,4 +159,4 @@ def fetch_work(
             else:
                 click.echo("Nothing to show, slacker.")
     except Exception as e:
-        raise CannotFetchWorkError(extra_detail=str(e))
+        raise CannotFetchWorkError(extra_detail=str(e)) from e

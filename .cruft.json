@@ -1,0 +1,34 @@
+{
+  "template": "https://github.com/viseshrp/yapc",
+  "commit": "96b37f6798cac563388f2e61f7b3986e0b0e84db",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "author": "Visesh Prasad",
+      "email": "viseshrprasad@gmail.com",
+      "github_username": "viseshrp",
+      "pypi_username": "viseshrp",
+      "project_name": "workedon",
+      "project_slug": "workedon",
+      "project_description": "Work tracking from your shell.",
+      "cli_tool": "y",
+      "codecov": "y",
+      "git_init": "y",
+      "github_actions": "y",
+      "_template": "https://github.com/viseshrp/yapc",
+      "_commit": "96b37f6798cac563388f2e61f7b3986e0b0e84db"
+    }
+  },
+  "directory": null,
+  "skip": [
+    ".venv",
+    "dist",
+    "build",
+    "*.egg-info",
+    ".DS_Store",
+    "__pycache__",
+    ".git",
+    ".idea",
+    ".vscode"
+  ]
+}
