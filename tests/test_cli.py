@@ -1,16 +1,18 @@
+from __future__ import annotations
+
 from datetime import datetime
 import re
 
-from click.testing import CliRunner
+from click.testing import CliRunner, Result
 import pytest
 
 from workedon import __version__, cli, exceptions
 from workedon.conf import CONF_PATH
 
 
-def verify_work_output(result, work):
+def verify_work_output(result: Result, work: str) -> None:
     assert result.exit_code == 0
-    assert work[0] in result.output
+    assert work in result.output
     assert "id:" in result.output
     assert "Date:" in result.output
 
@@ -24,7 +26,7 @@ def verify_work_output(result, work):
         (["what", "--help"]),
     ],
 )
-def test_help(options):
+def test_help(options: list[str]) -> None:
     result = CliRunner().invoke(cli.main, options)
     assert result.exit_code == 0
     assert result.output.startswith("Usage: ")
@@ -38,13 +40,13 @@ def test_help(options):
         (["--version"]),
     ],
 )
-def test_version(options):
+def test_version(options: list[str]) -> None:
     result = CliRunner().invoke(cli.main, options)
     assert result.exit_code == 0
     assert __version__ in result.output
 
 
-def test_empty_fetch():
+def test_empty_fetch() -> None:
     result = CliRunner().invoke(cli.what)
     assert result.exit_code == 0
     assert "Nothing to show" in result.output
@@ -55,24 +57,24 @@ def test_empty_fetch():
     [
         (
             [
-                "painting the garage",
-                "washing the car",
-                "studying for the SAT @ 3pm friday",
-                "pissing my wife off @ 2:30pm yesterday",
+                ("painting the garage", ""),
+                ("washing the car", ""),
+                ("studying for the SAT", " @ 3pm friday"),
+                ("pissing my wife off", " @ 2:30pm yesterday"),
             ]
         ),
-        (["writing some tests @ 9 hours ago", "finding a friend @ 2pm 4 days ago"]),
+        ([("writing some tests", " @ 9 hours ago"), ("finding a friend", " @ 2pm 4 days ago")]),
     ],
 )
-def test_save_and_fetch(work):
+def test_save_and_fetch(work: list[tuple[str, str]]) -> None:
     for w in work:
         # save
-        result = CliRunner().invoke(cli.main, w)
-        verify_work_output(result, w)
+        result = CliRunner().invoke(cli.main, "".join(w))
+        verify_work_output(result, w[0])
         assert result.output.startswith("Work saved.")
         # fetch
         result = CliRunner().invoke(cli.what)
-        verify_work_output(result, w)
+        verify_work_output(result, w[0])
 
 
 @pytest.mark.parametrize(
@@ -83,7 +85,7 @@ def test_save_and_fetch(work):
         (["talking to my brother", "@ 3pm 3 years ago"], ["--last"], False),
     ],
 )
-def test_save_and_fetch_last(work, option, valid):
+def test_save_and_fetch_last(work: list[str], option: list[str], valid: bool) -> None:
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -104,7 +106,7 @@ def test_save_and_fetch_last(work, option, valid):
         (["recording a demo"], ["-i"]),
     ],
 )
-def test_save_and_fetch_id(work, option):
+def test_save_and_fetch_id(work: list[str], option: list[str]) -> None:
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -124,7 +126,7 @@ def test_save_and_fetch_id(work, option):
         ("--datetime-format", ""),
     ],
 )
-def test_save_and_fetch_date_opt_env(opt, env, monkeypatch):
+def test_save_and_fetch_date_opt_env(opt: str, env: str, monkeypatch) -> None:
     result = CliRunner().invoke(cli.main, ["testing date opt"])
     assert result.output.startswith("Work saved.")
     strp_string = "%a %b %d"
@@ -147,7 +149,7 @@ def test_save_and_fetch_date_opt_env(opt, env, monkeypatch):
         ("--time-zone", ""),
     ],
 )
-def test_save_and_fetch_timezone_opt_env(opt, env, monkeypatch):
+def test_save_and_fetch_timezone_opt_env(opt: str, env: str, monkeypatch) -> None:
     result = CliRunner().invoke(cli.main, ["testing timezone opt"])
     assert result.output.startswith("Work saved.")
     tz = "Asia/Tokyo"
@@ -210,7 +212,7 @@ def test_save_and_fetch_timezone_opt_env(opt, env, monkeypatch):
         (["taking wife shopping", "@ 3pm"], ["--no-page"]),
     ],
 )
-def test_save_and_fetch_others(work, option):
+def test_save_and_fetch_others(work: list[str], option: list[str]) -> None:
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -227,7 +229,7 @@ def test_save_and_fetch_others(work, option):
         (["home improvement", "home destruction"], ["--reverse", "-n", "1"]),
     ],
 )
-def test_save_and_fetch_reverse(work, option):
+def test_save_and_fetch_reverse(work: list[str], option: list[str]) -> None:
     # save
     for w in work:
         result = CliRunner().invoke(cli.main, w)
@@ -249,7 +251,9 @@ def test_save_and_fetch_reverse(work, option):
         ),
     ],
 )
-def test_save_and_fetch_delete(work, option_del, option_what):
+def test_save_and_fetch_delete(
+    work: list[str], option_del: list[str], option_what: list[str]
+) -> None:
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -270,7 +274,7 @@ def test_save_and_fetch_delete(work, option_del, option_what):
         (["--at", "4:44pm 5 years ago", "--delete"]),
     ],
 )
-def test_save_and_fetch_delete_empty(option):
+def test_save_and_fetch_delete_empty(option: list[str]) -> None:
     # fetch
     result = CliRunner().invoke(cli.what, option)
     assert result.exit_code == 0
@@ -284,7 +288,7 @@ def test_save_and_fetch_delete_empty(option):
         (["eating", "@ 3am"], ["--text-only"]),
     ],
 )
-def test_save_and_fetch_textonly(work, option):
+def test_save_and_fetch_textonly(work: list[str], option: list[str]) -> None:
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -304,7 +308,7 @@ def test_save_and_fetch_textonly(work, option):
         (["--print-db-path"]),
     ],
 )
-def test_db_print_path(options):
+def test_db_print_path(options: list[str]) -> None:
     result = CliRunner().invoke(cli.main, options)
     assert result.exit_code == 0
     assert "won.db" in result.output
@@ -316,7 +320,7 @@ def test_db_print_path(options):
         (["--vacuum-db"]),
     ],
 )
-def test_db_vacuum(options):
+def test_db_vacuum(options: list[str]) -> None:
     result = CliRunner().invoke(cli.main, options)
     assert result.exit_code == 0
     assert "VACUUM complete." in result.output
@@ -328,7 +332,7 @@ def test_db_vacuum(options):
         (["watching Lost"], ["--truncate-db"], ["--last"]),
     ],
 )
-def test_db_truncate(work, option_db, option_what):
+def test_db_truncate(work: list[str], option_db: list[str], option_what: list[str]) -> None:
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -349,7 +353,7 @@ def test_db_truncate(work, option_db, option_what):
         (["--db-version"]),
     ],
 )
-def test_db_version(options):
+def test_db_version(options: list[str]) -> None:
     result = CliRunner().invoke(cli.main, options)
     assert result.exit_code == 0
     assert result.output.startswith("SQLite version: ")
@@ -362,7 +366,7 @@ def test_db_version(options):
         (["--print-settings-path"]),
     ],
 )
-def test_conf_print_path(options, capsys):
+def test_conf_print_path(options: list[str], capsys) -> None:
     with capsys.disabled():
         result = CliRunner().invoke(cli.main, options)
         assert result.exit_code == 0
@@ -375,7 +379,7 @@ def test_conf_print_path(options, capsys):
         (["--print-settings"]),
     ],
 )
-def test_conf_print_settings(options):
+def test_conf_print_settings(options: list[str]) -> None:
     with CONF_PATH.open("a") as f:
         f.write('TIME_FORMAT = "%H:%M %z"\n')
     result = CliRunner().invoke(cli.main, options)
@@ -390,7 +394,7 @@ def test_conf_print_settings(options):
         ([" ", "@ 9pm 8 days ago"]),
     ],
 )
-def test_save_and_fetch_invalid(work):
+def test_save_and_fetch_invalid(work: list[str]) -> None:
     # save
     result = CliRunner().invoke(cli.main, work)
     assert result.exit_code == 1
@@ -404,7 +408,7 @@ def test_save_and_fetch_invalid(work):
         (["Creating the world", "@ lolololol"]),
     ],
 )
-def test_save_and_fetch_date_invalid(work):
+def test_save_and_fetch_date_invalid(work: list[str]) -> None:
     # save
     result = CliRunner().invoke(cli.main, work)
     assert result.exit_code == 1
@@ -418,7 +422,7 @@ def test_save_and_fetch_date_invalid(work):
         (["Walking the dog", "@ 5pm tomorrow"]),
     ],
 )
-def test_save_and_fetch_date_in_future(work):
+def test_save_and_fetch_date_in_future(work: list[str]) -> None:
     # save
     result = CliRunner().invoke(cli.main, work)
     assert result.exit_code == 1
@@ -432,7 +436,7 @@ def test_save_and_fetch_date_in_future(work):
         (["doing my taxes", "@ 9pm 8 days ago"], ["-t", "3pm yesterday"]),
     ],
 )
-def test_save_and_fetch_start_absent(work, option):
+def test_save_and_fetch_start_absent(work: list[str], option: list[str]) -> None:
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -450,7 +454,7 @@ def test_save_and_fetch_start_absent(work, option):
         (["making pasta", "@ 9pm 5 days ago"], ["-f", "3pm yesterday", "-t", "3pm 5 days ago"]),
     ],
 )
-def test_save_and_fetch_start_greater(work, option):
+def test_save_and_fetch_start_greater(work: list[str], option: list[str]) -> None:
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
@@ -468,7 +472,7 @@ def test_save_and_fetch_start_greater(work, option):
         (["cardio at the gym", "@ 5:53pm tuesday"], ["--count", "0"]),
     ],
 )
-def test_save_and_fetch_zero_count(work, option):
+def test_save_and_fetch_zero_count(work: list[str], option: list[str]) -> None:
     # save
     result = CliRunner().invoke(cli.main, work)
     verify_work_output(result, work)
