@@ -1,17 +1,19 @@
 """Console script for workedon."""
 
+from typing import Any
+
 import click
 from click_default_group import DefaultGroup
 
-from . import __version__ as _version
+from ._version import __version__ as _ver
 from .conf import CONF_PATH, settings
 from .models import DB_PATH, Work, get_or_create_db, init_db
 from .utils import add_options, load_settings
 from .workedon import fetch_work, save_work
 
-CONTEXT_SETTINGS = {"help_option_names": ["-h", "--help"]}
+CONTEXT_SETTINGS: dict[str, list[str]] = {"help_option_names": ["-h", "--help"]}
 
-settings_options = [
+settings_options: list[Any] = [
     click.option(
         "--date-format",
         "DATE_FORMAT",
@@ -62,7 +64,7 @@ settings_options = [
     context_settings=CONTEXT_SETTINGS,
     invoke_without_command=True,
 )
-@click.version_option(_version, "-v", "--version")
+@click.version_option(_ver, "-v", "--version")
 @click.option(
     "--print-settings-path",
     "settings_path",
@@ -120,15 +122,15 @@ settings_options = [
 @click.pass_context
 @load_settings
 def main(
-    ctx,
-    settings_path,
-    print_settings,
-    db_version,
-    print_db_path,
-    vacuum_db,
-    truncate_db,
-    **kwargs,
-):
+    ctx: click.Context,
+    settings_path: bool,
+    print_settings: bool,
+    db_version: bool,
+    print_db_path: bool,
+    vacuum_db: bool,
+    truncate_db: bool,
+    **kwargs: Any,
+) -> None:
     """
     Work tracking from your shell.
 
@@ -147,31 +149,30 @@ def main(
     workedon what --past-month
     """
     if ctx.invoked_subcommand:
-        return None
+        return
 
     if print_db_path:
-        return click.echo(DB_PATH)
+        click.echo(DB_PATH)
     elif vacuum_db:
         click.echo("Performing VACUUM...")
         with init_db():
             get_or_create_db().execute_sql("VACUUM;")
-        return click.echo("VACUUM complete.")
+        click.echo("VACUUM complete.")
     elif truncate_db:
         if click.confirm("Continue deleting all saved data? There's no going back."):
             click.echo("Deleting...")
             with init_db():
                 Work.truncate_table()
-            return click.echo("Deletion successful.")
+            click.echo("Deletion successful.")
     elif db_version:
-        server_version = ".".join([str(num) for num in get_or_create_db().server_version])
-        return click.echo(f"SQLite version: {server_version}")
+        server_version = ".".join(str(num) for num in get_or_create_db().server_version)
+        click.echo(f"SQLite version: {server_version}")
     elif print_settings:
         for key, value in settings.items():
             if key.isupper():
                 click.echo(f'{key}="{value}"')
     elif settings_path:
-        return click.echo(CONF_PATH)
-    return None
+        click.echo(CONF_PATH)
 
 
 @main.command(hidden=True)
@@ -184,7 +185,7 @@ def main(
 )
 @add_options(settings_options)
 @load_settings
-def workedon(stuff, **kwargs):
+def workedon(stuff: tuple[str, ...], **kwargs: Any) -> None:
     """
     Specify what you worked on, with optional date/time. See workedon --help.
     """
@@ -334,21 +335,21 @@ def workedon(stuff, **kwargs):
 @add_options(settings_options)
 @load_settings
 def what(
-    count,
-    last,
-    work_id,
-    start_date,
-    end_date,
-    since,
-    period,
-    on,
-    at,
-    delete,
-    no_page,
-    reverse,
-    text_only,
-    **kwargs,
-):
+    count: int | None,
+    last: bool,
+    work_id: str,
+    start_date: str,
+    end_date: str,
+    since: str,
+    period: str | None,
+    on: str | None,
+    at: str | None,
+    delete: bool,
+    no_page: bool,
+    reverse: bool,
+    text_only: bool,
+    **kwargs: Any,
+) -> None:
     """
     Fetch and display logged work.
 
