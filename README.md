@@ -128,7 +128,7 @@ Options:
   -r, --reverse           Reverse order while sorting.
   -n, --count INTEGER     Number of entries to return.
   -s, --last              Fetch the last thing you worked on
-  -i, --id TEXT           id to fetch with.
+  -i, --id TEXT           ID to fetch with.
   -f, --from TEXT         Start date-time to filter with.
   -t, --to TEXT           End date-time to filter with.
   --since TEXT            Fetch work done since a specified date-time in the
