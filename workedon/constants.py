@@ -9,3 +9,4 @@ SETTINGS_HEADER: Final[
 #
 """
 CURRENT_DB_VERSION: Final[int] = 1
+WORK_CHUNK_SIZE: Final[int] = 100
