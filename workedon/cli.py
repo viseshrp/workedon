@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Callable
 
 import click
 from click_default_group import DefaultGroup
@@ -15,7 +15,8 @@ from .workedon import fetch_tags, fetch_work, save_work
 
 CONTEXT_SETTINGS: dict[str, list[str]] = {"help_option_names": ["-h", "--help"]}
 
-settings_options: list[Any] = [
+# settings
+settings_options: list[Callable[..., Any]] = [
     click.option(
         "--date-format",
         "DATE_FORMAT",
@@ -57,7 +58,8 @@ settings_options: list[Any] = [
         help="Set the timezone of the output. Must be a valid timezone string.",
     ),
 ]
-main_options = [
+# other options
+main_options: list[Callable[..., Any]] = [
     click.option(
         "--tag",
         "tags",
