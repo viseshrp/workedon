@@ -42,6 +42,7 @@ CI = "https://github.com/viseshrp/workedon/actions"
 
 [project.scripts]
 workedon = "workedon.__main__:main"
+wo = "workedon.__main__:main"
 
 [dependency-groups]
 dev = [
