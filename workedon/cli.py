@@ -9,7 +9,7 @@ from click_default_group import DefaultGroup
 
 from ._version import __version__ as _ver
 from .conf import CONF_PATH, settings
-from .models import DB_PATH, Work, get_or_create_db, init_db
+from .models import DB_PATH, get_or_create_db, init_db, truncate_all_tables
 from .utils import add_options, load_settings
 from .workedon import fetch_tags, fetch_work, save_work
 
@@ -187,7 +187,7 @@ def main(
         if click.confirm("Continue deleting all saved data? There's no going back."):
             click.echo("Deleting...")
             with init_db():
-                Work.truncate_table()
+                truncate_all_tables()
             click.echo("Deletion successful.")
     elif db_version:
         server_version = ".".join(str(num) for num in get_or_create_db().server_version)
@@ -360,7 +360,14 @@ def workedon(stuff: tuple[str, ...], **kwargs: Any) -> None:
     show_default=True,
     help="Output the work log text only.",
 )
-@click.option("--tag", required=False, type=click.STRING, help="Tag to filter by.")
+@click.option(
+    "--tag",
+    required=False,
+    default="",
+    show_default=True,
+    type=click.STRING,
+    help="Tag to filter by.",
+)
 @add_options(settings_options)
 @load_settings
 def what(
@@ -377,7 +384,7 @@ def what(
     no_page: bool,
     reverse: bool,
     text_only: bool,
-    tag: str | None = None,
+    tag: str,
     **kwargs: Any,
 ) -> None:
     """

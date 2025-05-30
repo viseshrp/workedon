@@ -21,7 +21,7 @@ from .parser import InputParser
 from .utils import now, to_internal_dt
 
 
-def save_work(work: tuple[str, ...], tags: str) -> None:
+def save_work(work: tuple[str, ...], tags: list[str]) -> None:
     """
     Save work from user input
     """
@@ -115,7 +115,7 @@ def fetch_work(
     no_page: bool,
     reverse: bool,
     text_only: bool,
-    tag: str | None,
+    tag: str,
 ) -> None:
     """
     Fetch saved work filtered based on user input
@@ -128,13 +128,11 @@ def fetch_work(
     # initial set
     work_set = Work.select(*fields)
     # filters
-    # id
-    if work_id:
+    if work_id:  # id
         work_set = work_set.where(Work.uuid == work_id)
     else:
         if tag:
             work_set = work_set.join(WorkTag).join(Tag).where(Tag.name == tag)
-
         # date
         start, end = _get_date_range(start_date, end_date, since, period, on, at)
         if start and end:

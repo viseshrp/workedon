@@ -147,7 +147,7 @@ Options:
   --delete                Delete fetched work.
   -g, --no-page           Don't page the output.
   -l, --text-only         Output the work log text only.
-  --tag TEXT              Tag to filter by.
+  --tag TEXT              Tag to filter by.  [default: ""]
   --date-format TEXT      Set the date format of the output. Must be a valid
                           Python strftime string.  [env var:
                           WORKEDON_DATE_FORMAT]

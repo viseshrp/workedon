@@ -51,21 +51,6 @@ def get_or_create_db() -> SqliteDatabase:
 db: SqliteDatabase = get_or_create_db()
 
 
-@contextlib.contextmanager
-def init_db() -> Generator[SqliteDatabase]:
-    """
-    Context manager to init
-    and close the database
-    """
-    if db.is_closed():
-        db.connect()
-    if not Work.table_exists():
-        Work.create_table()
-    yield db
-    db.execute_sql("PRAGMA optimize;")
-    db.close()
-
-
 class Work(Model):
     """
     Model that represents a Work item
@@ -143,3 +128,18 @@ _models: list[type[Model]] = [Work, Tag, WorkTag]
 def truncate_all_tables(**options: dict[str, Any]) -> None:
     for model in reversed(_models):
         model.truncate_table(**options)
+
+
+@contextlib.contextmanager
+def init_db() -> Generator[SqliteDatabase]:
+    """
+    Context manager to init
+    and close the database
+    """
+    if db.is_closed():
+        db.connect()
+    # creates tables, indexes, sequences
+    db.create_tables(_models, safe=True)
+    yield db
+    db.execute_sql("PRAGMA optimize;")
+    db.close()
