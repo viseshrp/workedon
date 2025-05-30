@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from dateparser import DateDataParser
+from dateparser.date import DateDataParser
 
 from .exceptions import DateTimeInFutureError, InvalidDateTimeError, InvalidWorkError
 from .utils import now
