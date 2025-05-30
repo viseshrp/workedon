@@ -59,6 +59,7 @@ dev = [
     "twine>=6.1.0",
     "ipdb>=0.13.13",
     "hatch>=1.14.1",
+    "freezegun>=1.5.2",
 ]
 
 [build-system]

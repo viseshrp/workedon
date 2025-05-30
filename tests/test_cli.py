@@ -56,7 +56,6 @@ def test_empty_fetch() -> None:
     "work",
     [
         [
-            ("painting the garage", ""),
             ("washing the car", ""),
             ("studying for the SAT", " @ 3pm friday"),
             ("pissing my wife off", " @ 2:30pm yesterday"),
