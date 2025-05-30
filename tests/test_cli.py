@@ -47,7 +47,7 @@ def test_version(options: list[str]) -> None:
 
 
 def test_empty_fetch() -> None:
-    result = CliRunner().invoke(cli.what, ["--no-page"])
+    result = CliRunner().invoke(cli.what)
     assert result.exit_code == 0
     assert "Nothing to show" in result.output
 
@@ -73,7 +73,7 @@ def test_save_and_fetch(work: list[tuple[str, str]]) -> None:
         verify_work_output(result, description)
         assert result.output.startswith("Work saved.")
 
-        result = CliRunner().invoke(cli.what, ["--no-page"])
+        result = CliRunner().invoke(cli.what, ["--no-page", "--since", "2 weeks ago"])
         verify_work_output(result, description)
 
 
@@ -116,7 +116,7 @@ def test_save_and_fetch_id(work: tuple[str, str], option: list[str]) -> None:
     assert match, "No id found in save output"
     work_id = match.group(1)
 
-    result = CliRunner().invoke(cli.what, ["--no-page", *option, work_id])
+    result = CliRunner().invoke(cli.what, [*option, work_id])
     verify_work_output(result, description)
 
 
