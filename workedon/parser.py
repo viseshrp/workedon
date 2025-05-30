@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from datetime import datetime
+import re
 from typing import Final
 
 from dateparser.date import DateDataParser
-import re
 
 from .exceptions import DateTimeInFutureError, InvalidDateTimeError, InvalidWorkError
 from .utils import now
@@ -15,7 +15,7 @@ class InputParser:
     _WORK_DATE_SEPARATOR: Final[str] = "@"
     _TAG_REGEX: Final[str] = r"#([\w\d_-]+)"
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._date_parser = DateDataParser(
             languages=["en"],
             settings={
@@ -46,7 +46,7 @@ class InputParser:
             raise DateTimeInFutureError()
         return parsed_dt
 
-    def parse_tags(self, work):
+    def parse_tags(self, work: str) -> set[str]:
         return set(re.findall(self._TAG_REGEX, work))
 
     def parse(self, work_desc: str) -> tuple[str, datetime, set[str]]:
@@ -59,5 +59,5 @@ class InputParser:
         if not work:
             raise InvalidWorkError
         tags = self.parse_tags(work)
-        date_time = self.parse_datetime(date_time)
-        return work, date_time, tags
+        dt = self.parse_datetime(date_time)
+        return work, dt, tags

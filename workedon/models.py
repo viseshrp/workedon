@@ -1,6 +1,7 @@
 from collections.abc import Generator
 import contextlib
 from pathlib import Path
+from typing import Any
 import zoneinfo
 
 import click
@@ -51,7 +52,7 @@ db: SqliteDatabase = get_or_create_db()
 
 
 @contextlib.contextmanager
-def init_db() -> Generator[None, None, None]:
+def init_db() -> Generator[SqliteDatabase]:
     """
     Context manager to init
     and close the database
@@ -60,7 +61,7 @@ def init_db() -> Generator[None, None, None]:
         db.connect()
     if not Work.table_exists():
         Work.create_table()
-    yield
+    yield db
     db.execute_sql("PRAGMA optimize;")
     db.close()
 
@@ -83,8 +84,8 @@ class Work(Model):
     )
 
     class Meta:
-        database = db
-        table_name = "work"
+        database: SqliteDatabase = db
+        table_name: str = "work"
 
     def __str__(self) -> str:
         """
@@ -110,13 +111,13 @@ class Tag(Model):
     Model that represents a Tag item
     """
 
-    name = CharField(primary_key=True, null=False)
+    name: CharField = CharField(primary_key=True, null=False)
 
     class Meta:
-        database = db
-        table_name = "tag"
+        database: SqliteDatabase = db
+        table_name: str = "tag"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{click.style(f"* {self.name}", fg="white")}\n'
 
 
@@ -127,18 +128,18 @@ class WorkTag(Model):
     Work and Tag models.
     """
 
-    work = ForeignKeyField(Work, backref="tags")
-    tag = ForeignKeyField(Tag, backref="works")
+    work: ForeignKeyField = ForeignKeyField(Work, backref="tags")
+    tag: ForeignKeyField = ForeignKeyField(Tag, backref="works")
 
     class Meta:
-        database = db
-        table_name = "work_tag"
-        primary_key = CompositeKey("work", "tag")
+        database: SqliteDatabase = db
+        table_name: str = "work_tag"
+        primary_key: CompositeKey = CompositeKey("work", "tag")
 
 
-_models = [Work, Tag, WorkTag]
+_models: list[type[Model]] = [Work, Tag, WorkTag]
 
 
-def truncate_all_tables(**options):
+def truncate_all_tables(**options: dict[str, Any]) -> None:
     for model in reversed(_models):
         model.truncate_table(**options)

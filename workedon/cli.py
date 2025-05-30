@@ -11,9 +11,6 @@ from ._version import __version__ as _ver
 from .conf import CONF_PATH, settings
 from .models import DB_PATH, Work, get_or_create_db, init_db
 from .utils import add_options, load_settings
-from .workedon import fetch_work, save_work
-from .models import DB_PATH, get_or_create_db, truncate_all_tables
-from .utils import add_options, load_settings
 from .workedon import fetch_tags, fetch_work, save_work
 
 CONTEXT_SETTINGS: dict[str, list[str]] = {"help_option_names": ["-h", "--help"]}

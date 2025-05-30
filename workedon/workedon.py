@@ -7,7 +7,7 @@ import datetime
 from typing import Any
 
 import click
-from peewee import chunked
+from peewee import ModelSelect, chunked
 
 from .constants import WORK_CHUNK_SIZE
 from .exceptions import (
@@ -21,7 +21,7 @@ from .parser import InputParser
 from .utils import now, to_internal_dt
 
 
-def save_work(work: tuple[str, ...], tags) -> None:
+def save_work(work: tuple[str, ...], tags: str) -> None:
     """
     Save work from user input
     """
@@ -115,7 +115,7 @@ def fetch_work(
     no_page: bool,
     reverse: bool,
     text_only: bool,
-        tag: str | None,
+    tag: str | None,
 ) -> None:
     """
     Fetch saved work filtered based on user input
@@ -176,5 +176,5 @@ def fetch_work(
         raise CannotFetchWorkError(extra_detail=str(e)) from e
 
 
-def fetch_tags():
+def fetch_tags() -> ModelSelect:
     return Tag.select(Tag.name)
