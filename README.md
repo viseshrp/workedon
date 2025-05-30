@@ -220,7 +220,7 @@ Check the default settings
 
 See [CHANGELOG.md](https://github.com/viseshrp/workedon/blob/main/CHANGELOG.md)
 
-## Limitations
+## ⚠️ Limitations
 
 - Your input is limited by your shell. Certain characters like the single
   quote `'` behave differently. Put your content within double quotes
