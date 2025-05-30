@@ -12,6 +12,9 @@ from .conf import CONF_PATH, settings
 from .models import DB_PATH, Work, get_or_create_db, init_db
 from .utils import add_options, load_settings
 from .workedon import fetch_work, save_work
+from .models import DB_PATH, get_or_create_db, truncate_all_tables
+from .utils import add_options, load_settings
+from .workedon import fetch_tags, fetch_work, save_work
 
 CONTEXT_SETTINGS: dict[str, list[str]] = {"help_option_names": ["-h", "--help"]}
 
@@ -57,6 +60,17 @@ settings_options: list[Any] = [
         help="Set the timezone of the output. Must be a valid timezone string.",
     ),
 ]
+main_options = [
+    click.option(
+        "--tag",
+        "tags",
+        multiple=True,
+        required=False,
+        type=click.STRING,
+        help="Tag to add to your work log.",
+    ),
+    *settings_options,
+]
 
 
 @click.group(
@@ -83,6 +97,15 @@ settings_options: list[Any] = [
     default=False,
     show_default=True,
     help="Print all the current settings, including defaults.",
+)
+@click.option(
+    "--list-tags",
+    "list_tags",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print all saved tags.",
 )
 @click.option(
     "--db-version",
@@ -120,13 +143,14 @@ settings_options: list[Any] = [
     hidden=True,
     help="Delete all data since the beginning of time.",
 )
-@add_options(settings_options)
+@add_options(main_options)
 @click.pass_context
 @load_settings
 def main(
     ctx: click.Context,
     settings_path: bool,
     print_settings: bool,
+    list_tags: bool,
     db_version: bool,
     print_db_path: bool,
     vacuum_db: bool,
@@ -175,6 +199,9 @@ def main(
                 click.echo(f'{key}="{value}"')
     elif settings_path:
         click.echo(CONF_PATH)
+    elif list_tags:
+        for tag in fetch_tags():
+            click.echo(tag, nl=False)
 
 
 @main.command(hidden=True)
@@ -185,13 +212,13 @@ def main(
     required=False,
     type=click.STRING,
 )
-@add_options(settings_options)
+@add_options(main_options)
 @load_settings
 def workedon(stuff: tuple[str, ...], **kwargs: Any) -> None:
     """
     Specify what you worked on, with optional date/time. See workedon --help.
     """
-    save_work(stuff)
+    save_work(stuff, kwargs["tags"])
 
 
 @main.command()
@@ -334,6 +361,7 @@ def workedon(stuff: tuple[str, ...], **kwargs: Any) -> None:
     show_default=True,
     help="Output the work log text only.",
 )
+@click.option("--tag", required=False, type=click.STRING, help="Tag to filter by.")
 @add_options(settings_options)
 @load_settings
 def what(
@@ -350,6 +378,7 @@ def what(
     no_page: bool,
     reverse: bool,
     text_only: bool,
+    tag: str | None = None,
     **kwargs: Any,
 ) -> None:
     """
@@ -374,6 +403,7 @@ def what(
         no_page,
         reverse,
         text_only,
+        tag,
     )
 
 

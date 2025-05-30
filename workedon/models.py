@@ -4,7 +4,15 @@ from pathlib import Path
 import zoneinfo
 
 import click
-from peewee import CharField, DateTimeField, Model, SqliteDatabase, TextField
+from peewee import (
+    CharField,
+    CompositeKey,
+    DateTimeField,
+    ForeignKeyField,
+    Model,
+    SqliteDatabase,
+    TextField,
+)
 from platformdirs import user_data_dir
 
 from .conf import settings
@@ -95,3 +103,42 @@ class Work(Model):
             )
         # text only
         return f'{click.style(f"* {self.work}", bold=True, fg="white")}\n'
+
+
+class Tag(Model):
+    """
+    Model that represents a Tag item
+    """
+
+    name = CharField(primary_key=True, null=False)
+
+    class Meta:
+        database = db
+        table_name = "tag"
+
+    def __str__(self):
+        return f'{click.style(f"* {self.name}", fg="white")}\n'
+
+
+class WorkTag(Model):
+    """
+    Intermediate model to represent
+    many-to-many relationship between
+    Work and Tag models.
+    """
+
+    work = ForeignKeyField(Work, backref="tags")
+    tag = ForeignKeyField(Tag, backref="works")
+
+    class Meta:
+        database = db
+        table_name = "work_tag"
+        primary_key = CompositeKey("work", "tag")
+
+
+_models = [Work, Tag, WorkTag]
+
+
+def truncate_all_tables(**options):
+    for model in reversed(_models):
+        model.truncate_table(**options)

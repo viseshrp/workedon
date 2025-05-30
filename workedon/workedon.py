@@ -16,23 +16,29 @@ from .exceptions import (
     StartDateAbsentError,
     StartDateGreaterError,
 )
-from .models import Work, init_db
+from .models import Tag, Work, WorkTag, init_db
 from .parser import InputParser
 from .utils import now, to_internal_dt
 
 
-def save_work(work: tuple[str, ...]) -> None:
+def save_work(work: tuple[str, ...], tags) -> None:
     """
     Save work from user input
     """
     work_desc = " ".join(work).strip()
-    text, dt = InputParser().parse(work_desc)
+    text, dt, tags_ = InputParser().parse(work_desc)
+    if tags:
+        tags_.update(set(tags))
     data: dict[str, Any] = {"work": text, "timestamp": to_internal_dt(dt)}
     try:
-        with init_db():
-            w = Work.create(**data)
+        with init_db() as db:
+            with db.atomic():
+                work_ = Work.create(**data)
+                for tag in tags_:
+                    tag_, _ = Tag.get_or_create(name=tag)
+                    WorkTag.create(work=work_.uuid, tag=tag_.name)
             click.echo("Work saved.\n")
-            click.echo(w, nl=False)
+            click.echo(work_, nl=False)
     except Exception as e:
         raise CannotSaveWorkError(extra_detail=str(e)) from e
 
@@ -109,18 +115,27 @@ def fetch_work(
     no_page: bool,
     reverse: bool,
     text_only: bool,
+        tag: str | None,
 ) -> None:
     """
     Fetch saved work filtered based on user input
     """
     # filter fields
-    fields: list[Any] = []
+    fields = []
     if not delete:
         fields = [Work.work] if text_only else [Work.uuid, Work.timestamp, Work.work]
+
     # initial set
     work_set = Work.select(*fields)
-    # filter
-    if not work_id:
+    # filters
+    # id
+    if work_id:
+        work_set = work_set.where(Work.uuid == work_id)
+    else:
+        if tag:
+            work_set = work_set.join(WorkTag).join(Tag).where(Tag.name == tag)
+
+        # date
         start, end = _get_date_range(start_date, end_date, since, period, on, at)
         if start and end:
             work_set = work_set.where((Work.timestamp >= start) & (Work.timestamp <= end))
@@ -132,8 +147,7 @@ def fetch_work(
             if count == 0:
                 raise CannotFetchWorkError(extra_detail="count must be non-zero")
             work_set = work_set.limit(count)
-    else:
-        work_set = work_set.where(Work.uuid == work_id)
+
     # fetch from db now.
     try:
         with init_db():
@@ -160,3 +174,7 @@ def fetch_work(
                 click.echo("Nothing to show, slacker.")
     except Exception as e:
         raise CannotFetchWorkError(extra_detail=str(e)) from e
+
+
+def fetch_tags():
+    return Tag.select(Tag.name)
