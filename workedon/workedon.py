@@ -21,7 +21,7 @@ from .parser import InputParser
 from .utils import now, to_internal_dt
 
 
-def save_work(work: tuple[str, ...], tags: list[str]) -> None:
+def save_work(work: tuple[str, ...], tags: tuple[str, ...]) -> None:
     """
     Save work from user input
     """
