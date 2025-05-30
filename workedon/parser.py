@@ -11,7 +11,7 @@ from .utils import now
 
 
 class InputParser:
-    _date_parser: DateDataParser
+    _date_parser: DateDataParser = None
     _WORK_DATE_SEPARATOR: Final[str] = "@"
     _TAG_REGEX: Final[str] = r"#([\w\d_-]+)"
 
