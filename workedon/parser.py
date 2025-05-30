@@ -54,10 +54,16 @@ class InputParser:
             work, _, date_time = work_desc.rpartition(self._WORK_DATE_SEPARATOR)
         else:
             work, date_time = work_desc, ""
+
         work = work.strip()
         date_time = date_time.strip()
         if not work:
             raise InvalidWorkError
         tags = self.parse_tags(work)
+        # remove any "#tag" tokens from the work string
+        work = re.sub(self._TAG_REGEX, "", work)
+        # collapse extra spaces
+        work = re.sub(r"\s+", " ", work).strip()
+
         dt = self.parse_datetime(date_time)
         return work, dt, tags
