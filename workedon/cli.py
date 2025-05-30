@@ -2,20 +2,21 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Callable
 
 import click
 from click_default_group import DefaultGroup
 
 from ._version import __version__ as _ver
 from .conf import CONF_PATH, settings
-from .models import DB_PATH, Work, get_or_create_db, init_db
+from .models import DB_PATH, get_or_create_db, init_db, truncate_all_tables
 from .utils import add_options, load_settings
-from .workedon import fetch_work, save_work
+from .workedon import fetch_tags, fetch_work, save_work
 
 CONTEXT_SETTINGS: dict[str, list[str]] = {"help_option_names": ["-h", "--help"]}
 
-settings_options: list[Any] = [
+# settings
+settings_options: list[Callable[..., Any]] = [
     click.option(
         "--date-format",
         "DATE_FORMAT",
@@ -57,6 +58,18 @@ settings_options: list[Any] = [
         help="Set the timezone of the output. Must be a valid timezone string.",
     ),
 ]
+# other options
+main_options: list[Callable[..., Any]] = [
+    click.option(
+        "--tag",
+        "tags",
+        multiple=True,
+        required=False,
+        type=click.STRING,
+        help="Tag to add to your work log.",
+    ),
+    *settings_options,
+]
 
 
 @click.group(
@@ -83,6 +96,15 @@ settings_options: list[Any] = [
     default=False,
     show_default=True,
     help="Print all the current settings, including defaults.",
+)
+@click.option(
+    "--list-tags",
+    "list_tags",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    help="Print all saved tags.",
 )
 @click.option(
     "--db-version",
@@ -120,13 +142,14 @@ settings_options: list[Any] = [
     hidden=True,
     help="Delete all data since the beginning of time.",
 )
-@add_options(settings_options)
+@add_options(main_options)
 @click.pass_context
 @load_settings
 def main(
     ctx: click.Context,
     settings_path: bool,
     print_settings: bool,
+    list_tags: bool,
     db_version: bool,
     print_db_path: bool,
     vacuum_db: bool,
@@ -164,7 +187,7 @@ def main(
         if click.confirm("Continue deleting all saved data? There's no going back."):
             click.echo("Deleting...")
             with init_db():
-                Work.truncate_table()
+                truncate_all_tables()
             click.echo("Deletion successful.")
     elif db_version:
         server_version = ".".join(str(num) for num in get_or_create_db().server_version)
@@ -175,6 +198,9 @@ def main(
                 click.echo(f'{key}="{value}"')
     elif settings_path:
         click.echo(CONF_PATH)
+    elif list_tags:
+        for tag in fetch_tags():
+            click.echo(tag, nl=False)
 
 
 @main.command(hidden=True)
@@ -185,13 +211,13 @@ def main(
     required=False,
     type=click.STRING,
 )
-@add_options(settings_options)
+@add_options(main_options)
 @load_settings
 def workedon(stuff: tuple[str, ...], **kwargs: Any) -> None:
     """
     Specify what you worked on, with optional date/time. See workedon --help.
     """
-    save_work(stuff)
+    save_work(stuff, kwargs["tags"])
 
 
 @main.command()
@@ -334,6 +360,14 @@ def workedon(stuff: tuple[str, ...], **kwargs: Any) -> None:
     show_default=True,
     help="Output the work log text only.",
 )
+@click.option(
+    "--tag",
+    required=False,
+    default="",
+    show_default=True,
+    type=click.STRING,
+    help="Tag to filter by.",
+)
 @add_options(settings_options)
 @load_settings
 def what(
@@ -350,6 +384,7 @@ def what(
     no_page: bool,
     reverse: bool,
     text_only: bool,
+    tag: str,
     **kwargs: Any,
 ) -> None:
     """
@@ -374,6 +409,7 @@ def what(
         no_page,
         reverse,
         text_only,
+        tag,
     )
 
 

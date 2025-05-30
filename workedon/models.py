@@ -1,10 +1,19 @@
 from collections.abc import Generator
 import contextlib
 from pathlib import Path
+from typing import Any
 import zoneinfo
 
 import click
-from peewee import CharField, DateTimeField, Model, SqliteDatabase, TextField
+from peewee import (
+    CharField,
+    CompositeKey,
+    DateTimeField,
+    ForeignKeyField,
+    Model,
+    SqliteDatabase,
+    TextField,
+)
 from platformdirs import user_data_dir
 
 from .conf import settings
@@ -42,21 +51,6 @@ def get_or_create_db() -> SqliteDatabase:
 db: SqliteDatabase = get_or_create_db()
 
 
-@contextlib.contextmanager
-def init_db() -> Generator[None, None, None]:
-    """
-    Context manager to init
-    and close the database
-    """
-    if db.is_closed():
-        db.connect()
-    if not Work.table_exists():
-        Work.create_table()
-    yield
-    db.execute_sql("PRAGMA optimize;")
-    db.close()
-
-
 class Work(Model):
     """
     Model that represents a Work item
@@ -75,8 +69,8 @@ class Work(Model):
     )
 
     class Meta:
-        database = db
-        table_name = "work"
+        database: SqliteDatabase = db
+        table_name: str = "work"
 
     def __str__(self) -> str:
         """
@@ -95,3 +89,57 @@ class Work(Model):
             )
         # text only
         return f'{click.style(f"* {self.work}", bold=True, fg="white")}\n'
+
+
+class Tag(Model):
+    """
+    Model that represents a Tag item
+    """
+
+    name: CharField = CharField(primary_key=True, null=False)
+
+    class Meta:
+        database: SqliteDatabase = db
+        table_name: str = "tag"
+
+    def __str__(self) -> str:
+        return f'{click.style(f"* {self.name}", fg="white")}\n'
+
+
+class WorkTag(Model):
+    """
+    Intermediate model to represent
+    many-to-many relationship between
+    Work and Tag models.
+    """
+
+    work: ForeignKeyField = ForeignKeyField(Work, backref="tags")
+    tag: ForeignKeyField = ForeignKeyField(Tag, backref="works")
+
+    class Meta:
+        database: SqliteDatabase = db
+        table_name: str = "work_tag"
+        primary_key: CompositeKey = CompositeKey("work", "tag")
+
+
+_models: list[type[Model]] = [Work, Tag, WorkTag]
+
+
+def truncate_all_tables(**options: dict[str, Any]) -> None:
+    for model in reversed(_models):
+        model.truncate_table(**options)
+
+
+@contextlib.contextmanager
+def init_db() -> Generator[SqliteDatabase]:
+    """
+    Context manager to init
+    and close the database
+    """
+    if db.is_closed():
+        db.connect()
+    # creates tables, indexes, sequences
+    db.create_tables(_models, safe=True)
+    yield db
+    db.execute_sql("PRAGMA optimize;")
+    db.close()

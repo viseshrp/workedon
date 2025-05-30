@@ -8,5 +8,5 @@ SETTINGS_HEADER: Final[
 # See https://github.com/viseshrp/workedon#settings for more information.
 #
 """
-CURRENT_DB_VERSION: Final[int] = 1
+CURRENT_DB_VERSION: Final[int] = 2
 WORK_CHUNK_SIZE: Final[int] = 100
