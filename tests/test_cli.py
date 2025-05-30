@@ -47,7 +47,7 @@ def test_version(options: list[str]) -> None:
 
 
 def test_empty_fetch() -> None:
-    result = CliRunner().invoke(cli.what)
+    result = CliRunner().invoke(cli.what, ["--no-page"])
     assert result.exit_code == 0
     assert "Nothing to show" in result.output
 
@@ -73,7 +73,7 @@ def test_save_and_fetch(work: list[tuple[str, str]]) -> None:
         verify_work_output(result, description)
         assert result.output.startswith("Work saved.")
 
-        result = CliRunner().invoke(cli.what)
+        result = CliRunner().invoke(cli.what, ["--no-page"])
         verify_work_output(result, description)
 
 
@@ -91,7 +91,7 @@ def test_save_and_fetch_last(work: tuple[str, str], option: list[str], valid: bo
     verify_work_output(result, description)
     assert result.output.startswith("Work saved.")
 
-    result = CliRunner().invoke(cli.what, option)
+    result = CliRunner().invoke(cli.what, ["--no-page", *option])
     if valid:
         verify_work_output(result, description)
     else:
@@ -116,7 +116,7 @@ def test_save_and_fetch_id(work: tuple[str, str], option: list[str]) -> None:
     assert match, "No id found in save output"
     work_id = match.group(1)
 
-    result = CliRunner().invoke(cli.what, [*option, work_id])
+    result = CliRunner().invoke(cli.what, ["--no-page", *option, work_id])
     verify_work_output(result, description)
 
 
@@ -138,7 +138,7 @@ def test_save_and_fetch_date_opt_env(opt: str, env: str, monkeypatch: pytest.Mon
     if opt:
         opts = [opt, strp_string]
 
-    result = CliRunner().invoke(cli.what, opts)
+    result = CliRunner().invoke(cli.what, ["--no-page", *opts])
     match = re.search(r"Date:\s+(.*)\n", result.output)
     assert match, "Date line not found"
     date_text = match.group(1)
@@ -166,7 +166,7 @@ def test_save_and_fetch_timezone_opt_env(
     if opt:
         opts = [opt, tz]
 
-    result = CliRunner().invoke(cli.what, opts)
+    result = CliRunner().invoke(cli.what, ["--no-page", *opts])
     assert "+0900" in result.output or "JST" in result.output
 
 
@@ -210,8 +210,8 @@ def test_save_and_fetch_timezone_opt_env(
             ("learning to cook", " @ 3pm yesterday"),
             ["-f", "2 days ago", "-t", "3:05pm yesterday"],
         ),
-        (("watching tv", " @ 9am"), ["-g"]),
-        (("taking wife shopping", " @ 3pm"), ["--no-page"]),
+        (("watching tv", " @ 9am"), []),
+        (("taking wife shopping", " @ 3pm"), []),
     ],
 )
 def test_save_and_fetch_others(work: tuple[str, str], option: list[str]) -> None:
@@ -220,7 +220,7 @@ def test_save_and_fetch_others(work: tuple[str, str], option: list[str]) -> None
     verify_work_output(result, description)
     assert result.output.startswith("Work saved.")
 
-    result = CliRunner().invoke(cli.what, option)
+    result = CliRunner().invoke(cli.what, ["--no-page", *option])
     verify_work_output(result, description)
 
 
@@ -238,7 +238,7 @@ def test_save_and_fetch_reverse(work: list[str], option: list[str]) -> None:
         verify_work_output(result, w)
         assert result.output.startswith("Work saved.")
     # fetch reversed
-    result = CliRunner().invoke(cli.what, option)
+    result = CliRunner().invoke(cli.what, ["--no-page", *option])
     assert result.exit_code == 0
     assert work[1] not in result.output
 
@@ -261,11 +261,11 @@ def test_save_and_fetch_delete(
     verify_work_output(result, description)
     assert result.output.startswith("Work saved.")
 
-    result = CliRunner().invoke(cli.what, option_del, input="y")
+    result = CliRunner().invoke(cli.what, ["--no-page", *option_del] , input="y")
     assert result.exit_code == 0
     assert "deleted successfully" in result.output
 
-    result = CliRunner().invoke(cli.what, option_what)
+    result = CliRunner().invoke(cli.what, ["--no-page", *option_what])
     assert result.exit_code == 0
     assert "Nothing to show" in result.output
 
@@ -277,7 +277,7 @@ def test_save_and_fetch_delete(
     ],
 )
 def test_save_and_fetch_delete_empty(option: list[str]) -> None:
-    result = CliRunner().invoke(cli.what, option)
+    result = CliRunner().invoke(cli.what, ["--no-page", *option])
     assert result.exit_code == 0
     assert "Nothing to delete" in result.output
 
@@ -295,7 +295,7 @@ def test_save_and_fetch_textonly(work: tuple[str, str], option: list[str]) -> No
     verify_work_output(result, description)
     assert result.output.startswith("Work saved.")
 
-    result = CliRunner().invoke(cli.what, option)
+    result = CliRunner().invoke(cli.what, ["--no-page", *option])
     assert result.exit_code == 0
     assert f"* {description}" in result.output
     assert "id:" not in result.output
@@ -343,7 +343,7 @@ def test_db_truncate(work: tuple[str, str], option_db: list[str], option_what: l
     assert result.exit_code == 0
     assert "Deletion successful." in result.output
 
-    result = CliRunner().invoke(cli.what, option_what)
+    result = CliRunner().invoke(cli.what, ["--no-page", *option_what])
     assert result.exit_code == 0
     assert "Nothing to show" in result.output
 
@@ -440,7 +440,7 @@ def test_save_and_fetch_start_absent(work: tuple[str, str], option: list[str]) -
     verify_work_output(result, description)
     assert result.output.startswith("Work saved.")
 
-    result = CliRunner().invoke(cli.what, option)
+    result = CliRunner().invoke(cli.what, ["--no-page", *option])
     assert result.exit_code == 1
     assert description not in result.output
     assert exceptions.StartDateAbsentError.detail in result.output
@@ -458,7 +458,7 @@ def test_save_and_fetch_start_greater(work: tuple[str, str], option: list[str]) 
     verify_work_output(result, description)
     assert result.output.startswith("Work saved.")
 
-    result = CliRunner().invoke(cli.what, option)
+    result = CliRunner().invoke(cli.what, ["--no-page", *option])
     assert result.exit_code == 1
     assert description not in result.output
     assert exceptions.StartDateGreaterError.detail in result.output
@@ -476,7 +476,7 @@ def test_save_and_fetch_zero_count(work: tuple[str, str], option: list[str]) -> 
     verify_work_output(result, description)
     assert result.output.startswith("Work saved.")
 
-    result = CliRunner().invoke(cli.what, option)
+    result = CliRunner().invoke(cli.what, ["--no-page", *option])
     assert result.exit_code == 1
     assert description not in result.output
     assert exceptions.CannotFetchWorkError.detail in result.output
