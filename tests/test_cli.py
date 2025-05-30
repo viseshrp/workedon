@@ -261,7 +261,7 @@ def test_save_and_fetch_delete(
     verify_work_output(result, description)
     assert result.output.startswith("Work saved.")
 
-    result = CliRunner().invoke(cli.what, ["--no-page", *option_del] , input="y")
+    result = CliRunner().invoke(cli.what, ["--no-page", *option_del], input="y")
     assert result.exit_code == 0
     assert "deleted successfully" in result.output
 
