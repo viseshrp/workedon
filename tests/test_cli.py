@@ -181,12 +181,40 @@ def test_timezone_option(
 @pytest.mark.parametrize(
     "command, flag",
     [
-        ("calling 911", ["--count", "1"]),
-        ("yard work @ friday", ["--on", "friday"]),
-        ("learning guitar @ 9pm friday", ["--at", "9pm friday"]),
+        ("calling 911", ["--count", "1"]),  # 18
+        ("weights at the gym", ["--count", "1"]),  # 19
+        ("yard work at home @ 3pm friday", ["--on", "friday"]),  # 20
+        ("learning guitar @ 9pm friday", ["--at", "9pm friday"]),  # 21
+        (
+            "gaining Indian Independence @ 1pm August 15 1947",
+            ["--since", "1947", "-r", "-n", "1"],
+        ),  # 22
+        ("framing a photo @ 1:34pm yesterday", ["--yesterday"]),  # 23
+        ("taking pictures @ 12:34pm yesterday", ["-e"]),  # 24
+        ("training for a 4k", ["--today"]),  # 25
+        ("training for a 10k", ["-o"]),  # 26
+        ("setting up my homelab @ 1 hour ago", ["--past-day"]),  # 27
+        ("setting up my garden @ 2 hours ago", ["-d"]),  # 28
+        ("setting up my garage @ 2pm 6 days ago", ["--past-week", "-r", "-n", "1"]),  # 29
+        ("setting up my kitchen @ 1pm 6 days ago", ["-w", "-r", "-n", "1"]),  # 30
+        ("cleaning my car @ 2pm 27 days ago", ["--past-month", "-r", "-n", "1"]),  # 31
+        ("vacuuming my car @ 1pm 27 days ago", ["-m", "-r", "-n", "1"]),  # 32
+        ("learning to make sushi @ 2pm 360 days ago", ["--past-year", "-r", "-n", "1"]),  # 33
+        ("learning to brew soy sauce @ 1pm 360 days ago", ["-y", "-r", "-n", "1"]),  # 34
+        (
+            "learning to drive @ 3pm June 3rd 2020",
+            ["--from", "June 2nd 2020", "--to", "June 4th 2020"],
+        ),  # 35
+        ("learning to cook @ 3pm yesterday", ["-f", "2 days ago", "-t", "3:05pm yesterday"]),  # 36
+        ("watching tv @ 9am", ["-g"]),  # 37
+        ("taking wife shopping @ 3pm", ["--no-page"]),  # 38
+        (
+            "weights at the gym",
+            ["--count", "1"],
+        ),  # (duplicate “weights at the gym” if you want to test both)
     ],
 )
-def test_various_filters(runner: CliRunner, command: str, flag: list[str]) -> None:
+def test_save_and_fetch_others(runner: CliRunner, command: str, flag: list[str]) -> None:
     description = command.split(" @")[0]
     save_and_verify(runner, command, description)
 
