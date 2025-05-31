@@ -105,8 +105,6 @@ def test_fetch_last(runner: CliRunner, command: str, description: str, valid: bo
 
 def test_fetch_by_id(runner: CliRunner) -> None:
     description = "recording a demo"
-    save_and_verify(runner, description, description)
-
     # extract ID
     save_result = runner.invoke(cli.main, description).output
     match = re.search(r"id:\s+([0-9a-f]{32})", save_result)
@@ -285,14 +283,57 @@ def test_db_version(runner: CliRunner, options: list[str]) -> None:
     assert result.output.startswith("SQLite version:")
 
 
-@pytest.mark.parametrize("options", [["--print-settings-path"]])
-def test_conf_print_path(
-    runner: CliRunner, capsys: pytest.CaptureFixture[str], options: list[str]
+@pytest.mark.parametrize(
+    "command, description",
+    [
+        # we need at least one row in the DB before truncating
+        ("some one-off task", "some one-off task"),
+    ],
+)
+def test_db_truncate(
+    runner: CliRunner,
+    command: str,
+    description: str,
 ) -> None:
-    with capsys.disabled():
-        result = runner.invoke(cli.main, options)
-        assert result.exit_code == 0
-        assert "wonfile.py" in result.output
+    save_result = runner.invoke(cli.main, command.split())
+    assert save_result.exit_code == 0
+    assert "Work saved." in save_result.output
+    assert description in save_result.output
+
+    truncate_result = runner.invoke(cli.main, ["--truncate-db"], input="y\n")
+    assert truncate_result.exit_code == 0
+    assert "Deletion successful." in truncate_result.output
+
+    post_truncate = runner.invoke(cli.what, ["--no-page", "--last"])
+    assert post_truncate.exit_code == 0
+    assert "Nothing to show" in post_truncate.output
+
+
+def test_db_truncate_declined(runner: CliRunner) -> None:
+    # Save something so DB is non-empty:
+    runner.invoke(cli.main, ["temporary", "job"])
+
+    # Invoke "--truncate-db" but answer "n"
+    result = runner.invoke(cli.main, ["--truncate-db"], input="n\n")
+    # We expect exit_code==0 (Click returns 0 even if the user says “no”),
+    # and no "Deletion successful."
+    assert result.exit_code == 0
+    assert "Deletion successful." not in result.output
+
+    # There should still be data in the DB:
+    still_there = runner.invoke(cli.what, ["--no-page", "--last"])
+    assert still_there.exit_code == 0
+    assert "temporary job" in still_there.output
+
+
+# -- Settings -------------------------------------------------------
+
+
+@pytest.mark.parametrize("options", [["--print-settings-path"]])
+def test_conf_print_path(runner: CliRunner, options: list[str]) -> None:
+    result = runner.invoke(cli.main, options)
+    assert result.exit_code == 0
+    assert "wonfile.py" in result.output
 
 
 @pytest.mark.parametrize("options", [["--print-settings"]])
@@ -324,16 +365,20 @@ def test_invalid_input(runner: CliRunner, command: str, exception_detail: str) -
 @pytest.mark.parametrize(
     "flags, detail",
     [
+        # (start > end) → StartDateGreaterError
         (
             ["--no-page", "--from", "3pm yesterday", "-t", "3pm 5 days ago"],
             exceptions.StartDateGreaterError.detail,
         ),
+        # (start in the future) → DateTimeInFutureError
         (["--no-page", "--from", "3pm tomorrow"], exceptions.DateTimeInFutureError.detail),
+        # (count == 0) → CannotFetchWorkError
         (["--no-page", "--count", "0"], exceptions.CannotFetchWorkError.detail),
+        # <------ “--to” without any “--from” ------>
+        (["--no-page", "--to", "3pm yesterday"], exceptions.StartDateAbsentError.detail),
     ],
 )
 def test_fetch_errors(runner: CliRunner, flags: list[str], detail: str) -> None:
-    # First save a valid entry
     save_and_verify(runner, "doing taxes @ 9pm yesterday", "doing taxes")
     result = runner.invoke(cli.what, flags)
     assert result.exit_code == 1
