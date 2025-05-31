@@ -159,17 +159,17 @@ def fetch_work(
                     click.echo("Nothing to delete.")
                 return
 
-            if work_count == 1:
-                click.echo(work_set[0], nl=False)
-            elif work_count > 1:
-                if no_page:
-                    for work in work_set:
-                        click.echo(work, nl=False)
-                else:
-                    gen = work_set.iterator()
-                    click.echo_via_pager(_generate_work(gen))
-            else:
+            if work_count == 0:
                 click.echo("Nothing to show, slacker.")
+                return
+
+            if work_count == 1 or no_page:
+                for work in work_set:
+                    click.echo(work, nl=False)
+            else:
+                gen = work_set.iterator()
+                click.echo_via_pager(_generate_work(gen))
+
     except Exception as e:
         raise CannotFetchWorkError(extra_detail=str(e)) from e
 
