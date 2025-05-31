@@ -36,7 +36,7 @@ def save_work(work: tuple[str, ...], tags: tuple[str, ...]) -> None:
                 work_ = Work.create(**data)
                 for tag in tags_:
                     tag_, _ = Tag.get_or_create(name=tag)
-                    WorkTag.create(work=work_.uuid, tag=tag_.name)
+                    WorkTag.create(work=work_.uuid, tag=tag_.uuid)
             click.echo("Work saved.\n")
             click.echo(work_, nl=False)
     except Exception as e:
