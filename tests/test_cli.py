@@ -338,3 +338,21 @@ def test_fetch_errors(runner: CliRunner, flags: list[str], detail: str) -> None:
     result = runner.invoke(cli.what, flags)
     assert result.exit_code == 1
     assert detail in result.output
+
+
+# -- Tagging ------------------------------------------------------------
+
+
+def test_cli_tags(runner: CliRunner) -> None:
+    description_with_tags = "fixing issue #bug #urgent @ 2pm yesterday"
+    result_save = runner.invoke(cli.main, description_with_tags.split())
+    assert result_save.exit_code == 0, result_save.output
+    assert result_save.output.startswith("Work saved.")
+
+    fetch_args = ["--no-page", "--since", "2 weeks ago"]
+    result_fetch = runner.invoke(cli.what, fetch_args)
+    assert result_fetch.exit_code == 0, result_fetch.output
+
+    assert "fixing issue" in result_fetch.output
+    assert "bug" in result_fetch.output
+    assert "urgent" in result_fetch.output
