@@ -10,6 +10,7 @@ from peewee import (
     CompositeKey,
     DateTimeField,
     ForeignKeyField,
+    IntegerField,
     Model,
     SqliteDatabase,
     TextField,
@@ -17,7 +18,7 @@ from peewee import (
 from platformdirs import user_data_dir
 
 from .conf import settings
-from .constants import APP_NAME, CURRENT_DB_VERSION
+from .constants import APP_NAME
 from .utils import get_default_time, get_unique_hash
 
 DB_PATH: Path = Path(user_data_dir(APP_NAME, roaming=True)) / "won.db"
@@ -43,7 +44,6 @@ def _get_or_create_db() -> SqliteDatabase:
             "automatic_index": 1,
             "temp_store": "MEMORY",
             "analysis_limit": 1000,
-            "user_version": CURRENT_DB_VERSION,  # todo: use for migrations
         },
     )
 
@@ -67,6 +67,7 @@ class Work(Model):
         index=True,
         default=get_default_time,
     )
+    duration: IntegerField = IntegerField(null=True, default=None)
 
     class Meta:
         database: SqliteDatabase = db
@@ -79,19 +80,22 @@ class Work(Model):
         """
         if self.timestamp and self.uuid:
             user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.TIME_ZONE))
-            timestamp = user_time.strftime(
+            timestamp_str = user_time.strftime(
                 settings.DATETIME_FORMAT or f"{settings.DATE_FORMAT} {settings.TIME_FORMAT}"
             )
-            tag_set = list(self.tags.order_by(WorkTag.tag.name))
-            tags_str = ", ".join([t.tag.name for t in tag_set])
+            tags = [t.tag.name for t in self.tags.order_by(WorkTag.tag.name)]
+            tags_str = f"Tags: {', '.join(tags)}\n" if tags else ""
+            duration_str = f"Duration: {self.duration} mins\n" if self.duration is not None else ""
+
             return (
                 f'{click.style(f"id: {self.uuid}", fg="green")}\n'
-                f'{click.style(f"Date: {timestamp}")}\n'
-                f'{click.style("Tags: " + tags_str)}\n'
+                f'{click.style(f"Date: {timestamp_str}")}\n'
+                f"{click.style(tags_str)}"
+                f"{click.style(duration_str)}"
                 f'\t{click.style(self.work, bold=True, fg="white")}\n\n'
             )
 
-        # text only
+        # text-only fallback
         return f'{click.style(f"* {self.work}", bold=True, fg="white")}\n'
 
 
@@ -136,6 +140,22 @@ _models: list[type[Model]] = [Work, Tag, WorkTag]
 def truncate_all_tables(**options: dict[str, Any]) -> None:
     for model in reversed(_models):
         model.truncate_table(**options)
+
+
+def _get_db_user_version(database: SqliteDatabase) -> int:
+    """
+    Return the current PRAGMA user_version from an open connection.
+    """
+    cursor = database.execute_sql("PRAGMA user_version;")
+    row = cursor.fetchone()
+    return row[0] if row else 0
+
+
+def _set_db_user_version(database: SqliteDatabase, version: int) -> None:
+    """
+    Set the PRAGMA user_version to the given version.
+    """
+    database.execute_sql(f"PRAGMA user_version = {version};")
 
 
 @contextlib.contextmanager
