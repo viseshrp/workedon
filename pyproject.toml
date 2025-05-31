@@ -146,6 +146,7 @@ target-version = "py39"
 line-length = 100
 fix = true
 exclude = [".venv", "__init__.py"]
+unsafe-fixes = true
 
 [tool.ruff.lint]
 fixable = ["ALL"]
