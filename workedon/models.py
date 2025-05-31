@@ -23,7 +23,7 @@ from .utils import get_default_time, get_unique_hash
 DB_PATH: Path = Path(user_data_dir(APP_NAME, roaming=True)) / "won.db"
 
 
-def get_or_create_db() -> SqliteDatabase:
+def _get_or_create_db() -> SqliteDatabase:
     """
     Create the database and return the connection
     """
@@ -48,7 +48,7 @@ def get_or_create_db() -> SqliteDatabase:
     )
 
 
-db: SqliteDatabase = get_or_create_db()
+db: SqliteDatabase = _get_or_create_db()
 
 
 class Work(Model):

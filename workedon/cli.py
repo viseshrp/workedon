@@ -9,7 +9,7 @@ from click_default_group import DefaultGroup
 
 from ._version import __version__ as _ver
 from .conf import CONF_PATH, settings
-from .models import DB_PATH, get_or_create_db, init_db, truncate_all_tables
+from .models import DB_PATH, init_db, truncate_all_tables
 from .utils import add_options, load_settings
 from .workedon import fetch_tags, fetch_work, save_work
 
@@ -180,8 +180,8 @@ def main(
         click.echo(DB_PATH)
     elif vacuum_db:
         click.echo("Performing VACUUM...")
-        with init_db():
-            get_or_create_db().execute_sql("VACUUM;")
+        with init_db() as db:
+            db.execute_sql("VACUUM;")
         click.echo("VACUUM complete.")
     elif truncate_db:
         if click.confirm("Continue deleting all saved data? There's no going back."):
@@ -190,8 +190,9 @@ def main(
                 truncate_all_tables()
             click.echo("Deletion successful.")
     elif db_version:
-        server_version = ".".join(str(num) for num in get_or_create_db().server_version)
-        click.echo(f"SQLite version: {server_version}")
+        with init_db() as db:
+            server_version = ".".join(str(num) for num in db.server_version)
+            click.echo(f"SQLite version: {server_version}")
     elif print_settings:
         for key, value in settings.items():
             if key.isupper():
