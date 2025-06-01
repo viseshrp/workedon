@@ -12,13 +12,16 @@ from peewee import (
     ForeignKeyField,
     IntegerField,
     Model,
+    OperationalError,
     SqliteDatabase,
     TextField,
 )
 from platformdirs import user_data_dir
+from playhouse.migrate import SqliteMigrator, migrate
 
 from .conf import settings
-from .constants import APP_NAME
+from .constants import APP_NAME, CURRENT_DB_VERSION
+from .exceptions import DBInitializationError
 from .utils import get_default_time, get_unique_hash
 
 DB_PATH: Path = Path(user_data_dir(APP_NAME, roaming=True)) / "won.db"
@@ -48,7 +51,7 @@ def _get_or_create_db() -> SqliteDatabase:
     )
 
 
-db: SqliteDatabase = _get_or_create_db()
+_db: SqliteDatabase = _get_or_create_db()
 
 
 class Work(Model):
@@ -68,10 +71,6 @@ class Work(Model):
         default=get_default_time,
     )
     duration: IntegerField = IntegerField(null=True, default=None)
-
-    class Meta:
-        database: SqliteDatabase = db
-        table_name: str = "work"
 
     def __str__(self) -> str:
         """
@@ -98,6 +97,10 @@ class Work(Model):
         # text-only fallback
         return f'{click.style(f"* {self.work}", bold=True, fg="white")}\n'
 
+    class Meta:
+        database: SqliteDatabase = _db
+        table_name: str = "work"
+
 
 class Tag(Model):
     """
@@ -111,7 +114,7 @@ class Tag(Model):
     )
 
     class Meta:
-        database: SqliteDatabase = db
+        database: SqliteDatabase = _db
         table_name: str = "tag"
 
     def __str__(self) -> str:
@@ -129,7 +132,7 @@ class WorkTag(Model):
     tag: ForeignKeyField = ForeignKeyField(Tag, backref="works")
 
     class Meta:
-        database: SqliteDatabase = db
+        database: SqliteDatabase = _db
         table_name: str = "work_tag"
         primary_key: CompositeKey = CompositeKey("work", "tag")
 
@@ -158,16 +161,59 @@ def _set_db_user_version(database: SqliteDatabase, version: int) -> None:
     database.execute_sql(f"PRAGMA user_version = {version};")
 
 
+def _create_initial_tables(database: SqliteDatabase) -> None:
+    """
+    If this is a brand-new database (user_version = 0),
+    create all tables (Work, Tag, WorkTag) in one shot.
+    Then set user_version = CURRENT_DB_VERSION (3).
+    """
+    database.create_tables(_models, safe=True)
+    _set_db_user_version(database, CURRENT_DB_VERSION)
+
+
+def _migrate_v1_to_v2(database: SqliteDatabase) -> None:
+    """
+    Migrate from v1 → v2: create Tag & WorkTag tables.
+    Then bump to v2.
+    """
+    # Create Tag and WorkTag tables
+    database.create_tables([Tag, WorkTag], safe=True)
+    # Create the duration column in Work table
+    migrator = SqliteMigrator(database)
+    migrate(migrator.add_column("work", "duration", Work._meta.fields["duration"]))
+    # bump the version to 2
+    _set_db_user_version(database, 2)
+
+
+def _apply_pending_migrations(database: SqliteDatabase) -> None:
+    """
+    Check PRAGMA user_version on the disk.
+    - If it's 0, do the initial create (v0 → v2 in one shot).
+    - Else if it's 1, run v1 -> v2.
+    """
+    try:
+        existing_version = _get_db_user_version(database)
+        # fresh new install
+        if existing_version == 0:
+            _create_initial_tables(database)
+            return
+        # v1
+        if existing_version < 2:
+            _migrate_v1_to_v2(database)
+    except OperationalError as e:
+        raise DBInitializationError(extra_detail=str(e)) from e
+
+
 @contextlib.contextmanager
 def init_db() -> Generator[SqliteDatabase]:
     """
     Context manager to init
     and close the database
     """
-    if db.is_closed():
-        db.connect()
-    # creates tables, indexes, sequences
-    db.create_tables(_models, safe=True)
-    yield db
-    db.execute_sql("PRAGMA optimize;")
-    db.close()
+    if _db.is_closed():
+        _db.connect()
+    # set the _db version if not set
+    _apply_pending_migrations(_db)
+    yield _db
+    _db.execute_sql("PRAGMA optimize;")
+    _db.close()

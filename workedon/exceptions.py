@@ -19,6 +19,14 @@ class WorkedOnError(Exception):
         return self.detail
 
 
+class DBInitializationError(WorkedOnError):
+    """
+    Exception raised if database could not be initialized
+    """
+
+    detail = "Unable to initialize the database."
+
+
 class CannotCreateSettingsError(WorkedOnError):
     """
     Exception raised if settings file could not be created
