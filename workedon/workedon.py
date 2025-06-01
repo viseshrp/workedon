@@ -26,10 +26,10 @@ def save_work(work: tuple[str, ...], tags: tuple[str, ...]) -> None:
     Save work from user input
     """
     work_desc = " ".join(work).strip()
-    text, dt, tags_ = InputParser().parse(work_desc)
+    work_text, dt, duration, tags_ = InputParser().parse(work_desc)
     if tags:
         tags_.update(set(tags))
-    data: dict[str, Any] = {"work": text, "timestamp": to_internal_dt(dt)}
+    data: dict[str, Any] = {"work": work_text, "timestamp": to_internal_dt(dt), "duration": duration}
     try:
         with init_db() as db:
             with db.atomic():

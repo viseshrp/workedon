@@ -91,7 +91,7 @@ class Work(Model):
                 f'{click.style(f"Date: {timestamp_str}")}\n'
                 f"{click.style(tags_str)}"
                 f"{click.style(duration_str)}"
-                f'\t{click.style(self.work, bold=True, fg="white")}\n\n'
+                f'\n\t{click.style(self.work, bold=True, fg="white")}\n\n'
             )
 
         # text-only fallback
