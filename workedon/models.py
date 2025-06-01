@@ -77,7 +77,7 @@ class Work(Model):
         Format the object for display.
         Uses a git log like structure.
         """
-        if self.timestamp and self.uuid:
+        if self.uuid:
             user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.TIME_ZONE))
             timestamp_str = user_time.strftime(
                 settings.DATETIME_FORMAT or f"{settings.DATE_FORMAT} {settings.TIME_FORMAT}"

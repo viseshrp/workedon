@@ -369,6 +369,14 @@ def workedon(stuff: tuple[str, ...], **kwargs: Any) -> None:
     type=click.STRING,
     help="Tag to filter by.",
 )
+@click.option(
+    "--duration",
+    required=False,
+    default="",
+    show_default=True,
+    type=click.STRING,
+    help="Duration to filter by.",
+)
 @add_options(settings_options)
 @load_settings
 def what(
@@ -386,6 +394,7 @@ def what(
     reverse: bool,
     text_only: bool,
     tag: str,
+    duration: str,
     **kwargs: Any,
 ) -> None:
     """
@@ -411,6 +420,7 @@ def what(
         reverse,
         text_only,
         tag,
+        duration,
     )
 
 

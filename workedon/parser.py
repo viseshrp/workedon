@@ -47,11 +47,11 @@ class InputParser:
             raise DateTimeInFutureError()
         return parsed_dt
 
-    def parse_duration(self, work: str) -> int | None:
+    def parse_duration(self, input_str: str) -> int | None:
         """
-        Extracts the first duration from the work string and returns it in minutes.
+        Extracts the first duration from the input_str string and returns it in minutes.
         """
-        match = re.search(self._DURATION_REGEX, work, re.IGNORECASE)
+        match = re.search(self._DURATION_REGEX, input_str, re.IGNORECASE)
         if not match:
             return None
         value, unit = match.groups()
@@ -65,8 +65,8 @@ class InputParser:
             return round(value / 60)
         return None
 
-    def parse_tags(self, work: str) -> set[str]:
-        return set(re.findall(self._TAG_REGEX, work))
+    def parse_tags(self, input_str: str) -> set[str]:
+        return set(re.findall(self._TAG_REGEX, input_str))
 
     def clean_work(self, work: str) -> str:
         """
