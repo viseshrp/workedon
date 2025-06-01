@@ -113,6 +113,9 @@ Options:
                           WORKEDON_DATETIME_FORMAT]
   --time-zone TEXT        Set the timezone of the output. Must be a valid
                           timezone string.  [env var: WORKEDON_TIME_ZONE]
+  --duration-unit TEXT    Set the duration unit of the output. Must be one of:
+                          h/hr/hrs/hours, or m/min/mins/minutes or
+                          s/sec/secs/seconds.  [env var: WORKEDON_DURATION_UNIT]
   -h, --help              Show this message and exit.
 
 Commands:
@@ -160,6 +163,9 @@ Options:
                           WORKEDON_DATETIME_FORMAT]
   --time-zone TEXT        Set the timezone of the output. Must be a valid
                           timezone string.  [env var: WORKEDON_TIME_ZONE]
+  --duration-unit TEXT    Set the duration unit of the output. Must be one of:
+                          h/hr/hrs/hours, or m/min/mins/minutes or
+                          s/sec/secs/seconds.  [env var: WORKEDON_DURATION_UNIT]
   --help                  Show this message and exit.
 ```
 <!-- [[[end]]] -->

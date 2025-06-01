@@ -57,6 +57,18 @@ settings_options: list[Callable[..., Any]] = [
         show_envvar=True,
         help="Set the timezone of the output. Must be a valid timezone string.",
     ),
+    click.option(
+        "--duration-unit",
+        "DURATION_UNIT",
+        required=False,
+        default="",
+        type=click.STRING,
+        envvar="WORKEDON_DURATION_UNIT",
+        show_envvar=True,
+        help="Set the duration unit of the output. "
+        "Must be one of: m/min/mins/minutes or h/hr/hrs/hours. "
+        "Default is minutes.",
+    ),
 ]
 # other options
 main_options: list[Callable[..., Any]] = [
