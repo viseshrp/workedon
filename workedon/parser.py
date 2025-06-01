@@ -47,7 +47,7 @@ class InputParser:
             raise DateTimeInFutureError()
         return parsed_dt
 
-    def parse_duration(self, work: str) -> int:
+    def parse_duration(self, work: str) -> int | None:
         """
         Extracts the first duration from the work string and returns it in minutes.
         """
@@ -80,7 +80,7 @@ class InputParser:
         work = re.sub(r"\s+", " ", work).strip()
         return work
 
-    def parse(self, work_desc: str) -> tuple[str, datetime, str, set[str]]:
+    def parse(self, work_desc: str) -> tuple[str, datetime, int | None, set[str]]:
         if self._WORK_DATE_SEPARATOR in work_desc:
             work, _, date_time = work_desc.rpartition(self._WORK_DATE_SEPARATOR)
         else:
