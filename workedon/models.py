@@ -1,5 +1,7 @@
 from collections.abc import Generator
 import contextlib
+from decimal import Decimal, ROUND_HALF_UP
+from math import floor
 from pathlib import Path
 from typing import Any
 import zoneinfo
@@ -77,14 +79,24 @@ class Work(Model):
         Format the object for display.
         Uses a git log like structure.
         """
-        if self.uuid:
+        if self.uuid is not None:
             user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.TIME_ZONE))
             timestamp_str = user_time.strftime(
                 settings.DATETIME_FORMAT or f"{settings.DATE_FORMAT} {settings.TIME_FORMAT}"
             )
             tags = [t.tag.name for t in self.tags.order_by(WorkTag.tag.name)]
             tags_str = f"Tags: {', '.join(tags)}\n" if tags else ""
-            duration_str = f"Duration: {self.duration} mins\n" if self.duration is not None else ""
+
+            from decimal import Decimal, ROUND_DOWN
+
+            if self.duration is not None:
+                if settings.DURATION_UNIT in {"h", "hr", "hrs", "hours"}:
+                    duration = (Decimal(self.duration) / Decimal(60)).quantize(Decimal("0.01"), rounding=ROUND_DOWN)
+                else:
+                    duration = Decimal(self.duration)
+                duration_str = f"Duration: {duration} {settings.DURATION_UNIT}\n"
+            else:
+                duration_str = ""
 
             return (
                 f'{click.style(f"id: {self.uuid}", fg="green")}\n'

@@ -14,7 +14,9 @@ class InputParser:
     _date_parser: DateDataParser = None
     _WORK_DATE_SEPARATOR: Final[str] = "@"
     _TAG_REGEX: Final[str] = r"#([\w\d_-]+)"
-    _DURATION_REGEX = r"\[\s*(\d+(?:\.\d+)?)\s*(h|hr|hrs|m|min|mins|s|sec|secs)\s*\]"
+    _DURATION_REGEX: Final[str] = (
+        r"\[\s*(\d+(?:\.\d+)?)\s*(h|hr|hrs|hours|m|min|mins|minutes)\s*\]"
+    )
 
     def __init__(self) -> None:
         self._date_parser = DateDataParser(
@@ -55,14 +57,10 @@ class InputParser:
         if not match:
             return None
         value, unit = match.groups()
-        value = float(value)
+        value = int(value)
         unit = unit.lower()
-        if unit in {"h", "hr", "hrs"}:
-            return round(value * 60)
-        if unit in {"m", "min", "mins"}:
-            return round(value)
-        if unit in {"s", "sec", "secs"}:
-            return round(value / 60)
+        if unit in {"h", "hr", "hrs", "hours"}:
+            return int(round(value * 60))
         return None
 
     def parse_tags(self, input_str: str) -> set[str]:
