@@ -14,6 +14,9 @@ class InputParser:
     _date_parser: DateDataParser = None
     _WORK_DATE_SEPARATOR: Final[str] = "@"
     _TAG_REGEX: Final[str] = r"#([\w\d_-]+)"
+    _DURATION_REGEX: Final[str] = (
+        r"\[\s*(\d+(?:\.\d+)?)\s*(h|hr|hrs|hours|m|min|mins|minutes)\s*\]"
+    )
 
     def __init__(self) -> None:
         self._date_parser = DateDataParser(
@@ -46,24 +49,47 @@ class InputParser:
             raise DateTimeInFutureError()
         return parsed_dt
 
-    def parse_tags(self, work: str) -> set[str]:
-        return set(re.findall(self._TAG_REGEX, work))
+    def parse_duration(self, input_str: str) -> int | None:
+        """
+        Extracts the first duration from the input_str string and returns it in minutes.
+        """
+        match = re.search(self._DURATION_REGEX, input_str, re.IGNORECASE)
+        if not match:
+            return None
+        value, unit = match.groups()
+        value = int(value)
+        unit = unit.lower()
+        if unit in {"h", "hr", "hrs", "hours"}:
+            return int(round(value * 60))
+        return None
 
-    def parse(self, work_desc: str) -> tuple[str, datetime, set[str]]:
+    def parse_tags(self, input_str: str) -> set[str]:
+        return set(re.findall(self._TAG_REGEX, input_str))
+
+    def clean_work(self, work: str) -> str:
+        """
+        Cleans the work string by removing any duration and tags.
+        """
+        # remove duration
+        work = re.sub(self._DURATION_REGEX, "", work, count=1).strip()
+        # remove tags
+        work = re.sub(self._TAG_REGEX, "", work)
+        # collapse extra spaces
+        work = re.sub(r"\s+", " ", work).strip()
+        return work
+
+    def parse(self, work_desc: str) -> tuple[str, datetime, int | None, set[str]]:
         if self._WORK_DATE_SEPARATOR in work_desc:
             work, _, date_time = work_desc.rpartition(self._WORK_DATE_SEPARATOR)
         else:
             work, date_time = work_desc, ""
 
         work = work.strip()
-        date_time = date_time.strip()
+        dt = self.parse_datetime(date_time.strip())
+        duration = self.parse_duration(work)
         tags = self.parse_tags(work)
-        # remove any "#tag" tokens from the work string
-        work = re.sub(self._TAG_REGEX, "", work)
-        # collapse extra spaces
-        work = re.sub(r"\s+", " ", work).strip()
+        work = self.clean_work(work)
         if not work:
             raise InvalidWorkError
 
-        dt = self.parse_datetime(date_time)
-        return work, dt, tags
+        return work, dt, duration, tags
