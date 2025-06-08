@@ -51,7 +51,7 @@ class InputParser:
         """
         Extracts the first duration from the input_str string and returns it in minutes.
         """
-        match = re.search(self._DURATION_REGEX, input_str, re.IGNORECASE)
+        match = re.search(self._DURATION_REGEX, input_str, flags=re.IGNORECASE)
         if not match:
             return None
         value, unit = match.groups()
@@ -71,7 +71,7 @@ class InputParser:
         Cleans the work string by removing any duration and tags.
         """
         # remove duration
-        work = re.sub(self._DURATION_REGEX, "", work, count=1).strip()
+        work = re.sub(self._DURATION_REGEX, "", work, count=1, flags=re.IGNORECASE).strip()
         # remove tags
         work = re.sub(self._TAG_REGEX, "", work)
         # collapse extra spaces
