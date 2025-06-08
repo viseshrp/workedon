@@ -136,7 +136,7 @@ class WorkTag(Model):
     Work and Tag models.
     """
 
-    work: ForeignKeyField = ForeignKeyField(Work, backref="tags")
+    work: ForeignKeyField = ForeignKeyField(Work, backref="tags", on_delete="CASCADE")
     tag: ForeignKeyField = ForeignKeyField(Tag, backref="works")
 
     class Meta:
