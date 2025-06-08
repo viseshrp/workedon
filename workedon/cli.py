@@ -65,7 +65,7 @@ settings_options: list[Callable[..., Any]] = [
         type=click.STRING,
         envvar="WORKEDON_DURATION_UNIT",
         show_envvar=True,
-        help="Set the duration unit of the output. "
+        help="Set the unit of the duration output. "
         "Must be one of: m/min/mins/minutes or h/hr/hrs/hours. "
         "Default is minutes.",
     ),

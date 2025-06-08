@@ -1,7 +1,5 @@
 from collections.abc import Generator
 import contextlib
-from decimal import Decimal, ROUND_HALF_UP
-from math import floor
 from pathlib import Path
 from typing import Any
 import zoneinfo
@@ -11,8 +9,8 @@ from peewee import (
     CharField,
     CompositeKey,
     DateTimeField,
+    FloatField,
     ForeignKeyField,
-    IntegerField,
     Model,
     OperationalError,
     SqliteDatabase,
@@ -72,7 +70,7 @@ class Work(Model):
         index=True,
         default=get_default_time,
     )
-    duration: IntegerField = IntegerField(null=True, default=None)
+    duration: FloatField = FloatField(null=True, default=None)
 
     def __str__(self) -> str:
         """
@@ -87,13 +85,11 @@ class Work(Model):
             tags = [t.tag.name for t in self.tags.order_by(WorkTag.tag.name)]
             tags_str = f"Tags: {', '.join(tags)}\n" if tags else ""
 
-            from decimal import Decimal, ROUND_DOWN
-
             if self.duration is not None:
                 if settings.DURATION_UNIT in {"h", "hr", "hrs", "hours"}:
-                    duration = (Decimal(self.duration) / Decimal(60)).quantize(Decimal("0.01"), rounding=ROUND_DOWN)
-                else:
-                    duration = Decimal(self.duration)
+                    duration = round(self.duration / 60, 2)
+                else:  # default to minutes
+                    duration = self.duration
                 duration_str = f"Duration: {duration} {settings.DURATION_UNIT}\n"
             else:
                 duration_str = ""

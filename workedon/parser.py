@@ -14,9 +14,7 @@ class InputParser:
     _date_parser: DateDataParser = None
     _WORK_DATE_SEPARATOR: Final[str] = "@"
     _TAG_REGEX: Final[str] = r"#([\w\d_-]+)"
-    _DURATION_REGEX: Final[str] = (
-        r"\[\s*(\d+(?:\.\d+)?)\s*(h|hr|hrs|hours|m|min|mins|minutes)\s*\]"
-    )
+    _DURATION_REGEX: Final[str] = r"\[\s*(\d+(?:\.\d+)?)\s*(h|hr|hrs|hours|m|min|mins|minutes)\s*\]"
 
     def __init__(self) -> None:
         self._date_parser = DateDataParser(
@@ -49,7 +47,7 @@ class InputParser:
             raise DateTimeInFutureError()
         return parsed_dt
 
-    def parse_duration(self, input_str: str) -> int | None:
+    def parse_duration(self, input_str: str) -> float | None:
         """
         Extracts the first duration from the input_str string and returns it in minutes.
         """
@@ -57,10 +55,12 @@ class InputParser:
         if not match:
             return None
         value, unit = match.groups()
-        value = int(value)
+        value = float(value)
         unit = unit.lower()
         if unit in {"h", "hr", "hrs", "hours"}:
-            return int(round(value * 60))
+            return round(value * 60, 2)
+        elif unit in {"m", "min", "mins", "minutes"}:
+            return value
         return None
 
     def parse_tags(self, input_str: str) -> set[str]:
@@ -78,7 +78,7 @@ class InputParser:
         work = re.sub(r"\s+", " ", work).strip()
         return work
 
-    def parse(self, work_desc: str) -> tuple[str, datetime, int | None, set[str]]:
+    def parse(self, work_desc: str) -> tuple[str, datetime, float | None, set[str]]:
         if self._WORK_DATE_SEPARATOR in work_desc:
             work, _, date_time = work_desc.rpartition(self._WORK_DATE_SEPARATOR)
         else:
