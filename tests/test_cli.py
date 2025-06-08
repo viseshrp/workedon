@@ -480,7 +480,7 @@ def test_cli_tag_filter(
         ("filing returns [1.5hr]", "Duration: 90.0 min", ["--duration-unit", "min"]),
         ("gym workout [90min]", "Duration: 1.5 hr", ["--duration-unit", "hr"]),
         ("long call [2.25hours]", "Duration: 2.25 hr", ["--duration-unit", "hr"]),
-        ("fast errand [45m]", "Duration: 0.75 hr", ["--duration-unit", "hr"]),
+        ("fast errand [45m] [90m]", "Duration: 0.75 hr", ["--duration-unit", "hr"]),
         ("short nap [15MINS]", "Duration: 15.0 min", []),
     ],
 )
