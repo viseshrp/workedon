@@ -224,7 +224,7 @@ def test_save_and_fetch_others(runner: CliRunner, command: str, flag: list[str])
 
 
 def test_delete_work(runner: CliRunner) -> None:
-    description = "watching Modern Family"
+    description = "watching Modern Family #season1"
     timestamp = "@ 8:53am"
     save_and_verify(runner, f"{description} {timestamp}", description)
 
