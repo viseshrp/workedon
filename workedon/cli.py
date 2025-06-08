@@ -80,6 +80,14 @@ main_options: list[Callable[..., Any]] = [
         type=click.STRING,
         help="Tag to add to your work log.",
     ),
+    click.option(
+        "--duration",
+        "duration",
+        required=False,
+        default="",
+        type=click.STRING,
+        help="Duration to add to your work log.",
+    ),
     *settings_options,
 ]
 
@@ -230,7 +238,7 @@ def workedon(stuff: tuple[str, ...], **kwargs: Any) -> None:
     """
     Specify what you worked on, with optional date/time. See workedon --help.
     """
-    save_work(stuff, kwargs["tags"])
+    save_work(stuff, kwargs["tags"], kwargs["duration"])
 
 
 @main.command()
@@ -375,11 +383,11 @@ def workedon(stuff: tuple[str, ...], **kwargs: Any) -> None:
 )
 @click.option(
     "--tag",
+    "tags",
+    multiple=True,
     required=False,
-    default="",
-    show_default=True,
     type=click.STRING,
-    help="Tag to filter by.",
+    help="Tag to filter by. Can be used multiple times to filter by multiple tags.",
 )
 @click.option(
     "--duration",
@@ -405,7 +413,7 @@ def what(
     no_page: bool,
     reverse: bool,
     text_only: bool,
-    tag: str,
+    tags: tuple[str, ...],
     duration: str,
     **kwargs: Any,
 ) -> None:
@@ -431,7 +439,7 @@ def what(
         no_page,
         reverse,
         text_only,
-        tag,
+        tags,
         duration,
     )
 
