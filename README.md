@@ -102,6 +102,7 @@ Options:
   --print-settings        Print all the current settings, including defaults.
   --list-tags             Print all saved tags.
   --tag TEXT              Tag to add to your work log.
+  --duration TEXT         Duration to add to your work log.
   --date-format TEXT      Set the date format of the output. Must be a valid
                           Python strftime string.  [env var:
                           WORKEDON_DATE_FORMAT]
@@ -150,7 +151,8 @@ Options:
   --delete                Delete fetched work.
   -g, --no-page           Don't page the output.
   -l, --text-only         Output the work log text only.
-  --tag TEXT              Tag to filter by.  [default: ""]
+  --tag TEXT              Tag to filter by. Can be used multiple times to filter
+                          by multiple tags.
   --duration TEXT         Duration to filter by.  [default: ""]
   --date-format TEXT      Set the date format of the output. Must be a valid
                           Python strftime string.  [env var:
