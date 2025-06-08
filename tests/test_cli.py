@@ -209,7 +209,7 @@ def test_timezone_option(
         (
             "weights at the gym",
             ["--count", "1"],
-        ),  # (duplicate “weights at the gym” if you want to test both)
+        ),
     ],
 )
 def test_save_and_fetch_others(runner: CliRunner, command: str, flag: list[str]) -> None:
@@ -388,16 +388,105 @@ def test_fetch_errors(runner: CliRunner, flags: list[str], detail: str) -> None:
 # -- Tagging ------------------------------------------------------------
 
 
-def test_cli_tags(runner: CliRunner) -> None:
-    description_with_tags = "fixing issue #bug #urgent @ 2pm yesterday"
-    result_save = runner.invoke(cli.main, description_with_tags.split())
-    assert result_save.exit_code == 0, result_save.output
-    assert result_save.output.startswith("Work saved.")
+@pytest.mark.parametrize(
+    "input_text, expected_tags",
+    [
+        ("coding new feature #dev", {"dev"}),
+        ("daily standup #work #team", {"work", "team"}),
+        ("writing unit tests #TDD #QA", {"tdd", "qa"}),
+        ("prepping lunch #Home #MealPrep", {"home", "mealprep"}),
+        ("empty tag test #", set()),  # should be ignored
+        ("duplicate tags test #fun #fun #fun", {"fun"}),
+    ],
+)
+def test_cli_tag_parsing_and_display(
+    runner: CliRunner, input_text: str, expected_tags: set[str]
+) -> None:
+    result_save = runner.invoke(cli.main, input_text.split())
+    assert result_save.exit_code == 0
+    assert "Work saved." in result_save.output
 
-    fetch_args = ["--no-page", "--since", "2 weeks ago"]
-    result_fetch = runner.invoke(cli.what, fetch_args)
-    assert result_fetch.exit_code == 0, result_fetch.output
+    result_fetch = runner.invoke(cli.what, ["--no-page", "--last"])
+    assert result_fetch.exit_code == 0
 
-    assert "fixing issue" in result_fetch.output
-    assert "bug" in result_fetch.output
-    assert "urgent" in result_fetch.output
+    for tag in expected_tags:
+        assert tag.lower() in result_fetch.output.lower()
+
+
+@pytest.mark.parametrize(
+    "input_text, expected_tags",
+    [
+        ("tag with dash #in-progress", {"in-progress"}),
+        ("tag with underscore #code_review", {"code_review"}),
+        ("numeric tag #123", {"123"}),
+        ("alphanumeric mix #r2d2", {"r2d2"}),
+        ("non-word chars #cool! #$money", {"cool"}),  # `$money` ignored
+        ("emoji tag #🔥", set()),  # emoji-only tag ignored
+        ("weird spacing # spaced", {"spaced"}),  # space after `#` ignored
+        ("back-to-back #one#two#three", {"one", "two", "three"}),  # should catch all
+        ("URL in tag context #http123", {"http123"}),  # safe string
+        ("mixed case tags #Dev #DEV #dev", {"dev"}),  # normalized
+        ("invalid format tags ##double", {"double"}),  # invalid
+        ("edge #", set()),  # empty tag
+    ],
+)
+def test_weird_tag_parsing(runner: CliRunner, input_text: str, expected_tags: set[str]) -> None:
+    result_save = runner.invoke(cli.main, input_text.split())
+    assert result_save.exit_code == 0
+    assert "Work saved." in result_save.output
+
+    result_fetch = runner.invoke(cli.what, ["--no-page", "--last"])
+    assert result_fetch.exit_code == 0
+
+    for tag in expected_tags:
+        assert tag.lower() in result_fetch.output.lower()
+
+    if not expected_tags:
+        assert "Tags:" not in result_fetch.output
+
+
+# -- Duration ------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "input_text, expected_duration, xargs",
+    [
+        ("doing taxes [1h]", "Duration: 1.0 hr", ["--duration-unit", "hr"]),
+        ("filing returns [1.5hr]", "Duration: 90.0 min", ["--duration-unit", "min"]),
+        ("gym workout [90min]", "Duration: 1.5 hr", ["--duration-unit", "hr"]),
+        ("long call [2.25hours]", "Duration: 2.25 hr", ["--duration-unit", "hr"]),
+        ("fast errand [45m]", "Duration: 0.75 hr", ["--duration-unit", "hr"]),
+        ("short nap [15MINS]", "Duration: 15.0 min", []),
+    ],
+)
+def test_cli_duration_parsing_and_display(
+    runner: CliRunner, input_text: str, expected_duration: str, xargs: list
+) -> None:
+    result_save = runner.invoke(cli.main, input_text.split())
+    assert result_save.exit_code == 0
+    assert "Work saved." in result_save.output
+
+    result_fetch = runner.invoke(cli.what, ["--no-page", "--last", *xargs])
+    assert result_fetch.exit_code == 0
+    assert expected_duration in result_fetch.output
+
+
+@pytest.mark.parametrize(
+    "input_text",
+    [
+        "broken input [3x]",
+        "missing unit [123]",
+        "non-numeric [abcmin]",
+        "[1.2.3h]",
+        "empty brackets []",
+        "only unit [hrs]",
+    ],
+)
+def test_cli_malformed_durations_are_ignored(runner: CliRunner, input_text: str) -> None:
+    result_save = runner.invoke(cli.main, input_text.split())
+    assert result_save.exit_code == 0
+    assert "Work saved." in result_save.output
+
+    result_fetch = runner.invoke(cli.what, ["--no-page", "--last"])
+    assert result_fetch.exit_code == 0
+    assert "Duration:" not in result_fetch.output
