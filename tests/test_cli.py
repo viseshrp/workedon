@@ -445,6 +445,31 @@ def test_weird_tag_parsing(runner: CliRunner, input_text: str, expected_tags: se
         assert "Tags:" not in result_fetch.output
 
 
+@pytest.mark.parametrize(
+    "save_cmd, tag_flag, expect_match",
+    [
+        ("working on #devtools", ["--tag", "devtools"], True),
+        ("#in-progress cleanup", ["--tag", "in-progress"], True),
+        ("writing code #DEV", ["--tag", "dev"], False),  # case-insensitive
+        ("refactoring #code_review", ["--tag", "code_review"], True),
+        ("invalid ##doubletag", ["--tag", "doubletag"], True),
+        ("emoji #🔥", ["--tag", "🔥"], False),
+        ("no tags here", ["--tag", "nothing"], False),
+    ],
+)
+def test_cli_tag_filter(
+    runner: CliRunner, save_cmd: str, tag_flag: list[str], expect_match: bool
+) -> None:
+    result_save = runner.invoke(cli.main, save_cmd.split())
+    assert result_save.exit_code == 0
+
+    result_fetch = runner.invoke(cli.what, ["--no-page", *tag_flag])
+    if expect_match:
+        assert "Date:" in result_fetch.output
+    else:
+        assert "Nothing to show" in result_fetch.output
+
+
 # -- Duration ------------------------------------------------------------
 
 
@@ -490,3 +515,28 @@ def test_cli_malformed_durations_are_ignored(runner: CliRunner, input_text: str)
     result_fetch = runner.invoke(cli.what, ["--no-page", "--last"])
     assert result_fetch.exit_code == 0
     assert "Duration:" not in result_fetch.output
+
+
+@pytest.mark.parametrize(
+    "input_cmd, filter_flags, expect_match",
+    [
+        ("task1 [2h] @ 1pm", ["--duration", "=120m"], True),
+        ("task2 [90m] @ 2pm", ["--duration", "<2h"], True),
+        ("task3 [3h] @ 3pm", ["--duration", ">=3h"], True),
+        ("task4 [60m] @ 4pm", ["--duration", "<=1h"], True),
+        ("task5 [1.5h] @ 5pm", ["--duration", "=90m"], True),
+        ("task6 [45m] @ 6pm", ["--duration", ">1h"], False),
+        ("task7 [2h] @ 7pm", ["--duration", "<2h"], False),
+    ],
+)
+def test_cli_duration_filter(
+    runner: CliRunner, input_cmd: str, filter_flags: list[str], expect_match: bool
+) -> None:
+    result_save = runner.invoke(cli.main, input_cmd.split())
+    assert result_save.exit_code == 0
+
+    result_fetch = runner.invoke(cli.what, ["--no-page", *filter_flags])
+    if expect_match:
+        assert "Date:" in result_fetch.output
+    else:
+        assert "Nothing to show" in result_fetch.output
