@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 import datetime
+import operator as op
+import re
 from typing import Any
 
 import click
@@ -21,22 +23,32 @@ from .parser import InputParser
 from .utils import now, to_internal_dt
 
 
-def save_work(work: tuple[str, ...], tags: tuple[str, ...]) -> None:
+def save_work(work: tuple[str, ...], tags_opt: tuple[str, ...], duration_opt: str) -> None:
     """
     Save work from user input
     """
     work_desc = " ".join(work).strip()
-    text, dt, tags_ = InputParser().parse(work_desc)
-    if tags:
-        tags_.update(set(tags))
-    data: dict[str, Any] = {"work": text, "timestamp": to_internal_dt(dt)}
+    parser = InputParser()
+    work_text, dt, duration, tags = parser.parse(work_desc)
+    if tags_opt:
+        tags.update(set(tags_opt))
+    if duration_opt:
+        minutes = parser.parse_duration(f"[{duration_opt.strip()}]")
+        if minutes is not None:
+            duration = minutes
+
+    data: dict[str, Any] = {
+        "work": work_text,
+        "timestamp": to_internal_dt(dt),
+        "duration": duration,
+    }
     try:
         with init_db() as db:
             with db.atomic():
                 work_ = Work.create(**data)
-                for tag in tags_:
+                for tag in tags:
                     tag_, _ = Tag.get_or_create(name=tag)
-                    WorkTag.create(work=work_.uuid, tag=tag_.name)
+                    WorkTag.create(work=work_.uuid, tag=tag_.uuid)
             click.echo("Work saved.\n")
             click.echo(work_, nl=False)
     except Exception as e:
@@ -115,7 +127,8 @@ def fetch_work(
     no_page: bool,
     reverse: bool,
     text_only: bool,
-    tag: str,
+    tags: tuple[str, ...],
+    duration: str,
 ) -> None:
     """
     Fetch saved work filtered based on user input
@@ -123,7 +136,7 @@ def fetch_work(
     # filter fields
     fields = []
     if not delete:
-        fields = [Work.work] if text_only else [Work.uuid, Work.timestamp, Work.work]
+        fields = [Work.work] if text_only else [Work.uuid, Work.timestamp, Work.work, Work.duration]
 
     # initial set
     work_set = Work.select(*fields)
@@ -131,9 +144,27 @@ def fetch_work(
     if work_id:  # id
         work_set = work_set.where(Work.uuid == work_id)
     else:
-        if tag:
-            work_set = work_set.join(WorkTag).join(Tag).where(Tag.name == tag)
-        # date
+        # tag
+        if tags:
+            work_set = work_set.join(WorkTag).join(Tag).where(Tag.name.in_(tags)).distinct()
+        # duration
+        if duration:
+            # Match optional comparison operator and value (e.g., '>=3h', '<= 45min', '2h')
+            match = re.match(r"\s*(<=|>=|<|>|=)?\s*(.+)", duration)
+            if not match:
+                raise CannotFetchWorkError(extra_detail="Invalid duration filter")
+            comp_op, dur_str = match.groups()
+            comp_op = comp_op or "="
+            # Map string operator to Python operator
+            op_map = {"=": op.eq, "==": op.eq, ">": op.gt, "<": op.lt, ">=": op.ge, "<=": op.le}
+            if comp_op not in op_map:
+                raise CannotFetchWorkError(extra_detail=f"Invalid duration operator: {comp_op}")
+            minutes = InputParser().parse_duration(f"[{dur_str.strip()}]")
+            if minutes is None:
+                raise CannotFetchWorkError(extra_detail="Invalid duration value")
+            # Work.duration is assumed to be in minutes
+            work_set = work_set.where(op_map[comp_op](Work.duration, minutes))
+        # date range
         start, end = _get_date_range(start_date, end_date, since, period, on, at)
         if start and end:
             work_set = work_set.where((Work.timestamp >= start) & (Work.timestamp <= end))

@@ -4,10 +4,17 @@ from datetime import datetime
 import logging
 from pathlib import Path
 
+from click.testing import CliRunner
 from freezegun import freeze_time
 import pytest
 
 from workedon.models import DB_PATH
+
+
+@pytest.fixture
+def runner() -> CliRunner:
+    """Provides a Click CLI runner."""
+    return CliRunner()
 
 
 @pytest.fixture(autouse=True, scope="session")
