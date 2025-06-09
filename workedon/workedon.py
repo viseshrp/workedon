@@ -32,6 +32,8 @@ def save_work(work: tuple[str, ...], tags_opt: tuple[str, ...], duration_opt: st
     work_text, dt, duration, tags = parser.parse(work_desc)
     if tags_opt:
         tags.update(set(tags_opt))
+    tags = {tag.lower() for tag in tags}
+
     if duration_opt:
         minutes = parser.parse_duration(f"[{duration_opt.strip()}]")
         if minutes is not None:
@@ -146,11 +148,12 @@ def fetch_work(
     else:
         # tag
         if tags:
-            work_set = work_set.join(WorkTag).join(Tag).where(Tag.name.in_(tags)).distinct()
+            normalized = [t.lower() for t in tags]
+            work_set = work_set.join(WorkTag).join(Tag).where(Tag.name.in_(normalized)).distinct()
         # duration
         if duration:
             # Match optional comparison operator and value (e.g., '>=3h', '<= 45min', '2h')
-            match = re.match(r"\s*(<=|>=|<|>|=)?\s*(.+)", duration)
+            match = re.match(r"\s*(==|<=|>=|=|<|>)?\s*(.+)", duration)
             if not match:
                 raise CannotFetchWorkError(extra_detail="Invalid duration filter")
             comp_op, dur_str = match.groups()

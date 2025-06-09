@@ -280,7 +280,14 @@ def test_db_vacuum(runner: CliRunner, options: list[str]) -> None:
 def test_db_version(runner: CliRunner, options: list[str]) -> None:
     result = runner.invoke(cli.main, options)
     assert result.exit_code == 0
-    assert result.output.startswith("SQLite version:")
+    assert result.output.startswith("Database schema version: ")
+
+
+@pytest.mark.parametrize("options", [["--sqlite-version"]])
+def test_sqlite_version(runner: CliRunner, options: list[str]) -> None:
+    result = runner.invoke(cli.main, options)
+    assert result.exit_code == 0
+    assert result.output.startswith("SQLite version: ")
 
 
 @pytest.mark.parametrize(
@@ -450,7 +457,7 @@ def test_weird_tag_parsing(runner: CliRunner, input_text: str, expected_tags: se
     [
         ("working on #devtools", ["--tag", "devtools"], True),
         ("#in-progress cleanup", ["--tag", "in-progress"], True),
-        ("writing code #DEV", ["--tag", "dev"], False),  # case-insensitive
+        ("writing code #DEV", ["--tag", "dev"], True),  # case-insensitive
         ("refactoring #code_review", ["--tag", "code_review"], True),
         ("invalid ##doubletag", ["--tag", "doubletag"], True),
         ("emoji #🔥", ["--tag", "🔥"], False),
@@ -540,3 +547,17 @@ def test_cli_duration_filter(
         assert "Date:" in result_fetch.output
     else:
         assert "Nothing to show" in result_fetch.output
+
+
+@pytest.mark.parametrize(
+    "invalid_filter_flag",
+    [
+        ["--duration", "=>3h"],
+        ["--duration", "3hors"],
+        ["--duration", "3h<"],
+        ["--duration", "3x"],
+    ],
+)
+def test_invalid_duration_filter(runner: CliRunner, invalid_filter_flag: list[str]) -> None:
+    result = runner.invoke(cli.what, ["--no-page", *invalid_filter_flag])
+    assert result.exit_code == 1

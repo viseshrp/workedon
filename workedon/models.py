@@ -153,7 +153,7 @@ def truncate_all_tables(**options: dict[str, Any]) -> None:
         model.truncate_table(**options)
 
 
-def _get_db_user_version(database: SqliteDatabase) -> int:
+def get_db_user_version(database: SqliteDatabase) -> int:
     """
     Return the current PRAGMA user_version from an open connection.
     """
@@ -200,14 +200,23 @@ def _apply_pending_migrations(database: SqliteDatabase) -> None:
     - Else if it's 1, run v1 -> v2.
     """
     try:
-        existing_version = _get_db_user_version(database)
+        existing_version = get_db_user_version(database)
         # fresh new install
         if existing_version == 0:
             _create_initial_tables(database)
-            return
+            existing_version = get_db_user_version(database)
         # v1
         if existing_version < 2:
             _migrate_v1_to_v2(database)
+            existing_version = get_db_user_version(database)
+        # Add more future versions here...
+        # sanity check
+        if existing_version != CURRENT_DB_VERSION:
+            msg = (
+                f"Database schema mismatch after migration: expected {CURRENT_DB_VERSION},"
+                f" found {existing_version}"
+            )
+            raise DBInitializationError(extra_detail=msg)
     except OperationalError as e:
         raise DBInitializationError(extra_detail=str(e)) from e
 
