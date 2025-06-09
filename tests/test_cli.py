@@ -224,9 +224,9 @@ def test_save_and_fetch_others(runner: CliRunner, command: str, flag: list[str])
 
 
 def test_delete_work(runner: CliRunner) -> None:
-    description = "watching Modern Family #season1"
+    description = "watching Modern Family"
     timestamp = "@ 8:53am"
-    save_and_verify(runner, f"{description} {timestamp}", description)
+    save_and_verify(runner, f"{description} #season1 {timestamp}", description)
 
     # delete
     result = runner.invoke(cli.what, ["--no-page", "--at", "8:53am", "--delete"], input="y")
