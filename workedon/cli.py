@@ -9,7 +9,7 @@ from click_default_group import DefaultGroup
 
 from ._version import __version__ as _ver
 from .conf import CONF_PATH, settings
-from .models import DB_PATH, get_or_create_db, init_db, truncate_all_tables
+from .models import DB_PATH, init_db, truncate_all_tables
 from .utils import add_options, load_settings
 from .workedon import fetch_tags, fetch_work, save_work
 
@@ -57,6 +57,18 @@ settings_options: list[Callable[..., Any]] = [
         show_envvar=True,
         help="Set the timezone of the output. Must be a valid timezone string.",
     ),
+    click.option(
+        "--duration-unit",
+        "DURATION_UNIT",
+        required=False,
+        default="",
+        type=click.STRING,
+        envvar="WORKEDON_DURATION_UNIT",
+        show_envvar=True,
+        help="Set the unit of the duration output. "
+        "Must be one of: m/min/mins/minutes or h/hr/hrs/hours. "
+        "Default is minutes.",
+    ),
 ]
 # other options
 main_options: list[Callable[..., Any]] = [
@@ -67,6 +79,14 @@ main_options: list[Callable[..., Any]] = [
         required=False,
         type=click.STRING,
         help="Tag to add to your work log.",
+    ),
+    click.option(
+        "--duration",
+        "duration",
+        required=False,
+        default="",
+        type=click.STRING,
+        help="Duration to add to your work log.",
     ),
     *settings_options,
 ]
@@ -180,8 +200,8 @@ def main(
         click.echo(DB_PATH)
     elif vacuum_db:
         click.echo("Performing VACUUM...")
-        with init_db():
-            get_or_create_db().execute_sql("VACUUM;")
+        with init_db() as db:
+            db.execute_sql("VACUUM;")
         click.echo("VACUUM complete.")
     elif truncate_db:
         if click.confirm("Continue deleting all saved data? There's no going back."):
@@ -190,8 +210,9 @@ def main(
                 truncate_all_tables()
             click.echo("Deletion successful.")
     elif db_version:
-        server_version = ".".join(str(num) for num in get_or_create_db().server_version)
-        click.echo(f"SQLite version: {server_version}")
+        with init_db() as db:
+            server_version = ".".join(str(num) for num in db.server_version)
+            click.echo(f"SQLite version: {server_version}")
     elif print_settings:
         for key, value in settings.items():
             if key.isupper():
@@ -217,7 +238,7 @@ def workedon(stuff: tuple[str, ...], **kwargs: Any) -> None:
     """
     Specify what you worked on, with optional date/time. See workedon --help.
     """
-    save_work(stuff, kwargs["tags"])
+    save_work(stuff, kwargs["tags"], kwargs["duration"])
 
 
 @main.command()
@@ -362,11 +383,19 @@ def workedon(stuff: tuple[str, ...], **kwargs: Any) -> None:
 )
 @click.option(
     "--tag",
+    "tags",
+    multiple=True,
+    required=False,
+    type=click.STRING,
+    help="Tag to filter by. Can be used multiple times to filter by multiple tags.",
+)
+@click.option(
+    "--duration",
     required=False,
     default="",
     show_default=True,
     type=click.STRING,
-    help="Tag to filter by.",
+    help="Duration to filter by.",
 )
 @add_options(settings_options)
 @load_settings
@@ -384,7 +413,8 @@ def what(
     no_page: bool,
     reverse: bool,
     text_only: bool,
-    tag: str,
+    tags: tuple[str, ...],
+    duration: str,
     **kwargs: Any,
 ) -> None:
     """
@@ -409,7 +439,8 @@ def what(
         no_page,
         reverse,
         text_only,
-        tag,
+        tags,
+        duration,
     )
 
 

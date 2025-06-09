@@ -223,11 +223,8 @@ wheels = [
 name = "click"
 version = "8.1.8"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version < '3.10'",
-]
 dependencies = [
-    { name = "colorama", marker = "python_full_version < '3.10' and sys_platform == 'win32'" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593, upload-time = "2024-12-21T18:38:44.339Z" }
 wheels = [
@@ -235,28 +232,11 @@ wheels = [
 ]
 
 [[package]]
-name = "click"
-version = "8.2.1"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.11'",
-    "python_full_version == '3.10.*'",
-]
-dependencies = [
-    { name = "colorama", marker = "python_full_version >= '3.10' and sys_platform == 'win32'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/60/6c/8ca2efa64cf75a977a0d7fac081354553ebe483345c734fb6b6515d96bbc/click-8.2.1.tar.gz", hash = "sha256:27c491cc05d968d271d5a1db13e3b5a184636d9d930f148c50b038f0d0646202", size = 286342, upload-time = "2025-05-20T23:19:49.832Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/85/32/10bb5764d90a8eee674e9dc6f4db6a0ab47c8c4d0d83c27f7c39ac415a4d/click-8.2.1-py3-none-any.whl", hash = "sha256:61a3265b914e850b85317d0b3109c7f8cd35a670f963866005d6ef1d5175a12b", size = 102215, upload-time = "2025-05-20T23:19:47.796Z" },
-]
-
-[[package]]
 name = "click-default-group"
 version = "1.2.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.1.8", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "click", version = "8.2.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "click" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/1d/ce/edb087fb53de63dad3b36408ca30368f438738098e668b78c87f93cd41df/click_default_group-1.2.4.tar.gz", hash = "sha256:eb3f3c99ec0d456ca6cd2a7f08f7d4e91771bef51b01bdd9580cc6450fe1251e", size = 3505, upload-time = "2023-08-04T07:54:58.425Z" }
 wheels = [
@@ -399,7 +379,7 @@ wheels = [
 
 [[package]]
 name = "dateparser"
-version = "1.2.1"
+version = "1.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "python-dateutil" },
@@ -407,9 +387,9 @@ dependencies = [
     { name = "regex" },
     { name = "tzlocal" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bd/3f/d3207a05f5b6a78c66d86631e60bfba5af163738a599a5b9aa2c2737a09e/dateparser-1.2.1.tar.gz", hash = "sha256:7e4919aeb48481dbfc01ac9683c8e20bfe95bb715a38c1e9f6af889f4f30ccc3", size = 309924, upload-time = "2025-02-05T12:34:55.593Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1a/b2/f6b29ab17d7959eb1a0a5c64f5011dc85051ad4e25e401cbddcc515db00f/dateparser-1.2.0.tar.gz", hash = "sha256:7975b43a4222283e0ae15be7b4999d08c9a70e2d378ac87385b1ccf2cffbbb30", size = 307260, upload-time = "2023-11-17T10:47:58.151Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/cf/0a/981c438c4cd84147c781e4e96c1d72df03775deb1bc76c5a6ee8afa89c62/dateparser-1.2.1-py3-none-any.whl", hash = "sha256:bdcac262a467e6260030040748ad7c10d6bacd4f3b9cdb4cfd2251939174508c", size = 295658, upload-time = "2025-02-05T12:34:53.1Z" },
+    { url = "https://files.pythonhosted.org/packages/a4/29/db12aa4dda81580be1999824a689bd52aa40061fc12c9ccdc3feab5ea718/dateparser-1.2.0-py2.py3-none-any.whl", hash = "sha256:0b21ad96534e562920a0083e97fd45fa959882d4162acc358705144520a35830", size = 294995, upload-time = "2023-11-17T10:47:56.127Z" },
 ]
 
 [[package]]
@@ -426,8 +406,7 @@ name = "deptry"
 version = "0.23.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.1.8", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "click", version = "8.2.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "click" },
     { name = "colorama", marker = "sys_platform == 'win32'" },
     { name = "packaging" },
     { name = "requirements-parser" },
@@ -526,8 +505,7 @@ name = "hatch"
 version = "1.14.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.1.8", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "click", version = "8.2.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "click" },
     { name = "hatchling" },
     { name = "httpx" },
     { name = "hyperlink" },
@@ -1626,8 +1604,7 @@ name = "userpath"
 version = "1.9.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "click", version = "8.1.8", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "click", version = "8.2.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "click" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/d5/b7/30753098208505d7ff9be5b3a32112fb8a4cb3ddfccbbb7ba9973f2e29ff/userpath-1.9.2.tar.gz", hash = "sha256:6c52288dab069257cc831846d15d48133522455d4677ee69a9781f11dbefd815", size = 11140, upload-time = "2024-02-29T21:39:08.742Z" }
 wheels = [
@@ -1698,8 +1675,7 @@ wheels = [
 name = "workedon"
 source = { editable = "." }
 dependencies = [
-    { name = "click", version = "8.1.8", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.10'" },
-    { name = "click", version = "8.2.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.10'" },
+    { name = "click" },
     { name = "click-default-group" },
     { name = "dateparser" },
     { name = "peewee" },
@@ -1728,12 +1704,12 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "click", specifier = ">=8.1.8" },
-    { name = "click-default-group", specifier = ">=1.2.4" },
-    { name = "dateparser", specifier = ">=1.2.1" },
-    { name = "peewee", specifier = ">=3.18.1" },
-    { name = "platformdirs", specifier = ">=4.3.8" },
-    { name = "tzlocal", specifier = ">=5.3.1" },
+    { name = "click", specifier = ">=8.1.1,<8.2.0" },
+    { name = "click-default-group", specifier = ">=1.2.4,<2.0.0" },
+    { name = "dateparser", specifier = ">=1.1.4,<1.2.1" },
+    { name = "peewee", specifier = ">=3.18.1,<4.0.0" },
+    { name = "platformdirs", specifier = ">=4.3.8,<5.0.0" },
+    { name = "tzlocal", specifier = ">=4.0.0,<5.3.2" },
 ]
 
 [package.metadata.requires-dev]
