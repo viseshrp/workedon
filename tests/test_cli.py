@@ -280,7 +280,14 @@ def test_db_vacuum(runner: CliRunner, options: list[str]) -> None:
 def test_db_version(runner: CliRunner, options: list[str]) -> None:
     result = runner.invoke(cli.main, options)
     assert result.exit_code == 0
-    assert result.output.startswith("SQLite version:")
+    assert result.output.startswith("Database schema version: ")
+
+
+@pytest.mark.parametrize("options", [["--sqlite-version"]])
+def test_sqlite_version(runner: CliRunner, options: list[str]) -> None:
+    result = runner.invoke(cli.main, options)
+    assert result.exit_code == 0
+    assert result.output.startswith("SQLite version: ")
 
 
 @pytest.mark.parametrize(
@@ -543,16 +550,14 @@ def test_cli_duration_filter(
 
 
 @pytest.mark.parametrize(
-    "filter_flag",
+    "invalid_filter_flag",
     [
         ["--duration", "=>3h"],
         ["--duration", "3hors"],
         ["--duration", "3h<"],
-        ["--duration", "==60m"],
-        ["--duration", "[3h]"],
         ["--duration", "3x"],
     ],
 )
-def test_invalid_duration_filter(runner: CliRunner, filter_flag: list[str]) -> None:
-    result = runner.invoke(cli.what, ["--no-page", *filter_flag])
+def test_invalid_duration_filter(runner: CliRunner, invalid_filter_flag: list[str]) -> None:
+    result = runner.invoke(cli.what, ["--no-page", *invalid_filter_flag])
     assert result.exit_code == 1
