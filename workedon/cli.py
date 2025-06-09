@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
+import os
 from typing import Any, Callable
-import warnings
 
 import click
 from click_default_group import DefaultGroup
@@ -14,7 +14,12 @@ from .models import DB_PATH, get_db_user_version, init_db, truncate_all_tables
 from .utils import add_options, load_settings
 from .workedon import fetch_tags, fetch_work, save_work
 
-warnings.filterwarnings("ignore")
+# Only ignore warnings if not in debug mode
+if not os.environ.get("WORKEDON_DEBUG"):
+    import warnings
+
+    warnings.filterwarnings("ignore")
+
 CONTEXT_SETTINGS: dict[str, list[str]] = {"help_option_names": ["-h", "--help"]}
 
 # settings
