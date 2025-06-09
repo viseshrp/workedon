@@ -153,7 +153,7 @@ def fetch_work(
         # duration
         if duration:
             # Match optional comparison operator and value (e.g., '>=3h', '<= 45min', '2h')
-            match = re.match(r"\s*(<=|>=|<|>|=)?\s*(.+)", duration)
+            match = re.match(r"\s*(==|<=|>=|=|<|>)?\s*(.+)", duration)
             if not match:
                 raise CannotFetchWorkError(extra_detail="Invalid duration filter")
             comp_op, dur_str = match.groups()
