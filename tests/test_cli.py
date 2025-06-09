@@ -540,3 +540,19 @@ def test_cli_duration_filter(
         assert "Date:" in result_fetch.output
     else:
         assert "Nothing to show" in result_fetch.output
+
+
+@pytest.mark.parametrize(
+    "filter_flag",
+    [
+        ["--duration", "=>3h"],
+        ["--duration", "3hors"],
+        ["--duration", "3h<"],
+        ["--duration", "==60m"],
+        ["--duration", "[3h]"],
+        ["--duration", "3x"],
+    ],
+)
+def test_invalid_duration_filter(runner: CliRunner, filter_flag: list[str]) -> None:
+    result = runner.invoke(cli.what, ["--no-page", *filter_flag])
+    assert result.exit_code == 1
