@@ -101,8 +101,8 @@ Options:
   --print-settings-path   Print the location of the settings file.
   --print-settings        Print all the current settings, including defaults.
   --list-tags             Print all saved tags.
-  --tag TEXT              Tag to add to your work log.
-  --duration TEXT         Duration to add to your work log.
+  -T, --tag TEXT          Tag to add to your work log.
+  -D, --duration TEXT     Duration to add to your work log.
   --date-format TEXT      Set the date format of the output. Must be a valid
                           Python strftime string.  [env var:
                           WORKEDON_DATE_FORMAT]
@@ -151,9 +151,9 @@ Options:
   --delete                Delete fetched work.
   -g, --no-page           Don't page the output.
   -l, --text-only         Output the work log text only.
-  --tag TEXT              Tag to filter by. Can be used multiple times to filter
+  -T, --tag TEXT          Tag to filter by. Can be used multiple times to filter
                           by multiple tags.
-  --duration TEXT         Duration to filter by.  [default: ""]
+  -D, --duration TEXT     Duration to filter by.  [default: ""]
   --date-format TEXT      Set the date format of the output. Must be a valid
                           Python strftime string.  [env var:
                           WORKEDON_DATE_FORMAT]
@@ -176,12 +176,30 @@ Options:
 
 - Log work from your shell in plain text with human-readable dates/times.
   - The date/time is optional. The default is the current date/time.
-  - The `@` character is used to separate the text from the
-  date/time.
-- Fetch logged work with human-readable dates/times.
+  - The `@` character is used to separate the text from the date/time.
+- Fetch logged work with human-readable dates/times using multiple options.
 - Familiar Git-like interface.
-- Filter, sort, delete, format and display logged work on your shell.
+- Filter, sort, delete, format, and display logged work on your shell.
 - Set date/time format of the output through settings.
+- Specify tags while adding work. Tags can be specified in two ways:
+  - The `--tag/-T` option, one or more times for multiple tags. E.g. `--tag tag1 --tag tag2`.
+  - The `#` symbol in the description, one or more times. E.g. `#tag1 #tag2`.
+    The description must be quoted in this case.
+  - Tags are case-insensitive and are saved in lowercase.
+  - Tags can contain alphanumeric characters, underscores, and hyphens only.
+- Query logged work by tags using the `--tag/-T` option. Using it multiple times will match any
+  of the specified tags.
+- Specify duration while adding work.
+  - Duration can be specified in two ways:
+    - The `--duration/-D` option, e.g. `--duration 1h30m` or `--duration 90m`.
+    - The `[]` symbol in the description, e.g. `[1.5h]` or `[90m]`.
+  - Duration can be specified in hours or minutes.
+    - For example, `1h30m` is 1 hour and 30 minutes, and `90m` is also 1 hour and 30 minutes.
+  - Duration is case-insensitive and supports `h|hr|hrs|hours|m|min|mins|minutes`.
+  - The duration is optional and defaults to an empty string.
+  - Only one duration can be specified per log entry.
+- Query logged work by duration using the `--duration/-D` option, which supports
+  comparisons (e.g., `--duration ">=1h"`, `--duration "<30m"`).
 
 ## 🔧 Settings
 
@@ -235,8 +253,8 @@ See [CHANGELOG.md](https://github.com/viseshrp/workedon/blob/main/CHANGELOG.md)
 ## ⚠️ Limitations
 
 - Your input is limited by your shell. Certain characters like the single
-  quote `'` behave differently. Put your content within double quotes
-  to get around special characters.
+  quote `'` and the hash symbol `#` may be interpreted specially by your shell.
+  Put your content within double quotes to get around special characters.
 
   For example:
 
@@ -247,6 +265,19 @@ See [CHANGELOG.md](https://github.com/viseshrp/workedon/blob/main/CHANGELOG.md)
 - The [date parser](https://github.com/scrapinghub/dateparser) which is
   used may misinterpret some irregular phrases of date/time, but mostly
   does great.
+
+- `#` and `[]` are reserved characters in the description.
+  - `#` is used to specify tags. You can use it multiple times to specify
+    multiple tags.
+  - `[]` is used to specify duration. You can use it only once per log entry.
+  - If you want to use these characters in your description, put your
+    description within double quotes.
+
+  For example:
+
+  ``` {.bash}
+  workedon "fixing my wife's phone [1h30m] #phone #wife"
+  ```
 
 - There are some reserved keywords that are used as subcommands and
   cannot be used as the first word of your log's content:

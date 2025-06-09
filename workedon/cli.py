@@ -81,6 +81,7 @@ settings_options: list[Callable[..., Any]] = [
 main_options: list[Callable[..., Any]] = [
     click.option(
         "--tag",
+        "-T",
         "tags",
         multiple=True,
         required=False,
@@ -89,6 +90,7 @@ main_options: list[Callable[..., Any]] = [
     ),
     click.option(
         "--duration",
+        "-D",
         "duration",
         required=False,
         default="",
@@ -404,6 +406,7 @@ def workedon(stuff: tuple[str, ...], **kwargs: Any) -> None:
 )
 @click.option(
     "--tag",
+    "-T",
     "tags",
     multiple=True,
     required=False,
@@ -412,6 +415,7 @@ def workedon(stuff: tuple[str, ...], **kwargs: Any) -> None:
 )
 @click.option(
     "--duration",
+    "-D",
     required=False,
     default="",
     show_default=True,
