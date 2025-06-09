@@ -189,7 +189,7 @@ Options:
   - Tags can contain alphanumeric characters, underscores, and hyphens only.
 - Query logged work by tags using the `--tag/-T` option. Using it multiple times will match any
   of the specified tags.
-- Specify duration while adding work. 
+- Specify duration while adding work.
   - Duration can be specified in two ways:
     - The `--duration/-D` option, e.g. `--duration 1h30m` or `--duration 90m`.
     - The `[]` symbol in the description, e.g. `[1.5h]` or `[90m]`.
@@ -198,7 +198,8 @@ Options:
   - Duration is case-insensitive and supports `h|hr|hrs|hours|m|min|mins|minutes`.
   - The duration is optional and defaults to an empty string.
   - Only one duration can be specified per log entry.
-- Query logged work by duration using the `--duration/-D` option.
+- Query logged work by duration using the `--duration/-D` option, which supports
+  comparisons (e.g., `--duration ">=1h"`, `--duration "<30m"`).
 
 ## 🔧 Settings
 
@@ -252,8 +253,8 @@ See [CHANGELOG.md](https://github.com/viseshrp/workedon/blob/main/CHANGELOG.md)
 ## ⚠️ Limitations
 
 - Your input is limited by your shell. Certain characters like the single
-  quote `'` behave differently and `#`. Put your content within double quotes
-  to get around special characters.
+  quote `'` and the hash symbol `#` may be interpreted specially by your shell.
+  Put your content within double quotes to get around special characters.
 
   For example:
 
