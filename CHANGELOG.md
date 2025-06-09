@@ -23,9 +23,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Switched from `hashlib.sha1` to UUID-based identifiers without hashing
+- Switched from `hashlib.sha1` to UUID-based identifiers without hashing.
+- **BREAKING**: Renamed `--db-version` to `--sqlite-version` for clarity.
+- **BREAKING**: `--db-version` now returns the database schema version instead of SQLite version.
 - Modernized the codebase.
-- Updated dependencies to their latest versions
+- Updated dependencies to their latest versions.
 
 ### Fixed
 

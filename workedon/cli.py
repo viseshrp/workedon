@@ -9,7 +9,7 @@ from click_default_group import DefaultGroup
 
 from ._version import __version__ as _ver
 from .conf import CONF_PATH, settings
-from .models import DB_PATH, init_db, truncate_all_tables
+from .models import DB_PATH, get_db_user_version, init_db, truncate_all_tables
 from .utils import add_options, load_settings
 from .workedon import fetch_tags, fetch_work, save_work
 
@@ -133,6 +133,15 @@ main_options: list[Callable[..., Any]] = [
     default=False,
     show_default=True,
     hidden=True,
+    help="Print the version of the current database schema.",
+)
+@click.option(
+    "--sqlite-version",
+    is_flag=True,
+    required=False,
+    default=False,
+    show_default=True,
+    hidden=True,
     help="Print the version of SQLite being used.",
 )
 @click.option(
@@ -171,6 +180,7 @@ def main(
     print_settings: bool,
     list_tags: bool,
     db_version: bool,
+    sqlite_version: bool,
     print_db_path: bool,
     vacuum_db: bool,
     truncate_db: bool,
@@ -210,6 +220,10 @@ def main(
                 truncate_all_tables()
             click.echo("Deletion successful.")
     elif db_version:
+        with init_db() as db:
+            version = get_db_user_version(db)
+            click.echo(f"Database schema version: {version}")
+    elif sqlite_version:
         with init_db() as db:
             server_version = ".".join(str(num) for num in db.server_version)
             click.echo(f"SQLite version: {server_version}")
