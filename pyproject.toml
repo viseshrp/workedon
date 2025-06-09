@@ -9,7 +9,7 @@ keywords = ["workedon", "work", "worklog", "log", "journal"]
 requires-python = ">=3.9,<4.0"
 dependencies = [
     "click>=8.1.1,<8.2.0",  # 8.2 is Python 3.10+ only
-    "dateparser>=1.1.4,<1.2.1",  # behavior changes in 1.2.1
+    "dateparser>=1.1.4,<1.2.2",  # behavior changes in 1.2.1
     "tzlocal>=4.0.0,<5.3.2",  # sometimes unreliable
     "click-default-group>=1.2.4,<2.0.0",
     "peewee>=3.18.1,<4.0.0",
