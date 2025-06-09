@@ -182,20 +182,23 @@ Options:
 - Filter, sort, delete, format, and display logged work on your shell.
 - Set date/time format of the output through settings.
 - Specify tags while adding work. Tags can be specified in two ways:
-  - The `--tag` option, one or more times for multiple tags. E.g. `--tag tag1 --tag tag2`.
+  - The `--tag/-T` option, one or more times for multiple tags. E.g. `--tag tag1 --tag tag2`.
   - The `#` symbol in the description, one or more times. E.g. `#tag1 #tag2`.
     The description must be quoted in this case.
-  - Query logged work by tags using the `--tag` option. Using it multiple times will match any
-    of the specified tags.
-- Specify duration while adding work. Duration can be specified in two ways:
-  - The `--duration` option, e.g. `--duration 1h30m` or `--duration 90m`.
-  - The `[]` symbol in the description, e.g. `[1.5h]` or `[90m]`.
+  - Tags are case-insensitive and are saved in lowercase.
+  - Tags can contain alphanumeric characters, underscores, and hyphens only.
+- Query logged work by tags using the `--tag/-T` option. Using it multiple times will match any
+  of the specified tags.
+- Specify duration while adding work. 
+  - Duration can be specified in two ways:
+    - The `--duration/-D` option, e.g. `--duration 1h30m` or `--duration 90m`.
+    - The `[]` symbol in the description, e.g. `[1.5h]` or `[90m]`.
   - Duration can be specified in hours or minutes.
     - For example, `1h30m` is 1 hour and 30 minutes, and `90m` is also 1 hour and 30 minutes.
   - Duration is case-insensitive and supports `h|hr|hrs|hours|m|min|mins|minutes`.
   - The duration is optional and defaults to an empty string.
   - Only one duration can be specified per log entry.
-  - Query logged work by duration using the `--duration` option.
+- Query logged work by duration using the `--duration/-D` option.
 
 ## 🔧 Settings
 

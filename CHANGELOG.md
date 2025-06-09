@@ -10,16 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Allow specifying tags while adding work. Tags can be specified in 2 ways:
-  - The `--tag` option, one or more times for multiple tags. E.g. `--tag tag1 --tag tag2`.
+  - The `--tag/-T` option, one or more times for multiple tags. E.g. `--tag tag1 --tag tag2`.
   - The `#` symbol in the description, one or more times. E.g. `#tag1 #tag2`.
   The description must be quoted in this case.
   - Tags are case-insensitive and are saved in lowercase.
-- Querying by tags using the `--tag` option. Using multiple times will match any of the specified tags.
+- Querying by tags using the `--tag/-T` option. Using multiple times will match any of the specified tags.
 - Specifying duration while adding work.
-  - The `--duration` option, e.g. `--duration 1h30m` or `--duration 90m`.
+  - The `--duration/-D` option, e.g. `--duration 1h30m` or `--duration 90m`.
   - The `[]` symbol in the description, e.g. `[1.5h]` or `[90m]`.
   - Duration is case-insensitive. Allows `h|hr|hrs|hours|m|min|mins|minutes`.
-- Querying by duration using the `--duration` option.
+- Querying by duration using the `--duration/-D` option.
 
 ### Changed
 
