@@ -32,7 +32,7 @@ Enter
 Show
 
 # Type a command in the terminal.
-Type "workedon removing the Twitter API integration #byeElon #screwX @ 9am"
+Type "workedon 'removing the Twitter API integration #byeElon #screwX @ 9am'"
 
 # Pause for dramatic effect...
 Sleep 2s
@@ -49,7 +49,7 @@ Enter
 Show
 
 # Type a command in the terminal.
-Type "workedon reviewing some pull requests [25min] @ 3pm yesterday"
+Type "workedon 'reviewing some pull requests [25min] @ 3pm yesterday'"
 
 # Pause for dramatic effect...
 Sleep 2s
