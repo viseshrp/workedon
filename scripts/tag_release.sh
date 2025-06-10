@@ -8,10 +8,15 @@ echo "🏷 Releasing version: $VERSION"
 # Update changelog date for this version
 python scripts/fix_changelog_date.py "$VERSION"
 
-# Stage and commit changelog update
-git add CHANGELOG.md
-git commit -m "📄 Update changelog for v$VERSION"
+# Only commit if the changelog was actually updated
+if ! git diff --quiet --exit-code CHANGELOG.md; then
+  echo "✅ CHANGELOG.md updated, committing..."
+  git add CHANGELOG.md
+  git commit -m "📄 Update changelog for v$VERSION"
+else
+  echo "ℹ️ No changes to CHANGELOG.md. Skipping commit."
+fi
 
-# Create and push tag
+# Always tag and push (tagging the latest HEAD whether or not changelog changed)
 git tag "v$VERSION" -m "Release v$VERSION"
 git push origin "v$VERSION"
