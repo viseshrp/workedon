@@ -1,6 +1,13 @@
 SHELL := bash
 .SHELLFLAGS := -e -x -c
 
+# Cross-platform Bash
+ifeq ($(OS),Windows_NT)
+BASH := "C:/Program Files/Git/bin/bash.exe"
+else
+BASH := bash
+endif
+
 .PHONY: install
 install: ## 🚀 Set up environment and install project
 	@echo "🚀 Syncing dependencies with uv..."
@@ -53,7 +60,7 @@ version: ## Print the current project version
 
 .PHONY: tag
 tag: ## 🏷 Tag the current release version (fixes changelog and pushes tag)
-	bash scripts/tag_release.sh
+	$(BASH) scripts/tag_release.sh
 
 .PHONY: check-dist
 check-dist: ## Validate dist/ artifacts (long description, format)

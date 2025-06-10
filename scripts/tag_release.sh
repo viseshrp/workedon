@@ -6,7 +6,7 @@ VERSION=$(hatch version | sed 's/\.dev.*//')
 echo "🏷 Releasing version: $VERSION"
 
 # Update changelog date for this version
-python scripts/fix_changelog_date.py "$VERSION"
+uv run python scripts/fix_changelog_date.py "$VERSION"
 
 # Only commit if the changelog was actually updated
 if ! git diff --quiet --exit-code CHANGELOG.md; then

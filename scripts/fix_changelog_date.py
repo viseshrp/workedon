@@ -17,7 +17,7 @@ def main(version: str) -> None:
         sys.exit(1)
 
     today = date.today().isoformat()
-    target_line = f"## [{version}] - [Unreleased]"
+    target_line = f"## [{version}] - <Unreleased>"
     replacement_line = f"## [{version}] - {today}"
 
     lines = CHANGELOG_PATH.read_text(encoding="utf-8").splitlines()
