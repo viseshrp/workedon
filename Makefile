@@ -52,11 +52,8 @@ version: ## Print the current project version
 	uv run hatch version
 
 .PHONY: tag
-tag: ## 🏷 Tag the current release version (stripping .dev) and push
-	@VERSION=$$(hatch version | sed 's/\.dev.*//'); \
-	echo "🏷 Creating Git tag: v$$VERSION"; \
-	git tag v$$VERSION -m "Release v$$VERSION"; \
-	git push origin v$$VERSION
+tag: ## 🏷 Tag the current release version (fixes changelog and pushes tag)
+	bash scripts/tag_release.sh
 
 .PHONY: check-dist
 check-dist: ## Validate dist/ artifacts (long description, format)
