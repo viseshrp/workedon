@@ -200,6 +200,7 @@ Options:
   - Only one duration can be specified per log entry.
 - Query logged work by duration using the `--duration/-D` option, which supports
   comparisons (e.g., `--duration ">=1h"`, `--duration "<30m"`).
+- and much more!
 
 ## 🔧 Settings
 
