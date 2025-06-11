@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Fix the release date for a given version in CHANGELOG.md,
-by replacing '[Unreleased]' with today's date.
+by replacing '<Unreleased>' with today's date.
 """
 
 from datetime import date
