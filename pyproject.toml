@@ -46,26 +46,24 @@ wo = "workedon.__main__:main"
 
 [dependency-groups]
 dev = [
-    "pre-commit",
-    "pre-commit-hooks",  # for check-case-conflict, etc.
+    "ipdb",
     "uv",
     "tox",
     "tox-uv",
     "tox-gh-actions",
-    "mypy",
-    "deptry",
+    "pytest",
+    "pytest-cov",
+    "pre-commit",
     "black",
     "ruff",
     "pip-audit",
     "bandit[toml]",
     "codespell",
+    "mypy",
     "vulture",
-    "pytest",
-    "pytest-cov",
-    "vulture",
+    "deptry",
     "cogapp",
     "twine",
-    "ipdb",
     "hatch",
 ]
 
