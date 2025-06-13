@@ -6,52 +6,66 @@ repos:
       - id: check-case-conflict
       - id: check-merge-conflict
       - id: check-toml
+        types: [ toml ]
       - id: check-yaml
+        types: [ yaml ]
       - id: end-of-file-fixer
       - id: trailing-whitespace
         exclude: \.py$  # Ruff handles Python files
 
   # 🧪 Typing, dependency, security checks
-  - repo: https://github.com/psf/black
-    rev: 25.1.0
+  - repo: local
     hooks:
       - id: black
+        name: black
+        entry: black
+        language: system
+        types: [ python ]
 
-  # ✨ Ruff for lint + format
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.13
+  - repo: local
     hooks:
       # Run the linter alone
       - id: ruff-check
+        name: ruff-check
+        entry: ruff check
+        language: system
+        types: [ python ]
 
-  - repo: https://github.com/pypa/pip-audit
-    rev: v2.9.0
+  - repo: local
     hooks:
       - id: pip-audit
-        args: [ "--strict" ]
+        name: pip-audit
+        entry: pip-audit
+        language: system
+        args: [ "--skip-editable" ]
         pass_filenames: false
 
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.8.3
+  - repo: local
     hooks:
       - id: bandit
+        name: bandit
+        entry: bandit
+        language: system
+        types: [ python ]
         args: [
           "-c", "pyproject.toml",
           "-r",
           "-n", "3",
           "--severity-level", "high"
         ]
-        additional_dependencies: [ "bandit[toml]" ]
 
-  - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.1
+  - repo: local
     hooks:
       - id: codespell
+        name: codespell
+        entry: codespell
+        language: system
 
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.45.0
     hooks:
       - id: markdownlint
+        name: markdownlint
         args: [ --fix, --disable, MD024 ]
 
   # 🧱 Local system hooks (for tools with no mirrors or your preference)
@@ -75,8 +89,7 @@ repos:
       - id: deptry
         name: deptry
         entry: uv run deptry .
-        language: python
-        language_version: python3
+        language: system
         types: [ python ]
         args: [ "--config", "pyproject.toml" ]
         pass_filenames: false
