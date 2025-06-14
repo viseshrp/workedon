@@ -1,5 +1,4 @@
 repos:
-  # 🧰 Built-in hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
@@ -13,7 +12,13 @@ repos:
       - id: trailing-whitespace
         exclude: \.py$  # Ruff handles Python files
 
-  # 🧪 Typing, dependency, security checks
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.45.0
+    hooks:
+      - id: markdownlint
+        name: markdownlint
+        args: [ --fix, --disable, MD024 ]
+
   - repo: local
     hooks:
       - id: black
@@ -22,8 +27,6 @@ repos:
         language: system
         types: [ python ]
 
-  - repo: local
-    hooks:
       # Run the linter alone
       - id: ruff-check
         name: ruff-check
@@ -31,8 +34,13 @@ repos:
         language: system
         types: [ python ]
 
-  - repo: local
-    hooks:
+      - id: mypy
+        name: mypy
+        entry: mypy
+        language: system
+        types: [ python ]
+        args: [ "--config-file=pyproject.toml" ]
+
       - id: pip-audit
         name: pip-audit
         entry: pip-audit
@@ -40,8 +48,6 @@ repos:
         args: [ "--skip-editable" ]
         pass_filenames: false
 
-  - repo: local
-    hooks:
       - id: bandit
         name: bandit
         entry: bandit
@@ -54,29 +60,10 @@ repos:
           "--severity-level", "high"
         ]
 
-  - repo: local
-    hooks:
       - id: codespell
         name: codespell
         entry: codespell
         language: system
-
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.45.0
-    hooks:
-      - id: markdownlint
-        name: markdownlint
-        args: [ --fix, --disable, MD024 ]
-
-  # 🧱 Local system hooks (for tools with no mirrors or your preference)
-  - repo: local
-    hooks:
-      - id: mypy
-        name: mypy
-        entry: mypy
-        language: system
-        types: [ python ]
-        args: [ "--config-file=pyproject.toml" ]
 
       - id: vulture
         name: vulture

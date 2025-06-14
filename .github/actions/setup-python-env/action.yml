@@ -26,13 +26,20 @@ runs:
         enable-cache: true
         cache-suffix: ${{ inputs.python-version }}
 
+    - name: Get resolved Python version
+      id: resolved-python
+      shell: bash
+      run: |
+        PYTHON_VERSION=$(python -c "import sys; print('{}.{}.{}'.format(*sys.version_info[:3]))")
+        echo "version=$PYTHON_VERSION" >> "$GITHUB_OUTPUT"
+
     - name: Cache .venv directory
       uses: actions/cache@v4
       with:
         path: .venv
-        key: uv-venv-${{ inputs.python-version }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
+        key: uv-venv-${{ runner.os }}-${{ steps.resolved-python.outputs.version }}-${{ hashFiles('pyproject.toml', 'uv.lock') }}
         restore-keys: |
-          uv-venv-${{ inputs.python-version }}-
+          uv-venv-${{ runner.os }}-${{ steps.resolved-python.outputs.version }}-
 
     - name: Disable pip version check (optional)
       run: echo "PIP_DISABLE_PIP_VERSION_CHECK=1" >> $GITHUB_ENV

@@ -17,10 +17,10 @@ jobs:
       contents: write  # needed to create a release & upload artifacts
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  # Required for hatch-vcs to generate full version
           fetch-tags: true
 
       - name: Set up Python Env
