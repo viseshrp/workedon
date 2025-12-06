@@ -47,12 +47,12 @@ def save_work(work: tuple[str, ...], tags_opt: tuple[str, ...], duration_opt: st
     try:
         with init_db() as db:
             with db.atomic():
-                work_ = Work.create(**data)
+                work_obj = Work.create(**data)
                 for tag in tags:
-                    tag_, _ = Tag.get_or_create(name=tag)
-                    WorkTag.create(work=work_.uuid, tag=tag_.uuid)
+                    tag_obj, _ = Tag.get_or_create(name=tag)
+                    WorkTag.create(work=work_obj.uuid, tag=tag_obj.uuid)
             click.echo("Work saved.\n")
-            click.echo(work_, nl=False)
+            click.echo(work_obj, nl=False)
     except Exception as e:
         raise CannotSaveWorkError(extra_detail=str(e)) from e
 

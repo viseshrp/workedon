@@ -1,6 +1,6 @@
 from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from platformdirs import user_config_dir
 
@@ -36,7 +36,7 @@ class Settings(dict[str, Any]):
         with CONF_PATH.open(mode="w") as settings_file:
             settings_file.write(SETTINGS_HEADER)
 
-    def configure(self, user_settings: Optional[dict[str, Any]] = None) -> None:
+    def configure(self, user_settings: dict[str, Any] | None = None) -> None:
         """
         Load or create the user settings file, then populate this Settings dict.
         """
