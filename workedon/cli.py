@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 import os
-from typing import Any, Callable
+from typing import Any
 
 import click
 from click_default_group import DefaultGroup
