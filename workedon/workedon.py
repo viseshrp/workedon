@@ -136,8 +136,10 @@ def fetch_work(
     Fetch saved work filtered based on user input
     """
     # filter fields
-    fields = []
-    if not delete:
+    if delete:
+        # Ensure we select UUID for efficient delete-subquery
+        fields = [Work.uuid]
+    else:
         fields = [Work.work] if text_only else [Work.uuid, Work.timestamp, Work.work, Work.duration]
 
     # initial set
