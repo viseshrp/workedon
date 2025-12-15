@@ -11,6 +11,6 @@ jobs:
   validate-codecov-config:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Validate codecov configuration
         run: curl -sSL --fail-with-body --data-binary @codecov.yml https://codecov.io/validate

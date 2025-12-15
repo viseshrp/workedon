@@ -36,8 +36,6 @@ jobs:
 
       - name: Enable auto-merge
         uses: peter-evans/enable-pull-request-automerge@v3
-        env:
-          GH_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         with:
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           merge-method: squash
