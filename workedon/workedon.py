@@ -9,7 +9,7 @@ import re
 from typing import Any
 
 import click
-from peewee import ModelSelect, chunked, prefetch
+from peewee import ModelSelect, chunked
 
 from .constants import WORK_CHUNK_SIZE
 from .exceptions import (
@@ -199,15 +199,12 @@ def fetch_work(
                 click.echo("Nothing to show, slacker.")
                 return
 
-            # Prefetch tags to avoid N+1 queries (only when displaying full format)
-            work_result = work_set if text_only else prefetch(work_set, WorkTag, Tag)
-
             if work_count == 1 or no_page:
-                for work in work_result:
+                for work in work_set:
                     click.echo(work, nl=False)
             else:
-                gen = _generate_work(work_result.iterator())
-                click.echo_via_pager(gen)
+                gen = work_set.iterator()
+                click.echo_via_pager(_generate_work(gen))
 
     except Exception as e:
         raise CannotFetchWorkError(extra_detail=str(e)) from e

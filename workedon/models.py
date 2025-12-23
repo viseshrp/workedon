@@ -82,13 +82,7 @@ class Work(Model):
             timestamp_str = user_time.strftime(
                 settings.DATETIME_FORMAT or f"{settings.DATE_FORMAT} {settings.TIME_FORMAT}"
             )
-            # Handle both prefetched tags (list) and lazy-loaded tags (query)
-            if isinstance(self.tags, list):
-                # Tags are prefetched as a list, sort in Python
-                tags = sorted([t.tag.name for t in self.tags])
-            else:
-                # Tags are lazy-loaded, use SQL ordering
-                tags = [t.tag.name for t in self.tags.order_by(WorkTag.tag.name)]
+            tags = [t.tag.name for t in self.tags.order_by(WorkTag.tag.name)]
             tags_str = f"Tags: {', '.join(tags)}\n" if tags else ""
 
             if self.duration is not None:
