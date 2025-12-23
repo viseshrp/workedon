@@ -266,6 +266,9 @@ See [CHANGELOG.md](https://github.com/viseshrp/workedon/blob/main/CHANGELOG.md)
 - The [date parser](https://github.com/scrapinghub/dateparser) which is
   used may misinterpret some irregular phrases of date/time, but mostly
   does great.
+- For partial dates (e.g., "August 1947"), dateparser fills missing parts
+  using your current date, which can change results over time based on the date. 
+  Prefer explicit dates or ranges (e.g., "Aug 1 1947" or "--from/--to or --on").
 
 - `#` and `[]` are reserved characters in the description.
   - `#` is used to specify tags. You can use it multiple times to specify
