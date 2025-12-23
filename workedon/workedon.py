@@ -212,21 +212,22 @@ def fetch_work(
     # fetch from db now.
     try:
         with init_db():
-            work_count = work_set.count()
+            has_work = work_set.exists()
             if delete:
-                if work_count > 0 and click.confirm(f"Continue deleting {work_count} log(s)?"):
-                    click.echo("Deleting...")
-                    deleted = Work.delete().where(Work.uuid.in_(work_set)).execute()
-                    click.echo(f"{deleted} log(s) deleted successfully.")
-                elif work_count == 0:
+                if has_work:
+                    if click.confirm(f"Continue deleting log(s)?"):
+                        click.echo("Deleting...")
+                        deleted_count = Work.delete().where(Work.uuid.in_(work_set)).execute()
+                        click.echo(f"{deleted_count} log(s) deleted successfully.")
+                else:
                     click.echo("Nothing to delete.")
                 return
 
-            if work_count == 0:
+            if not has_work:
                 click.echo("Nothing to show, slacker.")
                 return
 
-            if work_count == 1 or no_page:
+            if no_page or work_set.count() == 1:
                 # Prefetch tags when rendering full work entries.
                 work_result = work_set if text_only else prefetch(work_set, WorkTag, Tag)
                 for work in work_result:
