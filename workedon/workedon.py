@@ -57,13 +57,41 @@ def save_work(work: tuple[str, ...], tags_opt: tuple[str, ...], duration_opt: st
         raise CannotSaveWorkError(extra_detail=str(e)) from e
 
 
-def _generate_work(result: Iterator[Work]) -> Iterator[str]:
+def _yield_work_items(query: ModelSelect, text_only: bool) -> Iterator[Work]:
     """
-    Fetch work in chunks, loop and yield lines of text.
+    Yield work items from the query, efficiently handling tags in batches.
     """
-    for work_set in chunked(result, WORK_CHUNK_SIZE):
-        for work in work_set:
-            yield str(work)
+    # Use chunked to fetch Work items in batches
+    for batch in chunked(query, WORK_CHUNK_SIZE):
+        if not text_only:
+            # Manual prefetch logic for the current batch
+            work_map = {w.uuid: w for w in batch}
+            # Initialize tags list for each work item
+            for w in batch:
+                w.tags = []
+
+            # Fetch WorkTags and related Tags for the current batch of works
+            wts = (
+                WorkTag.select(WorkTag, Tag)
+                .join(Tag)
+                .where(WorkTag.work.in_(list(work_map.keys())))
+            )
+
+            # Assign tags to corresponding work items
+            for wt in wts:
+                if wt.work_id in work_map:
+                    work_map[wt.work_id].tags.append(wt)
+
+        for work in batch:
+            yield work
+
+
+def _generate_work(works: Iterator[Work]) -> Iterator[str]:
+    """
+    Loop and yield lines of text.
+    """
+    for work in works:
+        yield str(work)
 
 
 def _get_date_range(
@@ -199,14 +227,15 @@ def fetch_work(
                 click.echo("Nothing to show, slacker.")
                 return
 
-            # Prefetch tags to avoid N+1 queries (only when displaying full format)
-            work_result = work_set if text_only else prefetch(work_set, WorkTag, Tag)
+            # Use batch processing via generator to avoid loading everything into memory
+            # and to handle N+1 tags fetching efficiently
+            work_iterator = _yield_work_items(work_set, text_only)
 
             if work_count == 1 or no_page:
-                for work in work_result:
+                for work in work_iterator:
                     click.echo(work, nl=False)
             else:
-                gen = _generate_work(work_result.iterator())
+                gen = _generate_work(work_iterator)
                 click.echo_via_pager(gen)
 
     except Exception as e:
