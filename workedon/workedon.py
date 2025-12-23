@@ -176,7 +176,9 @@ def fetch_work(
         # tag
         if tags:
             normalized = [t.lower() for t in tags]
-            work_set = work_set.join(WorkTag).join(Tag).where(Tag.name.in_(normalized)).distinct()
+            tag_ids = Tag.select(Tag.uuid).where(Tag.name.in_(normalized))
+            work_ids = WorkTag.select(WorkTag.work).where(WorkTag.tag.in_(tag_ids))
+            work_set = work_set.where(Work.uuid.in_(work_ids))
         # duration
         if duration:
             # Match optional comparison operator and value (e.g., '>=3h', '<= 45min', '2h')
