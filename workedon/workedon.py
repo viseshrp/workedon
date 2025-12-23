@@ -79,6 +79,8 @@ def chunked_prefetch_generator(
             for work in chunk:
                 yield str(work)
         else:
+            # This re-queries the chunk to attach tags, plus prefetch issues
+            # additional queries for WorkTag and Tag to avoid N+1 lookups.
             chunk_uuids = [work.uuid for work in chunk]
             chunk_query = Work.select(*fields).where(Work.uuid.in_(chunk_uuids))
             chunk_with_tags = prefetch(chunk_query, WorkTag, Tag)
