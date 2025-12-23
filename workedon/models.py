@@ -82,7 +82,11 @@ class Work(Model):
             timestamp_str = user_time.strftime(
                 settings.DATETIME_FORMAT or f"{settings.DATE_FORMAT} {settings.TIME_FORMAT}"
             )
-            tags = [t.tag.name for t in self.tags.order_by(WorkTag.tag.name)]
+            tags_rel = self.tags
+            if hasattr(tags_rel, "order_by"):
+                tags = [t.tag.name for t in tags_rel.order_by(WorkTag.tag.name)]
+            else:
+                tags = sorted([t.tag.name for t in tags_rel])
             tags_str = f"Tags: {', '.join(tags)}\n" if tags else ""
 
             if self.duration is not None:

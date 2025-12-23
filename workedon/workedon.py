@@ -9,7 +9,7 @@ import re
 from typing import Any
 
 import click
-from peewee import ModelSelect, chunked
+from peewee import ModelSelect, chunked, prefetch
 
 from .constants import WORK_CHUNK_SIZE
 from .exceptions import (
@@ -64,6 +64,29 @@ def _generate_work(result: Iterator[Work]) -> Iterator[str]:
     for work_set in chunked(result, WORK_CHUNK_SIZE):
         for work in work_set:
             yield str(work)
+
+
+def chunked_prefetch_generator(
+    work_set: ModelSelect,
+    fields: list[Any],
+    text_only: bool,
+) -> Iterator[str]:
+    """
+    Fetch work in chunks and prefetch tags to avoid N+1 queries.
+    """
+    for chunk in chunked(work_set.iterator(), WORK_CHUNK_SIZE):
+        if text_only:
+            for work in chunk:
+                yield str(work)
+        else:
+            chunk_uuids = [work.uuid for work in chunk]
+            chunk_query = Work.select(*fields).where(Work.uuid.in_(chunk_uuids))
+            chunk_with_tags = prefetch(chunk_query, WorkTag, Tag)
+            work_dict = {work.uuid: work for work in chunk_with_tags}
+            for uuid in chunk_uuids:
+                work = work_dict.get(uuid)
+                if work is not None:
+                    yield str(work)
 
 
 def _get_date_range(
@@ -200,11 +223,16 @@ def fetch_work(
                 return
 
             if work_count == 1 or no_page:
-                for work in work_set:
+                # Prefetch tags when rendering full work entries.
+                work_result = work_set if text_only else prefetch(work_set, WorkTag, Tag)
+                for work in work_result:
                     click.echo(work, nl=False)
             else:
-                gen = work_set.iterator()
-                click.echo_via_pager(_generate_work(gen))
+                # Large result set with pagination - use chunked prefetching
+                # This loads results in chunks, prefetching tags for each chunk
+                # to avoid N+1 queries while keeping memory usage bounded
+                gen = chunked_prefetch_generator(work_set, fields, text_only)
+                click.echo_via_pager(gen)
 
     except Exception as e:
         raise CannotFetchWorkError(extra_detail=str(e)) from e
