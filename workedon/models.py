@@ -70,7 +70,7 @@ class Work(Model):
         index=True,
         default=get_default_time,
     )
-    duration: FloatField = FloatField(null=True, default=None)
+    duration: FloatField = FloatField(null=True, default=None, index=True)
 
     def __str__(self) -> str:
         """
@@ -82,7 +82,11 @@ class Work(Model):
             timestamp_str = user_time.strftime(
                 settings.DATETIME_FORMAT or f"{settings.DATE_FORMAT} {settings.TIME_FORMAT}"
             )
-            tags = [t.tag.name for t in self.tags.order_by(WorkTag.tag.name)]
+            tags_rel = self.tags
+            if hasattr(tags_rel, "order_by"):
+                tags = [t.tag.name for t in tags_rel.order_by(WorkTag.tag.name)]
+            else:
+                tags = sorted([t.tag.name for t in tags_rel])
             tags_str = f"Tags: {', '.join(tags)}\n" if tags else ""
 
             if self.duration is not None:
@@ -193,11 +197,27 @@ def _migrate_v1_to_v2(database: SqliteDatabase) -> None:
     _set_db_user_version(database, 2)
 
 
+def _migrate_v2_to_v3(database: SqliteDatabase) -> None:
+    """
+    Migrate from v2 → v3: add indexes for better query performance.
+    Adds indexes on Work.duration, WorkTag.work, and WorkTag.tag.
+    Then bump to v3.
+    """
+    # Add indexes for query optimization using migrator
+    migrator = SqliteMigrator(database)
+    migrate(
+        migrator.add_index("work", ("duration",), False),
+    )
+    # bump the version to 3
+    _set_db_user_version(database, 3)
+
+
 def _apply_pending_migrations(database: SqliteDatabase) -> None:
     """
     Check PRAGMA user_version on the disk.
-    - If it's 0, do the initial create (v0 → v2 in one shot).
+    - If it's 0, do the initial create (v0 → v3 in one shot).
     - Else if it's 1, run v1 -> v2.
+    - Else if it's 2, run v2 -> v3.
     """
     try:
         existing_version = get_db_user_version(database)
@@ -208,6 +228,10 @@ def _apply_pending_migrations(database: SqliteDatabase) -> None:
         # v1
         if existing_version < 2:
             _migrate_v1_to_v2(database)
+            existing_version = get_db_user_version(database)
+        # v2
+        if existing_version < 3:
+            _migrate_v2_to_v3(database)
             existing_version = get_db_user_version(database)
         # Add more future versions here...
         # sanity check

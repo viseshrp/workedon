@@ -9,7 +9,7 @@ import re
 from typing import Any
 
 import click
-from peewee import ModelSelect, chunked
+from peewee import ModelSelect, chunked, prefetch
 
 from .constants import WORK_CHUNK_SIZE
 from .exceptions import (
@@ -64,6 +64,31 @@ def _generate_work(result: Iterator[Work]) -> Iterator[str]:
     for work_set in chunked(result, WORK_CHUNK_SIZE):
         for work in work_set:
             yield str(work)
+
+
+def chunked_prefetch_generator(
+    work_set: ModelSelect,
+    fields: list[Any],
+    text_only: bool,
+) -> Iterator[str]:
+    """
+    Fetch work in chunks and prefetch tags to avoid N+1 queries.
+    """
+    for chunk in chunked(work_set.iterator(), WORK_CHUNK_SIZE):
+        if text_only:
+            for work in chunk:
+                yield str(work)
+        else:
+            # This re-queries the chunk to attach tags, plus prefetch issues
+            # additional queries for WorkTag and Tag to avoid N+1 lookups.
+            chunk_uuids = [work.uuid for work in chunk]
+            chunk_query = Work.select(*fields).where(Work.uuid.in_(chunk_uuids))
+            chunk_with_tags = prefetch(chunk_query, WorkTag, Tag)
+            work_dict = {work.uuid: work for work in chunk_with_tags}
+            for uuid in chunk_uuids:
+                work = work_dict.get(uuid)
+                if work is not None:
+                    yield str(work)
 
 
 def _get_date_range(
@@ -136,8 +161,10 @@ def fetch_work(
     Fetch saved work filtered based on user input
     """
     # filter fields
-    fields = []
-    if not delete:
+    if delete:
+        # Ensure we select UUID for efficient delete-subquery
+        fields = [Work.uuid]
+    else:
         fields = [Work.work] if text_only else [Work.uuid, Work.timestamp, Work.work, Work.duration]
 
     # initial set
@@ -149,7 +176,9 @@ def fetch_work(
         # tag
         if tags:
             normalized = [t.lower() for t in tags]
-            work_set = work_set.join(WorkTag).join(Tag).where(Tag.name.in_(normalized)).distinct()
+            tag_ids = Tag.select(Tag.uuid).where(Tag.name.in_(normalized))
+            work_ids = WorkTag.select(WorkTag.work).where(WorkTag.tag.in_(tag_ids))
+            work_set = work_set.where(Work.uuid.in_(work_ids))
         # duration
         if duration:
             # Match optional comparison operator and value (e.g., '>=3h', '<= 45min', '2h')
@@ -183,26 +212,32 @@ def fetch_work(
     # fetch from db now.
     try:
         with init_db():
-            work_count = work_set.count()
+            has_work = work_set.exists()
             if delete:
-                if work_count > 0 and click.confirm(f"Continue deleting {work_count} log(s)?"):
-                    click.echo("Deleting...")
-                    deleted = Work.delete().where(Work.uuid.in_(work_set)).execute()
-                    click.echo(f"{deleted} log(s) deleted successfully.")
-                elif work_count == 0:
+                if has_work:
+                    if click.confirm("Continue deleting log(s)?"):
+                        click.echo("Deleting...")
+                        deleted_count = Work.delete().where(Work.uuid.in_(work_set)).execute()
+                        click.echo(f"{deleted_count} log(s) deleted successfully.")
+                else:
                     click.echo("Nothing to delete.")
                 return
 
-            if work_count == 0:
+            if not has_work:
                 click.echo("Nothing to show, slacker.")
                 return
 
-            if work_count == 1 or no_page:
-                for work in work_set:
+            if no_page or work_set.count() == 1:
+                # Prefetch tags when rendering full work entries.
+                work_result = work_set if text_only else prefetch(work_set, WorkTag, Tag)
+                for work in work_result:
                     click.echo(work, nl=False)
             else:
-                gen = work_set.iterator()
-                click.echo_via_pager(_generate_work(gen))
+                # Large result set with pagination - use chunked prefetching
+                # This loads results in chunks, prefetching tags for each chunk
+                # to avoid N+1 queries while keeping memory usage bounded
+                gen = chunked_prefetch_generator(work_set, fields, text_only)
+                click.echo_via_pager(gen)
 
     except Exception as e:
         raise CannotFetchWorkError(extra_detail=str(e)) from e
