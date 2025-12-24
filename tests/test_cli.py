@@ -185,7 +185,7 @@ def test_timezone_option(
         ("learning guitar @ 9pm friday", ["--at", "9pm friday"]),  # 21
         (
             "gaining Indian Independence @ 1pm August 15 1947",
-            ["--since", "August 1947", "-r", "-n", "1"],
+            ["--since", "August 1 1947", "-r", "-n", "1"],
         ),  # 22
         ("framing a photo @ 1:34pm yesterday", ["--yesterday"]),  # 23
         ("taking pictures @ 12:34pm yesterday", ["-e"]),  # 24

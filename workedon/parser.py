@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 from typing import Final
 
@@ -43,7 +43,13 @@ class InputParser:
         parsed_dt = self._as_datetime(dt)
         if not parsed_dt:
             raise InvalidDateTimeError()
-        if parsed_dt > now():
+        current = now()
+        # workaround a dateparser bug: even though we set PREFER_DATES_FROM to "past",
+        # it sometimes still returns a future date when only time is given.
+        # If parsed time is on the same day and still in the future, shift to previous day
+        if parsed_dt.date() == current.date() and parsed_dt > current:
+            parsed_dt = parsed_dt - timedelta(days=1)
+        if parsed_dt > current:
             raise DateTimeInFutureError()
         return parsed_dt
 
