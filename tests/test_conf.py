@@ -15,9 +15,7 @@ def test_settings_getattr_and_setattr() -> None:
     assert settings["FOO"] == "bar"
 
 
-def test_configure_creates_settings_file(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_configure_creates_settings_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     conf_path = tmp_path / "wonfile.py"
     monkeypatch.setattr(conf, "CONF_PATH", conf_path)
 
@@ -28,9 +26,7 @@ def test_configure_creates_settings_file(
     assert SETTINGS_HEADER.strip() in conf_path.read_text()
 
 
-def test_configure_loads_user_settings(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_configure_loads_user_settings(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     conf_path = tmp_path / "wonfile.py"
     conf_path.write_text('TIME_FORMAT = "%H:%M"\n')
     monkeypatch.setattr(conf, "CONF_PATH", conf_path)
@@ -41,9 +37,7 @@ def test_configure_loads_user_settings(
     assert settings.TIME_FORMAT == "%H:%M"
 
 
-def test_configure_merges_user_settings(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_configure_merges_user_settings(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     conf_path = tmp_path / "wonfile.py"
     conf_path.write_text('DATE_FORMAT = "%Y"\n')
     monkeypatch.setattr(conf, "CONF_PATH", conf_path)
@@ -54,9 +48,7 @@ def test_configure_merges_user_settings(
     assert settings.DATE_FORMAT == "%d"
 
 
-def test_configure_raises_on_bad_spec(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_configure_raises_on_bad_spec(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     conf_path = tmp_path / "wonfile.py"
     conf_path.write_text("# ok\n")
     monkeypatch.setattr(conf, "CONF_PATH", conf_path)

@@ -3,8 +3,8 @@
 from datetime import datetime, timezone
 import zoneinfo
 
-import pytest
 from freezegun import freeze_time
+import pytest
 
 from workedon.conf import settings
 from workedon.utils import get_unique_hash, now, to_internal_dt

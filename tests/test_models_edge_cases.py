@@ -1,21 +1,19 @@
 """Edge case tests for database models."""
 
-import pytest
 from peewee import IntegrityError
+import pytest
 
 from workedon.models import Tag, Work, WorkTag, init_db
 
 
 def test_work_requires_uuid() -> None:
-    with init_db():
-        with pytest.raises(IntegrityError):
-            Work.create(uuid=None, work="test")
+    with init_db(), pytest.raises(IntegrityError):
+        Work.create(uuid=None, work="test")
 
 
 def test_work_requires_work_text() -> None:
-    with init_db():
-        with pytest.raises(IntegrityError):
-            Work.create(work=None)
+    with init_db(), pytest.raises(IntegrityError):
+        Work.create(work=None)
 
 
 def test_work_allows_null_duration() -> None:

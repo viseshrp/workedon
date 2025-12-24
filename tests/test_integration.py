@@ -28,9 +28,7 @@ def test_full_workflow_save_modify_fetch_delete(runner: CliRunner) -> None:
     assert "working on feature" in duration_result.output
 
     # Delete
-    delete_result = runner.invoke(
-        cli.what, ["--no-page", "--tag", "dev", "--delete"], input="y"
-    )
+    delete_result = runner.invoke(cli.what, ["--no-page", "--tag", "dev", "--delete"], input="y")
     assert delete_result.exit_code == 0
     assert "deleted successfully" in delete_result.output
 
@@ -66,9 +64,7 @@ def test_duration_with_timezone_changes(runner: CliRunner) -> None:
     runner.invoke(cli.main, ["work [90m] @ 3pm yesterday", "--time-zone", "UTC"])
 
     # Fetch in different timezone
-    result = runner.invoke(
-        cli.what, ["--no-page", "--last", "--time-zone", "Asia/Tokyo"]
-    )
+    result = runner.invoke(cli.what, ["--no-page", "--last", "--time-zone", "Asia/Tokyo"])
     assert result.exit_code == 0
     assert "Duration:" in result.output
 

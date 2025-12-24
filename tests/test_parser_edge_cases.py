@@ -226,9 +226,7 @@ def test_parse_tags_no_valid_tags(parser: InputParser, input_str: str) -> None:
         ("#tag{braces}", {"tag"}),
     ],
 )
-def test_parse_tags_with_special_chars(
-    parser: InputParser, input_str: str, expected: set
-) -> None:
+def test_parse_tags_with_special_chars(parser: InputParser, input_str: str, expected: set) -> None:
     assert parser.parse_tags(input_str) == expected
 
 
@@ -297,14 +295,14 @@ def test_parse_work_with_all_components(parser: InputParser) -> None:
 
 def test_parse_separator_in_work_text(parser: InputParser) -> None:
     # Last @ should be the separator
-    work, dt, duration, tags = parser.parse("email to john@example.com @ yesterday")
+    work, dt, _duration, _tags = parser.parse("email to john@example.com @ yesterday")
     assert work == "email to john@example.com"
     assert dt.date() == (now() - timedelta(days=1)).date()
 
 
 def test_parse_multiple_separators(parser: InputParser) -> None:
     # Should partition on the last @
-    work, dt, duration, tags = parser.parse("work @ 3pm @ yesterday")
+    work, dt, _duration, _tags = parser.parse("work @ 3pm @ yesterday")
     assert work == "work @ 3pm"
     assert dt.date() == (now() - timedelta(days=1)).date()
 
@@ -325,7 +323,7 @@ def test_parse_whitespace_only_raises(parser: InputParser) -> None:
 
 
 def test_parse_multiple_durations_uses_first(parser: InputParser) -> None:
-    work, dt, duration, tags = parser.parse("work [30m] [60m] [90m]")
+    _work, _dt, duration, _tags = parser.parse("work [30m] [60m] [90m]")
     assert duration == 30
 
 
@@ -363,15 +361,15 @@ def test_parse_extremely_long_work_text(parser: InputParser) -> None:
 
 def test_parse_many_tags(parser: InputParser) -> None:
     tags_str = " ".join(f"#tag{i}" for i in range(100))
-    work, _, _, tags = parser.parse(f"work {tags_str}")
+    _work, _, _, tags = parser.parse(f"work {tags_str}")
     assert len(tags) == 100
 
 
 def test_parse_very_precise_duration(parser: InputParser) -> None:
-    work, _, duration, _ = parser.parse("work [1.123456789h]")
+    _work, _, duration, _ = parser.parse("work [1.123456789h]")
     assert duration == 67.41  # Rounded to 2 decimals
 
 
 def test_parse_zero_duration(parser: InputParser) -> None:
-    work, _, duration, _ = parser.parse("work [0h]")
+    _work, _, duration, _ = parser.parse("work [0h]")
     assert duration == 0

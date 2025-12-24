@@ -45,9 +45,7 @@ def test_chunked_prefetch_generator_text_only() -> None:
         Work.create(work="beta")
 
         work_set = Work.select(Work.work)
-        output = "".join(
-            workedon.chunked_prefetch_generator(work_set, [Work.work], True)
-        )
+        output = "".join(workedon.chunked_prefetch_generator(work_set, [Work.work], True))
 
     assert "* alpha" in output
     assert "* beta" in output
@@ -147,7 +145,6 @@ def test_fetch_work_raises_cannot_fetch_on_db_failure(
     @contextlib.contextmanager
     def broken_db():
         raise RuntimeError("db down")
-        yield  # pragma: no cover
 
     monkeypatch.setattr(workedon, "init_db", broken_db)
     with pytest.raises(CannotFetchWorkError) as excinfo:

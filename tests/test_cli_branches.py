@@ -1,10 +1,9 @@
 import importlib
-import os
 
 import pytest
 
-from workedon import cli
 import workedon
+from workedon import cli
 
 
 def test_cli_import_skips_warning_filter_in_debug(monkeypatch: pytest.MonkeyPatch) -> None:

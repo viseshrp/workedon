@@ -17,9 +17,7 @@ def configure_settings(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(settings, "internal_tz", "UTC")
 
 
-def test_get_or_create_db_creates_file(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_get_or_create_db_creates_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     db_path = tmp_path / "won.db"
     monkeypatch.setattr(models, "DB_PATH", db_path)
 
@@ -69,9 +67,7 @@ def test_apply_pending_migrations_from_zero(tmp_path: Path) -> None:
         db.close()
 
 
-def test_apply_pending_migrations_from_v1(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_apply_pending_migrations_from_v1(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     db = SqliteDatabase(str(tmp_path / "v1-pending.db"))
     db.connect()
     try:
@@ -102,9 +98,7 @@ def test_apply_pending_migrations_from_v2(tmp_path: Path) -> None:
         db.execute_sql(
             "CREATE TABLE work (uuid TEXT PRIMARY KEY, created DATETIME, work TEXT, timestamp DATETIME, duration REAL);"
         )
-        db.execute_sql(
-            "CREATE TABLE tag (uuid TEXT PRIMARY KEY, name TEXT, created DATETIME);"
-        )
+        db.execute_sql("CREATE TABLE tag (uuid TEXT PRIMARY KEY, name TEXT, created DATETIME);")
         db.execute_sql("CREATE TABLE work_tag (work TEXT, tag TEXT);")
         models._set_db_user_version(db, 2)
         with db.bind_ctx([Work, Tag, WorkTag]):
@@ -143,9 +137,7 @@ def test_migrate_v2_to_v3_adds_duration_index(tmp_path: Path) -> None:
         db.execute_sql(
             "CREATE TABLE work (uuid TEXT PRIMARY KEY, created DATETIME, work TEXT, timestamp DATETIME, duration REAL);"
         )
-        db.execute_sql(
-            "CREATE TABLE tag (uuid TEXT PRIMARY KEY, name TEXT, created DATETIME);"
-        )
+        db.execute_sql("CREATE TABLE tag (uuid TEXT PRIMARY KEY, name TEXT, created DATETIME);")
         db.execute_sql("CREATE TABLE work_tag (work TEXT, tag TEXT);")
         models._set_db_user_version(db, 2)
         with db.bind_ctx([Work, Tag, WorkTag]):
@@ -165,9 +157,7 @@ def test_apply_pending_migrations_raises_on_mismatch(
     db.connect()
     try:
         with db.bind_ctx([Work, Tag, WorkTag]):
-            monkeypatch.setattr(
-                models, "get_db_user_version", lambda *_: CURRENT_DB_VERSION + 1
-            )
+            monkeypatch.setattr(models, "get_db_user_version", lambda *_: CURRENT_DB_VERSION + 1)
             with pytest.raises(DBInitializationError):
                 models._apply_pending_migrations(db)
     finally:
@@ -181,6 +171,7 @@ def test_apply_pending_migrations_wraps_operational_error(
     db.connect()
     try:
         with db.bind_ctx([Work, Tag, WorkTag]):
+
             def raise_operational_error(*_args, **_kwargs):
                 raise OperationalError("fail")
 
