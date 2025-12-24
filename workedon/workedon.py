@@ -215,7 +215,7 @@ def fetch_work(
             has_work = work_set.exists()
             if delete:
                 if has_work:
-                    if click.confirm(f"Continue deleting log(s)?"):
+                    if click.confirm("Continue deleting log(s)?"):
                         click.echo("Deleting...")
                         deleted_count = Work.delete().where(Work.uuid.in_(work_set)).execute()
                         click.echo(f"{deleted_count} log(s) deleted successfully.")
