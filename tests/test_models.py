@@ -72,7 +72,8 @@ def test_apply_pending_migrations_from_v1(tmp_path: Path, monkeypatch: pytest.Mo
     db.connect()
     try:
         db.execute_sql(
-            "CREATE TABLE work (uuid TEXT PRIMARY KEY, created DATETIME, work TEXT, timestamp DATETIME);"
+            "CREATE TABLE work (uuid TEXT PRIMARY KEY, created DATETIME, work TEXT, "
+            "timestamp DATETIME);"
         )
         models._set_db_user_version(db, 1)
 
@@ -96,7 +97,8 @@ def test_apply_pending_migrations_from_v2(tmp_path: Path) -> None:
     db.connect()
     try:
         db.execute_sql(
-            "CREATE TABLE work (uuid TEXT PRIMARY KEY, created DATETIME, work TEXT, timestamp DATETIME, duration REAL);"
+            "CREATE TABLE work (uuid TEXT PRIMARY KEY, created DATETIME, work TEXT, "
+            "timestamp DATETIME, duration REAL);"
         )
         db.execute_sql("CREATE TABLE tag (uuid TEXT PRIMARY KEY, name TEXT, created DATETIME);")
         db.execute_sql("CREATE TABLE work_tag (work TEXT, tag TEXT);")
@@ -116,7 +118,8 @@ def test_migrate_v1_to_v2_adds_tables_and_duration(tmp_path: Path) -> None:
     db.connect()
     try:
         db.execute_sql(
-            "CREATE TABLE work (uuid TEXT PRIMARY KEY, created DATETIME, work TEXT, timestamp DATETIME);"
+            "CREATE TABLE work (uuid TEXT PRIMARY KEY, created DATETIME, work TEXT, "
+            "timestamp DATETIME);"
         )
         models._set_db_user_version(db, 1)
         with db.bind_ctx([Work, Tag, WorkTag]):
@@ -135,7 +138,8 @@ def test_migrate_v2_to_v3_adds_duration_index(tmp_path: Path) -> None:
     db.connect()
     try:
         db.execute_sql(
-            "CREATE TABLE work (uuid TEXT PRIMARY KEY, created DATETIME, work TEXT, timestamp DATETIME, duration REAL);"
+            "CREATE TABLE work (uuid TEXT PRIMARY KEY, created DATETIME, work TEXT, "
+            "timestamp DATETIME, duration REAL);"
         )
         db.execute_sql("CREATE TABLE tag (uuid TEXT PRIMARY KEY, name TEXT, created DATETIME);")
         db.execute_sql("CREATE TABLE work_tag (work TEXT, tag TEXT);")
@@ -172,7 +176,7 @@ def test_apply_pending_migrations_wraps_operational_error(
     try:
         with db.bind_ctx([Work, Tag, WorkTag]):
 
-            def raise_operational_error(*_args, **_kwargs):
+            def raise_operational_error(*_args: object, **_kwargs: object) -> None:
                 raise OperationalError("fail")
 
             monkeypatch.setattr(db, "execute_sql", raise_operational_error)

@@ -1,10 +1,11 @@
 from datetime import datetime
+from typing import cast
 import zoneinfo
 
 import click
 import pytest
 
-from workedon.conf import settings
+from workedon.conf import Settings, settings
 from workedon.utils import (
     add_options,
     get_default_time,
@@ -31,13 +32,17 @@ def test_to_internal_dt_trims_seconds_and_uses_internal_tz(
     result = to_internal_dt(dt)
     assert result.second == 0
     assert result.microsecond == 0
-    assert result.tzinfo.key == "UTC"
+    tzinfo = result.tzinfo
+    assert isinstance(tzinfo, zoneinfo.ZoneInfo)
+    assert tzinfo.key == "UTC"
 
 
 def test_now_uses_settings_time_zone(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(settings, "TIME_ZONE", "UTC")
     result = now()
-    assert result.tzinfo.key == "UTC"
+    tzinfo = result.tzinfo
+    assert isinstance(tzinfo, zoneinfo.ZoneInfo)
+    assert tzinfo.key == "UTC"
 
 
 def test_get_default_time_matches_to_internal_dt(
@@ -53,7 +58,7 @@ def test_get_default_time_matches_to_internal_dt(
 def test_load_settings_merges_uppercase_kwargs(monkeypatch: pytest.MonkeyPatch) -> None:
     captured: dict[str, str] = {}
 
-    def fake_configure(self, *, user_settings: dict[str, str] | None = None) -> None:
+    def fake_configure(self: Settings, *, user_settings: dict[str, str] | None = None) -> None:
         captured.update(user_settings or {})
         self.update(user_settings or {})
 
@@ -61,9 +66,9 @@ def test_load_settings_merges_uppercase_kwargs(monkeypatch: pytest.MonkeyPatch) 
 
     @load_settings
     def handler(**kwargs: str) -> str:
-        return settings.DATE_FORMAT
+        return cast(str, settings.DATE_FORMAT)
 
-    result = handler(DATE_FORMAT="%Y-%m-%d", lower="skip")  # type: ignore[arg-type]
+    result = handler(DATE_FORMAT="%Y-%m-%d", lower="skip")
     assert captured == {"DATE_FORMAT": "%Y-%m-%d"}
     assert result == "%Y-%m-%d"
 
@@ -71,7 +76,10 @@ def test_load_settings_merges_uppercase_kwargs(monkeypatch: pytest.MonkeyPatch) 
 def test_load_settings_wraps_errors_in_click_exception(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr(type(settings), "configure", lambda *args, **kwargs: None)
+    def noop_configure(*_args: object, **_kwargs: object) -> None:
+        return None
+
+    monkeypatch.setattr(type(settings), "configure", noop_configure)
 
     @load_settings
     def handler() -> None:

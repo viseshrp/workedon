@@ -64,7 +64,13 @@ def test_as_datetime_returns_none_when_parser_has_no_result(
     assert parser._as_datetime("not a date") is None
 
 
-def test_parse_duration_returns_none_for_unknown_unit() -> None:
+def test_parse_duration_returns_none_for_unknown_unit(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     parser = InputParser()
-    parser._DURATION_REGEX = r"\[\s*(\d+(?:\.\d+)?)\s*(sec)\s*\]"
+    monkeypatch.setattr(
+        parser,
+        "_DURATION_REGEX",
+        r"\[\s*(\d+(?:\.\d+)?)\s*(sec)\s*\]",
+    )
     assert parser.parse_duration("[5 sec]") is None

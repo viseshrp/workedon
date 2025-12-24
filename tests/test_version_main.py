@@ -2,6 +2,8 @@ import importlib
 import importlib.metadata
 import runpy
 
+import pytest
+
 import workedon
 import workedon._version
 import workedon.cli
@@ -14,7 +16,7 @@ def test_package_exports() -> None:
     assert workedon.__version__
 
 
-def test_version_fallback_when_package_missing(monkeypatch) -> None:
+def test_version_fallback_when_package_missing(monkeypatch: pytest.MonkeyPatch) -> None:
     def raise_not_found(_name: str) -> str:
         raise importlib.metadata.PackageNotFoundError("workedon")
 
@@ -24,7 +26,7 @@ def test_version_fallback_when_package_missing(monkeypatch) -> None:
     importlib.reload(workedon._version)
 
 
-def test___main__invokes_cli_main(monkeypatch) -> None:
+def test___main__invokes_cli_main(monkeypatch: pytest.MonkeyPatch) -> None:
     called = {"value": False}
 
     def fake_main() -> None:

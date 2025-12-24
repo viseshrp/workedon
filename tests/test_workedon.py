@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+from collections.abc import Generator, Iterable, Iterator
 import contextlib
 from datetime import datetime, timedelta
+from typing import cast
 
 import click
 from freezegun import freeze_time
@@ -36,7 +38,8 @@ class DummyWork:
 
 def test_generate_work_yields_strings() -> None:
     items = [DummyWork("first"), DummyWork("second")]
-    assert list(workedon._generate_work(iter(items))) == ["first", "second"]
+    work_iter = cast(Iterator[Work], iter(items))
+    assert list(workedon._generate_work(work_iter)) == ["first", "second"]
 
 
 def test_chunked_prefetch_generator_text_only() -> None:
@@ -130,7 +133,7 @@ def test_save_work_creates_tags_from_option() -> None:
 def test_save_work_raises_cannot_save_on_failure(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    def raise_error(*_args, **_kwargs):
+    def raise_error(*_args: object, **_kwargs: object) -> None:
         raise RuntimeError("boom")
 
     monkeypatch.setattr(workedon.Work, "create", raise_error)
@@ -142,11 +145,18 @@ def test_save_work_raises_cannot_save_on_failure(
 def test_fetch_work_raises_cannot_fetch_on_db_failure(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    @contextlib.contextmanager
-    def broken_db():
-        raise RuntimeError("db down")
+    class DBDownError(RuntimeError):
+        def __init__(self) -> None:
+            super().__init__("db down")
 
-    monkeypatch.setattr(workedon, "init_db", broken_db)
+    class BrokenDB:
+        def __enter__(self) -> None:
+            raise DBDownError()
+
+        def __exit__(self, *_args: object) -> None:
+            return None
+
+    monkeypatch.setattr(workedon, "init_db", lambda: BrokenDB())
     with pytest.raises(CannotFetchWorkError) as excinfo:
         workedon.fetch_work(
             count=None,
@@ -171,40 +181,45 @@ def test_fetch_work_delete_declined_keeps_data(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     class DummySelect:
-        def where(self, *_args, **_kwargs):
+        def where(self, *_args: object, **_kwargs: object) -> DummySelect:
             return self
 
-        def order_by(self, *_args, **_kwargs):
+        def order_by(self, *_args: object, **_kwargs: object) -> DummySelect:
             return self
 
-        def limit(self, *_args, **_kwargs):
+        def limit(self, *_args: object, **_kwargs: object) -> DummySelect:
             return self
 
         def exists(self) -> bool:
             return True
 
+    class DummyDelete:
+        def where(self, *_args: object, **_kwargs: object) -> DummyDelete:
+            return self
+
+        def execute(self) -> int:
+            return 0
+
     deleted = {"called": False}
 
-    def fake_delete():
+    def fake_delete() -> DummyDelete:
         deleted["called"] = True
-
-        class DummyDelete:
-            def where(self, *_args, **_kwargs):
-                return self
-
-            def execute(self) -> int:
-                return 0
-
         return DummyDelete()
 
     @contextlib.contextmanager
-    def fake_db():
+    def fake_db() -> Generator[None, None, None]:
         yield None
 
-    monkeypatch.setattr(workedon.Work, "select", lambda *_args, **_kwargs: DummySelect())
+    def fake_select(*_args: object, **_kwargs: object) -> DummySelect:
+        return DummySelect()
+
+    def fake_confirm(*_args: object, **_kwargs: object) -> bool:
+        return False
+
+    monkeypatch.setattr(workedon.Work, "select", fake_select)
     monkeypatch.setattr(workedon.Work, "delete", fake_delete)
     monkeypatch.setattr(workedon, "init_db", fake_db)
-    monkeypatch.setattr(click, "confirm", lambda *_args, **_kwargs: False)
+    monkeypatch.setattr(click, "confirm", fake_confirm)
 
     workedon.fetch_work(
         count=None,
@@ -231,17 +246,17 @@ def test_fetch_work_uses_pager_for_multiple_rows(
 ) -> None:
     captured: dict[str, list[str]] = {}
 
-    def fake_pager(gen) -> None:
+    def fake_pager(gen: Iterable[str]) -> None:
         captured["output"] = list(gen)
 
     class DummySelect:
-        def where(self, *_args, **_kwargs):
+        def where(self, *_args: object, **_kwargs: object) -> DummySelect:
             return self
 
-        def order_by(self, *_args, **_kwargs):
+        def order_by(self, *_args: object, **_kwargs: object) -> DummySelect:
             return self
 
-        def limit(self, *_args, **_kwargs):
+        def limit(self, *_args: object, **_kwargs: object) -> DummySelect:
             return self
 
         def exists(self) -> bool:
@@ -251,14 +266,18 @@ def test_fetch_work_uses_pager_for_multiple_rows(
             return 2
 
     @contextlib.contextmanager
-    def fake_db():
+    def fake_db() -> Generator[None, None, None]:
         yield None
 
-    def fake_generator(*_args, **_kwargs):
+    def fake_generator(*_args: object, **_kwargs: object) -> Iterator[str]:
         return iter(["id: first\n", "id: second\n"])
 
     monkeypatch.setattr(click, "echo_via_pager", fake_pager)
-    monkeypatch.setattr(workedon.Work, "select", lambda *_args, **_kwargs: DummySelect())
+
+    def fake_select(*_args: object, **_kwargs: object) -> DummySelect:
+        return DummySelect()
+
+    monkeypatch.setattr(workedon.Work, "select", fake_select)
     monkeypatch.setattr(workedon, "chunked_prefetch_generator", fake_generator)
     monkeypatch.setattr(workedon, "init_db", fake_db)
     workedon.fetch_work(
@@ -340,4 +359,3 @@ def test_fetch_work_rejects_invalid_duration_operator(
             duration="?!5m",
         )
     assert "Invalid duration operator" in str(excinfo.value)
-
