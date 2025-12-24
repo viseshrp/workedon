@@ -58,6 +58,11 @@ def test_empty_fetch(runner: CliRunner) -> None:
     assert "Nothing to show" in result.output
 
 
+def test_main_with_subcommand_returns_early(runner: CliRunner) -> None:
+    result = runner.invoke(cli.main, ["what", "--no-page"])
+    assert result.exit_code == 0
+
+
 # -- Basic save & fetch scenarios ------------------------------------------------
 
 
@@ -98,6 +103,15 @@ def test_fetch_last(runner: CliRunner, command: str, description: str, valid: bo
     else:
         assert result.exit_code == 0
         assert description not in result.output
+
+
+def test_fetch_last_returns_most_recent_entry(runner: CliRunner) -> None:
+    save_and_verify(runner, "first thing @ 3 days ago", "first thing")
+    save_and_verify(runner, "second thing @ yesterday", "second thing")
+
+    result = runner.invoke(cli.what, ["--no-page", "--last"])
+    verify_work_output(result, "second thing")
+    assert "first thing" not in result.output
 
 
 # -- Fetch by ID ----------------------------------------------------------------
@@ -218,6 +232,15 @@ def test_save_and_fetch_others(runner: CliRunner, command: str, flag: list[str])
 
     result = runner.invoke(cli.what, ["--no-page", *flag])
     verify_work_output(result, description)
+
+
+def test_default_fetch_excludes_entries_older_than_week(runner: CliRunner) -> None:
+    save_and_verify(runner, "ancient history @ 10 days ago", "ancient history")
+    save_and_verify(runner, "fresh work @ yesterday", "fresh work")
+
+    result = runner.invoke(cli.what, ["--no-page"])
+    verify_work_output(result, "fresh work")
+    assert "ancient history" not in result.output
 
 
 # -- Deletion --------------------------------------------------------------------
@@ -477,6 +500,16 @@ def test_cli_tag_filter(
         assert "Nothing to show" in result_fetch.output
 
 
+def test_list_tags_outputs_saved_tags(runner: CliRunner) -> None:
+    runner.invoke(cli.main, ["first", "tag", "#alpha"])
+    runner.invoke(cli.main, ["second", "tag", "#beta"])
+
+    result = runner.invoke(cli.main, ["--list-tags"])
+    assert result.exit_code == 0
+    assert "alpha" in result.output.lower()
+    assert "beta" in result.output.lower()
+
+
 # -- Duration ------------------------------------------------------------
 
 
@@ -494,13 +527,10 @@ def test_cli_tag_filter(
 def test_cli_duration_parsing_and_display(
     runner: CliRunner, input_text: str, expected_duration: str, xargs: list
 ) -> None:
-    result_save = runner.invoke(cli.main, input_text.split())
+    result_save = runner.invoke(cli.main, [*input_text.split(), *xargs])
     assert result_save.exit_code == 0
     assert "Work saved." in result_save.output
-
-    result_fetch = runner.invoke(cli.what, ["--no-page", "--last", *xargs])
-    assert result_fetch.exit_code == 0
-    assert expected_duration in result_fetch.output
+    assert expected_duration in result_save.output
 
 
 @pytest.mark.parametrize(
@@ -561,3 +591,20 @@ def test_cli_duration_filter(
 def test_invalid_duration_filter(runner: CliRunner, invalid_filter_flag: list[str]) -> None:
     result = runner.invoke(cli.what, ["--no-page", *invalid_filter_flag])
     assert result.exit_code == 1
+    assert "Invalid duration" in result.output
+
+
+def test_cli_duration_option_overrides_inline_value(runner: CliRunner) -> None:
+    save_result = runner.invoke(cli.main, ["overridden task", "[30m]", "--duration", "2h"])
+    verify_work_output(save_result, "overridden task")
+
+    fetch_result = runner.invoke(cli.what, ["--no-page", "--last"])
+    assert "Duration: 120.0 minutes" in fetch_result.output
+
+
+def test_cli_duration_option_ignored_when_invalid(runner: CliRunner) -> None:
+    save_result = runner.invoke(cli.main, ["keep inline", "[30m]", "--duration", "abc"])
+    verify_work_output(save_result, "keep inline")
+
+    fetch_result = runner.invoke(cli.what, ["--no-page", "--last"])
+    assert "Duration: 30.0 minutes" in fetch_result.output
