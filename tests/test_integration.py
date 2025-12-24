@@ -54,7 +54,7 @@ def test_multiple_tags_filtering(runner: CliRunner) -> None:
     assert "task2" in dev_result.output
     assert "task3" not in dev_result.output
 
-    # Filter by multiple tags (AND logic)
+    # Filter by multiple tags (OR logic)
     multi_result = runner.invoke(
         cli.what, ["--no-page", "--tag", "dev", "--tag", "frontend", "--yesterday"]
     )
