@@ -1,6 +1,10 @@
 """Integration tests covering complete workflows."""
 
+from datetime import datetime
+import zoneinfo
+
 from click.testing import CliRunner
+from freezegun import freeze_time
 import pytest
 
 from workedon import cli
@@ -92,16 +96,20 @@ def test_edge_case_midnight_boundary(runner: CliRunner) -> None:
     assert "midnight task" in today_result.output
 
 
+@freeze_time("2024-01-10 15:00:00")
 def test_complex_datetime_parsing(runner: CliRunner) -> None:
+    fmt = "%Y-%m-%d %H:%M %z"
+    tz = zoneinfo.ZoneInfo("UTC")
     test_cases = [
-        "meeting @ 3pm last friday",
-        "call @ 9:30am yesterday",
-        "email @ noon 3 days ago",
-        "standup @ 10am this week",
+        ("meeting @ 3pm 5 days ago", datetime(2024, 1, 5, 15, 0, tzinfo=tz)),
+        ("call @ 9:30am yesterday", datetime(2024, 1, 9, 9, 30, tzinfo=tz)),
+        ("email @ noon 3 days ago", datetime(2024, 1, 7, 12, 0, tzinfo=tz)),
+        ("standup @ 10am this week", datetime(2024, 1, 10, 10, 0, tzinfo=tz)),
     ]
+    env = {"WORKEDON_TIME_ZONE": "UTC", "WORKEDON_DATETIME_FORMAT": fmt}
 
-    for case in test_cases:
-        result = runner.invoke(cli.main, case.split())
-        assert result.exit_code == 0 or any(
-            keyword in result.output.lower() for keyword in ("future", "invalid")
-        )
+    for case, expected_dt in test_cases:
+        result = runner.invoke(cli.main, case.split(), env=env)
+        assert result.exit_code == 0
+        assert "Work saved." in result.output
+        assert f"Date: {expected_dt.strftime(fmt)}" in result.output
