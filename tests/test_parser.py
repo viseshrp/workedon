@@ -1,4 +1,5 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
+import zoneinfo
 
 from freezegun import freeze_time
 import pytest
@@ -137,16 +138,25 @@ def test_parse_datetime_various_time_formats(parser: InputParser, input_str: str
     assert result <= now()
 
 
-def test_parse_datetime_edge_of_midnight(parser: InputParser) -> None:
-    with freeze_time("2024-01-15 00:01:00"):
-        try:
-            result = parser.parse_datetime("11:59pm")
-        except DateTimeInFutureError:
-            assert True
-        else:
-            assert result.hour == 23
-            assert result.minute == 59
-            assert result.date() == (now() - timedelta(days=1)).date()
+def test_parse_datetime_edge_of_midnight(monkeypatch: pytest.MonkeyPatch) -> None:
+    # We avoid `freeze_time` here because the session-wide freeze already sets a "now".
+    # In a prior version of this test, `InputParser` was created outside the inner
+    # freeze_time block via the `parser` fixture, while `now()` in the assertion used
+    # the inner freeze. That created two different "now" values and a flaky mismatch.
+    # By stubbing `workedon.parser.now` directly, both parsing and assertions share
+    # the same time source and the midnight edge case stays deterministic.
+    monkeypatch.setattr(settings, "TIME_ZONE", "UTC")
+    midnight_plus = datetime(2024, 1, 15, 0, 1, tzinfo=zoneinfo.ZoneInfo("UTC"))
+    monkeypatch.setattr("workedon.parser.now", lambda: midnight_plus)
+    parser = InputParser()
+    try:
+        result = parser.parse_datetime("11:59pm")
+    except DateTimeInFutureError:
+        assert True
+    else:
+        assert result.hour == 23
+        assert result.minute == 59
+        assert result.date() == (midnight_plus - timedelta(days=1)).date()
 
 
 @pytest.mark.parametrize(
