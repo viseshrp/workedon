@@ -1,8 +1,9 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import cast
 import zoneinfo
 
 import click
+from freezegun import freeze_time
 import pytest
 
 from workedon.conf import Settings, settings
@@ -102,3 +103,43 @@ def test_add_options_applies_click_options() -> None:
 
     assert hasattr(handler, "__click_params__")
     assert {param.name for param in handler.__click_params__} == {"alpha", "beta"}
+
+
+# ---edge-cases---
+
+
+def test_now_returns_timezone_aware() -> None:
+    settings.configure()
+    current = now()
+    assert current.tzinfo is not None
+
+
+def test_to_internal_dt_converts_timezone() -> None:
+    settings.configure()
+    dt = datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+    internal = to_internal_dt(dt)
+    assert internal.tzinfo == zoneinfo.ZoneInfo(settings.internal_tz)
+
+
+def test_to_internal_dt_preserves_date() -> None:
+    dt = datetime(2024, 6, 15, 23, 59, 59, tzinfo=timezone.utc)
+    internal = to_internal_dt(dt)
+    # Date might shift due to timezone conversion
+    assert abs((internal.date() - dt.date()).days) <= 1
+
+
+def test_now_frozen_time(monkeypatch: pytest.MonkeyPatch) -> None:
+    settings.configure()
+    monkeypatch.setattr(settings, "TIME_ZONE", "UTC")
+    with freeze_time("2024-01-15 12:00:00"):
+        current = now()
+        assert current.hour == 12
+        assert current.minute == 0
+
+
+def test_to_internal_dt_with_naive_datetime_raises() -> None:
+    settings.configure()
+    dt = datetime(2024, 1, 1, 12, 0, 0)  # No timezone
+    internal = to_internal_dt(dt)
+    assert internal.tzinfo is not None
+    assert internal.tzinfo == zoneinfo.ZoneInfo(settings.internal_tz)

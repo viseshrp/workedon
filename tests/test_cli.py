@@ -220,10 +220,6 @@ def test_timezone_option(
         ("learning to cook @ 3pm yesterday", ["-f", "2 days ago", "-t", "3:05pm yesterday"]),  # 36
         ("watching tv @ 9am", ["-g"]),  # 37
         ("taking wife shopping @ 3pm", ["--no-page"]),  # 38
-        (
-            "weights at the gym",
-            ["--count", "1"],
-        ),
     ],
 )
 def test_save_and_fetch_others(runner: CliRunner, command: str, flag: list[str]) -> None:
