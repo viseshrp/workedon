@@ -67,8 +67,9 @@ def test_configure_raises_on_exec_module_failure(
     monkeypatch.setattr(conf, "CONF_PATH", conf_path)
 
     settings = Settings()
-    with pytest.raises(CannotLoadSettingsError):
+    with pytest.raises(CannotLoadSettingsError) as excinfo:
         settings.configure()
+    assert "boom" in str(excinfo.value)
 
 
 def test_configure_raises_on_settings_file_creation_failure(
