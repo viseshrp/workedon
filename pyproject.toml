@@ -94,26 +94,15 @@ path = ".venv"
 default-groups = "all"
 
 [tool.ty]
-# Configuration for ty type checker (replaces mypy)
+# Configuration for ty type checker
 
 [tool.ty.environment]
 # Python version to use for type checking
-# Corresponds to mypy's implicit Python version handling
 python-version = "3.10"  # Minimum version from project.requires-python
 
 [tool.ty.rules]
 # Rule configuration for type checking behavior
-# Corresponds to mypy's ignore_missing_imports and disable_error_code settings
 unresolved-import = "ignore"  # Ignore missing third-party type stubs
-
-# Note: ty is strict by default, which provides equivalent behavior to mypy's:
-# - disallow_untyped_defs = true
-# - no_implicit_optional = true
-# - check_untyped_defs = true
-# - warn_return_any = true
-# - warn_unused_ignores = true
-# - show_error_codes = true
-# - follow_imports = "silent"
 
 [tool.pytest.ini_options]
 tmp_path_retention_policy = "failed"
