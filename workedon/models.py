@@ -79,7 +79,9 @@ class Work(Model):
         Uses a git log like structure.
         """
         if self.uuid is not None:
-            # Cast to datetime since Peewee returns the actual datetime value at runtime
+            # Peewee returns the actual datetime value at runtime, not a DateTimeField instance.
+            # The cast is safe and necessary for type checking since Peewee's stubs
+            # don't reflect this runtime behavior accurately.
             timestamp_dt = cast(datetime, self.timestamp)
             user_time = timestamp_dt.astimezone(zoneinfo.ZoneInfo(settings.TIME_ZONE))
             timestamp_str = user_time.strftime(
