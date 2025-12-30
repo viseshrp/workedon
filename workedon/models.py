@@ -1,7 +1,8 @@
 from collections.abc import Generator
 import contextlib
+from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 import zoneinfo
 
 import click
@@ -78,7 +79,9 @@ class Work(Model):
         Uses a git log like structure.
         """
         if self.uuid is not None:
-            user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.TIME_ZONE))
+            # Cast to datetime since Peewee returns the actual datetime value at runtime
+            timestamp_dt = cast(datetime, self.timestamp)
+            user_time = timestamp_dt.astimezone(zoneinfo.ZoneInfo(settings.TIME_ZONE))
             timestamp_str = user_time.strftime(
                 settings.DATETIME_FORMAT or f"{settings.DATE_FORMAT} {settings.TIME_FORMAT}"
             )

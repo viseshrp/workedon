@@ -11,7 +11,7 @@ from .utils import now
 
 
 class InputParser:
-    _date_parser: DateDataParser = None
+    _date_parser: DateDataParser | None = None
     _WORK_DATE_SEPARATOR: Final[str] = "@"
     _TAG_REGEX: Final[str] = r"#([\w\d_-]+)"
     _DURATION_REGEX: Final[str] = r"\[\s*(\d+(?:\.\d+)?)\s*(h|hr|hrs|hours|m|min|mins|minutes)\s*\]"
@@ -29,6 +29,7 @@ class InputParser:
         )
 
     def _as_datetime(self, date_time: str) -> datetime | None:
+        assert self._date_parser is not None, "_date_parser must be initialized"
         dt_obj = self._date_parser.get_date_data(date_time)
         if dt_obj:
             date_obj: datetime = dt_obj["date_obj"]
