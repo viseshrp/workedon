@@ -40,6 +40,10 @@ repos:
         language: system
         types: [ python ]
         pass_filenames: false
+        args: [
+          # Equivalent to mypy's ignore_missing_imports = true and disable_error_code = ["import-untyped"]
+          "--ignore", "unresolved-import",
+        ]
 
       - id: pip-audit
         name: pip-audit
