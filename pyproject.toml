@@ -94,32 +94,26 @@ path = ".venv"
 default-groups = "all"
 
 [tool.ty]
-# Equivalent ty configuration for mypy settings
+# Configuration for ty type checker (replaces mypy)
 
 [tool.ty.environment]
-# ty checks the project root by default and discovers Python files
-# Equivalent to mypy's files = ["workedon"]
-# The workedon directory will be checked as part of the project
-
-# Python version is already defined in project.requires-python (>=3.10,<3.15)
-# ty will use that automatically
+# Python version to use for type checking
+# Corresponds to mypy's implicit Python version handling
+python-version = "3.10"  # Minimum version from project.requires-python
 
 [tool.ty.rules]
-# Equivalent to mypy's ignore_missing_imports = true and disable_error_code = ["import-untyped"]
-# Ignore unresolved import errors for third-party libraries
-unresolved-import = "ignore"
+# Rule configuration for type checking behavior
+# Corresponds to mypy's ignore_missing_imports and disable_error_code settings
+unresolved-import = "ignore"  # Ignore missing third-party type stubs
 
-# ty is strict by default and checks all function definitions
-# This is equivalent to mypy's:
-# - disallow_untyped_defs = true (ty enforces typed definitions by default)
-# - no_implicit_optional = true (ty doesn't allow implicit Optional by default)
-# - check_untyped_defs = true (ty checks all function bodies by default)
-# - warn_return_any = true (ty warns about Any return types by default)
-# - warn_unused_ignores = true (ty is stricter about type ignores)
-# - show_error_codes = true (ty shows error codes by default)
-
-# Equivalent to mypy's follow_imports = "silent"
-# ty follows imports by default and reports errors in all files
+# Note: ty is strict by default, which provides equivalent behavior to mypy's:
+# - disallow_untyped_defs = true
+# - no_implicit_optional = true
+# - check_untyped_defs = true
+# - warn_return_any = true
+# - warn_unused_ignores = true
+# - show_error_codes = true
+# - follow_imports = "silent"
 
 [tool.pytest.ini_options]
 tmp_path_retention_policy = "failed"
