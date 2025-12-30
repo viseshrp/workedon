@@ -41,7 +41,7 @@ repos:
         types: [ python ]
         pass_filenames: false
         args: [
-          # Equivalent to mypy's ignore_missing_imports = true and disable_error_code = ["import-untyped"]
+          # Ignore unresolved import errors for third-party libraries
           "--ignore", "unresolved-import",
         ]
 
