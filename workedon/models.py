@@ -1,6 +1,5 @@
 from collections.abc import Generator
 import contextlib
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 import zoneinfo
