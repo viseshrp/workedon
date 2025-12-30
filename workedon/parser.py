@@ -30,7 +30,8 @@ class InputParser:
 
     def _as_datetime(self, date_time: str) -> datetime | None:
         if self._date_parser is None:
-            raise RuntimeError("_date_parser must be initialized before use")
+            msg = "Date parser not initialized"
+            raise RuntimeError(msg)
         dt_obj = self._date_parser.get_date_data(date_time)
         if dt_obj:
             date_obj: datetime = dt_obj["date_obj"]
