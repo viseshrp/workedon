@@ -78,7 +78,8 @@ class Work(Model):
         Uses a git log like structure.
         """
         if self.uuid is not None:
-            user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.TIME_ZONE))
+            # At runtime, Peewee returns datetime objects, not DateTimeField descriptors
+            user_time = self.timestamp.astimezone(zoneinfo.ZoneInfo(settings.TIME_ZONE))  # type: ignore[attr-defined]
             timestamp_str = user_time.strftime(
                 settings.DATETIME_FORMAT or f"{settings.DATE_FORMAT} {settings.TIME_FORMAT}"
             )

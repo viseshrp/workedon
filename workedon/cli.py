@@ -235,7 +235,12 @@ def main(
             click.echo(f"Database schema version: {version}")
     elif sqlite_version:
         with init_db() as db:
-            server_version = ".".join(str(num) for num in db.server_version)
+            # db.server_version can be a tuple, an int, or None
+            version = db.server_version
+            if isinstance(version, tuple):
+                server_version = ".".join(str(num) for num in version)
+            else:
+                server_version = str(version) if version is not None else "unknown"
             click.echo(f"SQLite version: {server_version}")
     elif print_settings:
         for key, value in settings.items():
