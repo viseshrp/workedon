@@ -104,6 +104,11 @@ python-version = "3.10"  # Minimum version from project.requires-python
 # Rule configuration for type checking behavior
 unresolved-import = "ignore"  # Ignore missing third-party type stubs
 
+[tool.ty.analysis]
+# Respect type: ignore comments (default: true)
+# This matches mypy's behavior with type: ignore comments
+respect-type-ignore-comments = true
+
 [tool.pytest.ini_options]
 tmp_path_retention_policy = "failed"
 testpaths = ["tests"]
