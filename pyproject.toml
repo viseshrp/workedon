@@ -103,10 +103,8 @@ python-version = "3.10"  # Minimum version from project.requires-python
 [tool.ty.rules]
 # Rule configuration for type checking behavior
 unresolved-import = "ignore"  # Ignore missing third-party type stubs
-unused-ignore-comment = "warn"
-redundant-cast = "ignore"
-possibly-missing-attribute = "error"
-possibly-missing-import = "error"
+possibly-missing-attribute = "error"  # Fail on potentially missing attributes
+possibly-missing-import = "error"  # Fail on potentially missing imports
 
 [tool.ty.analysis]
 # Respect type: ignore comments (default: true)
