@@ -60,7 +60,7 @@ dev = [
     "pip-audit",
     "bandit[toml]",
     "codespell",
-    "mypy",
+    "ty",
     "vulture",
     "deptry",
     "cogapp",
@@ -93,17 +93,35 @@ path = ".venv"
 [tool.uv]
 default-groups = "all"
 
-[tool.mypy]
-files = ["workedon"]
-disallow_untyped_defs = true
-no_implicit_optional = true
-check_untyped_defs = true
-warn_return_any = true
-warn_unused_ignores = true
-show_error_codes = true
-ignore_missing_imports = true
-follow_imports = "silent"
-disable_error_code = ["import-untyped"]
+[tool.ty]
+# Configuration for ty type checker
+
+[tool.ty.environment]
+# Python version to use for type checking
+python-version = "3.10"  # Minimum version from project.requires-python
+
+[tool.ty.rules]
+# Rule configuration for type checking behavior
+# Import and attribute checking
+unresolved-import = "ignore"  # Ignore missing third-party type stubs
+possibly-missing-attribute = "error"  # Fail on potentially missing attributes
+possibly-missing-import = "error"  # Fail on potentially missing imports
+
+# Type compatibility
+incompatible-return-type = "error"  # Ensure return types match function signatures
+incompatible-assignment = "error"  # Catch type mismatches in assignments
+invalid-annotation = "error"  # Catch malformed type annotations
+
+# Code quality
+possibly-undefined = "error"  # Catch variables used before assignment
+missing-return = "error"  # Detect missing return statements
+unreachable-code = "warn"  # Warn about code that can never execute
+unused-local = "warn"  # Warn about unused local variables
+
+[tool.ty.analysis]
+# Respect type: ignore comments (default: true)
+# This matches mypy's behavior with type: ignore comments
+respect-type-ignore-comments = true
 
 [tool.pytest.ini_options]
 tmp_path_retention_policy = "failed"

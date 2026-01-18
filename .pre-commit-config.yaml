@@ -34,12 +34,16 @@ repos:
         language: system
         types: [ python ]
 
-      - id: mypy
-        name: mypy
-        entry: mypy
+      - id: ty
+        name: ty
+        entry: ty check
         language: system
         types: [ python ]
-        args: [ "--config-file=pyproject.toml" ]
+        pass_filenames: false
+        args: [
+          # Ignore unresolved import errors for third-party libraries
+          "--ignore", "unresolved-import",
+        ]
 
       - id: pip-audit
         name: pip-audit
