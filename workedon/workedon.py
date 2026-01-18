@@ -198,8 +198,7 @@ def fetch_work(
             work_set = work_set.where(op_map[comp_op](Work.duration, minutes))
         # date range
         start, end = _get_date_range(start_date, end_date, since, period, on, at)
-        if start and end:
-            work_set = work_set.where((Work.timestamp >= start) & (Work.timestamp <= end))
+        work_set = work_set.where((Work.timestamp >= start) & (Work.timestamp <= end))
         # order
         sort_order = Work.timestamp.asc() if reverse else Work.timestamp.desc()
         work_set = work_set.order_by(sort_order)
