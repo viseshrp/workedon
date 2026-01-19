@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from datetime import datetime
+import importlib
 import re
+import warnings
 
 from click.testing import CliRunner, Result
 import pytest
 
+import workedon
 from workedon import __version__, cli, exceptions
 from workedon.conf import CONF_PATH
 
@@ -61,6 +64,33 @@ def test_empty_fetch(runner: CliRunner) -> None:
 def test_main_with_subcommand_returns_early(runner: CliRunner) -> None:
     result = runner.invoke(cli.main, ["what", "--no-page"])
     assert result.exit_code == 0
+
+
+def test_cli_import_skips_warning_filter_in_debug(monkeypatch: pytest.MonkeyPatch) -> None:
+    called = {"value": False}
+
+    def record_call(*_args: object, **_kwargs: object) -> None:
+        called["value"] = True
+
+    monkeypatch.setenv("WORKEDON_DEBUG", "1")
+    monkeypatch.setattr(warnings, "filterwarnings", record_call)
+    importlib.reload(cli)
+    importlib.reload(workedon)
+
+    assert called["value"] is False
+
+
+def test_cli_import_filters_warnings_without_debug(monkeypatch: pytest.MonkeyPatch) -> None:
+    called = {"value": False}
+
+    def record_call(*_args: object, **_kwargs: object) -> None:
+        called["value"] = True
+
+    monkeypatch.delenv("WORKEDON_DEBUG", raising=False)
+    monkeypatch.setattr(warnings, "filterwarnings", record_call)
+    importlib.reload(cli)
+    importlib.reload(workedon)
+    assert called["value"] is True
 
 
 # -- Basic save & fetch scenarios ------------------------------------------------
