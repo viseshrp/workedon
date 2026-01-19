@@ -178,8 +178,7 @@ def test_get_date_range_on_parameter() -> None:
         assert isinstance(start, datetime)
         assert isinstance(end, datetime)
         assert start.date() == datetime(2024, 1, 4).date()
-        # End will be 23:59:59 on the same day, which might appear as next day depending on parsing
-        # Should be almost 24 hours apart (minus 1 second)
+        # The 'on' parameter sets end to start + 24 hours - 1 second
         assert (end - start) >= timedelta(hours=23, minutes=59)
         assert (end - start) < timedelta(hours=24)
 
