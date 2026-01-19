@@ -15,8 +15,8 @@ from .models import DB_PATH, get_db_user_version, init_db, truncate_all_tables
 from .utils import add_options, load_settings
 from .workedon import fetch_tags, fetch_work, save_work
 
-# Only ignore warnings if not in debug mode
-if not os.environ.get("WORKEDON_DEBUG"):
+# Only ignore warnings when the debug flag is set to "0" or not set
+if os.environ.get("WORKEDON_DEBUG", "0") == "0":
     import warnings
 
     warnings.filterwarnings("ignore")
