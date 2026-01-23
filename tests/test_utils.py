@@ -137,7 +137,7 @@ def test_now_frozen_time(monkeypatch: pytest.MonkeyPatch) -> None:
         assert current.minute == 0
 
 
-def test_to_internal_dt_with_naive_datetime_raises() -> None:
+def test_to_internal_dt_sets_internal_timezone_for_naive_datetime() -> None:
     settings.configure()
     dt = datetime(2024, 1, 1, 12, 0, 0)  # No timezone
     internal = to_internal_dt(dt)
