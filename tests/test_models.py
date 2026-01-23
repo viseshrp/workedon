@@ -261,11 +261,9 @@ def test_tag_requires_unique_name() -> None:
             Tag.create(name="unique")
 
 
-def test_tag_allows_empty_string_name() -> None:
-    # This might be undesirable but tests current behavior
-    with init_db():
-        tag = Tag.create(name="")
-        assert tag.name == ""
+def test_tag_rejects_empty_string_name() -> None:
+    with init_db(), pytest.raises(IntegrityError):
+        Tag.create(name="")
 
 
 def test_work_tag_cascade_delete() -> None:
