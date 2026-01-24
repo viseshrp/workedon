@@ -123,6 +123,84 @@ def test_get_date_range_since_uses_now_as_end() -> None:
         assert end.date() == datetime(2024, 1, 5).date()
 
 
+def test_get_date_range_always_returns_datetime_tuple() -> None:
+    """Test that _get_date_range always returns tuple[datetime, datetime] and never None."""
+    with freeze_time("2024-01-05 12:00:00"):
+        # Test default (no parameters) - should return past week
+        start, end = workedon._get_date_range("", "", "", None, None, None)
+        assert isinstance(start, datetime)
+        assert isinstance(end, datetime)
+        assert start < end
+        assert (end - start) == timedelta(days=7)
+
+
+def test_get_date_range_period_today() -> None:
+    with freeze_time("2024-01-05 12:00:00"):
+        start, end = workedon._get_date_range("", "", "", "today", None, None)
+        assert isinstance(start, datetime)
+        assert isinstance(end, datetime)
+        assert start.date() == datetime(2024, 1, 5).date()
+        assert end.date() == datetime(2024, 1, 5).date()
+
+
+def test_get_date_range_period_day() -> None:
+    """Test 'day' period (past 24 hours)."""
+    with freeze_time("2024-01-05 12:00:00"):
+        start, end = workedon._get_date_range("", "", "", "day", None, None)
+        assert isinstance(start, datetime)
+        assert isinstance(end, datetime)
+        assert start.date() == datetime(2024, 1, 4).date()
+        assert end.date() == datetime(2024, 1, 5).date()
+
+
+def test_get_date_range_period_month() -> None:
+    """Test 'month' period (past month)."""
+    with freeze_time("2024-01-05 12:00:00"):
+        start, end = workedon._get_date_range("", "", "", "month", None, None)
+        assert isinstance(start, datetime)
+        assert isinstance(end, datetime)
+        assert start < end
+
+
+def test_get_date_range_period_year() -> None:
+    """Test 'year' period (past year)."""
+    with freeze_time("2024-01-05 12:00:00"):
+        start, end = workedon._get_date_range("", "", "", "year", None, None)
+        assert isinstance(start, datetime)
+        assert isinstance(end, datetime)
+        assert start < end
+
+
+def test_get_date_range_on_parameter() -> None:
+    """Test 'on' parameter returns a full day range."""
+    with freeze_time("2024-01-05 12:00:00"):
+        start, end = workedon._get_date_range("", "", "", None, "yesterday", None)
+        assert isinstance(start, datetime)
+        assert isinstance(end, datetime)
+        assert start.date() == datetime(2024, 1, 4).date()
+        # The 'on' parameter sets end to start + 24 hours - 1 second
+        assert (end - start) >= timedelta(hours=23, minutes=59)
+        assert (end - start) < timedelta(hours=24)
+
+
+def test_get_date_range_explicit_start_and_end() -> None:
+    """Test explicit start_date and end_date parameters."""
+    with freeze_time("2024-01-05 12:00:00"):
+        start, end = workedon._get_date_range("3 days ago", "yesterday", "", None, None, None)
+        assert isinstance(start, datetime)
+        assert isinstance(end, datetime)
+        assert start < end
+
+
+def test_get_date_range_explicit_start_only() -> None:
+    """Test explicit start_date with default end."""
+    with freeze_time("2024-01-05 12:00:00"):
+        start, end = workedon._get_date_range("yesterday", "", "", None, None, None)
+        assert isinstance(start, datetime)
+        assert isinstance(end, datetime)
+        assert start < end
+
+
 def test_save_work_creates_tags_from_option() -> None:
     workedon.save_work(("build", "feature"), ("DevOps",), "")
     with init_db():
