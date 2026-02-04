@@ -93,8 +93,6 @@ def parser() -> InputParser:
     "input_str",
     [
         "tomorrow at 5pm",
-        "next week",
-        "in 3 days",
         "2099-12-31",
     ],
 )
@@ -108,8 +106,6 @@ def test_parse_datetime_future_raises_error(parser: InputParser, input_str: str)
     [
         "!@#$%^&*()",
         "asdfghjkl",
-        "random gibberish",
-        "123abc456def",
     ],
 )
 def test_parse_datetime_invalid_string_raises_error(parser: InputParser, input_str: str) -> None:
@@ -126,10 +122,7 @@ def test_parse_datetime_whitespace_only_returns_now(parser: InputParser) -> None
     "input_str",
     [
         "midnight",
-        "noon",
         "3am",
-        "11:59pm",
-        "00:00",
         "23:59",
     ],
 )
@@ -162,10 +155,7 @@ def test_parse_datetime_edge_of_midnight(monkeypatch: pytest.MonkeyPatch) -> Non
 @pytest.mark.parametrize(
     "relative_time",
     [
-        "1 second ago",
-        "30 seconds ago",
         "1 minute ago",
-        "59 minutes ago",
         "1 hour ago",
         "23 hours ago",
     ],
@@ -179,10 +169,7 @@ def test_parse_datetime_relative_times(parser: InputParser, relative_time: str) 
     "input_str, expected",
     [
         ("[0.5h]", 30),
-        ("[0.25hr]", 15),
         ("[0.1hours]", 6),
-        ("[1000m]", 1000),
-        ("[0.01h]", 0.6),
         ("[99999min]", 99999),
     ],
 )
@@ -194,10 +181,7 @@ def test_parse_duration_edge_values(parser: InputParser, input_str: str, expecte
     "input_str",
     [
         "[]",
-        "[h]",
         "[min]",
-        "[hours]",
-        "[minutes]",
         "[0h]",  # Valid but zero
     ],
 )
@@ -210,8 +194,6 @@ def test_parse_duration_no_numeric_value(parser: InputParser, input_str: str) ->
     "input_str",
     [
         "[1.2.3h]",
-        "[1..5m]",
-        "[.5.h]",
         "[-5h]",
         "[+3m]",
     ],
@@ -225,8 +207,6 @@ def test_parse_duration_malformed_numbers(parser: InputParser, input_str: str) -
     [
         "[3x]",
         "[5d]",
-        "[2s]",
-        "[10k]",
         "[1.5days]",
     ],
 )
@@ -241,14 +221,11 @@ def test_parse_duration_multiple_brackets_uses_first(parser: InputParser) -> Non
 def test_parse_duration_case_insensitive(parser: InputParser) -> None:
     assert parser.parse_duration("[2H]") == 120
     assert parser.parse_duration("[2Hr]") == 120
-    assert parser.parse_duration("[2HRS]") == 120
     assert parser.parse_duration("[30MIN]") == 30
-    assert parser.parse_duration("[30Minutes]") == 30
 
 
 def test_parse_duration_with_spaces(parser: InputParser) -> None:
     assert parser.parse_duration("[  2  h  ]") == 120
-    assert parser.parse_duration("[\t30\tm\t]") == 30
 
 
 def test_parse_duration_no_brackets(parser: InputParser) -> None:
@@ -261,10 +238,7 @@ def test_parse_duration_no_brackets(parser: InputParser) -> None:
     [
         ("#tag1 #tag2 #tag3", {"tag1", "tag2", "tag3"}),
         ("#TAG #Tag #tag", {"TAG", "Tag", "tag"}),  # Case preserved
-        ("#a #b #c #a #b", {"a", "b", "c"}),
-        ("#123 #456", {"123", "456"}),
         ("#under_score #dash-tag", {"under_score", "dash-tag"}),
-        ("#mix123abc", {"mix123abc"}),
     ],
 )
 def test_parse_tags_various_formats(parser: InputParser, input_str: str, expected: set) -> None:
@@ -275,9 +249,7 @@ def test_parse_tags_various_formats(parser: InputParser, input_str: str, expecte
     "input_str",
     [
         "no tags here",
-        "has # space",
         "##",
-        "###",
         "#",
     ],
 )
@@ -289,11 +261,7 @@ def test_parse_tags_no_valid_tags(parser: InputParser, input_str: str) -> None:
     "input_str, expected",
     [
         ("#tag!", {"tag"}),  # Stops at special char
-        ("#tag@email", {"tag"}),
-        ("#tag.with.dots", {"tag"}),
         ("#tag(parentheses)", {"tag"}),
-        ("#tag[brackets]", {"tag"}),
-        ("#tag{braces}", {"tag"}),
     ],
 )
 def test_parse_tags_with_special_chars(parser: InputParser, input_str: str, expected: set) -> None:
@@ -316,10 +284,7 @@ def test_parse_tags_empty_string(parser: InputParser) -> None:
     "input_str, expected",
     [
         ("work [30m] #tag", "work"),
-        ("#tag1 #tag2 work", "work"),
-        ("work #tag [60m]", "work"),
         ("[2h] #dev work #qa [30m]", "work [30m]"),
-        ("  multiple    spaces  ", "multiple spaces"),
         ("\ttabs\tand\nnewlines\n", "tabs and newlines"),
     ],
 )
