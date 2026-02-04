@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Iterable, Iterator
 import datetime
 import operator as op
 import re
@@ -23,6 +23,14 @@ from .parser import InputParser
 from .utils import now, to_internal_dt
 
 
+def _normalize_tags(tags: Iterable[str]) -> set[str]:
+    """
+    Normalize tags to lowercase and drop empty/whitespace-only values.
+    """
+    normalized = {tag.strip().lower() for tag in tags}
+    return {tag for tag in normalized if tag}
+
+
 def save_work(work: tuple[str, ...], tags_opt: tuple[str, ...], duration_opt: str) -> None:
     """
     Save work from user input
@@ -32,7 +40,7 @@ def save_work(work: tuple[str, ...], tags_opt: tuple[str, ...], duration_opt: st
     work_text, dt, duration, tags = parser.parse(work_desc)
     if tags_opt:
         tags.update(set(tags_opt))
-    tags = {tag.lower() for tag in tags}
+    tags = _normalize_tags(tags)
 
     if duration_opt:
         minutes = parser.parse_duration(f"[{duration_opt.strip()}]")

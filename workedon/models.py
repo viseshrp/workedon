@@ -7,7 +7,6 @@ import zoneinfo
 import click
 from peewee import (
     CharField,
-    Check,
     CompositeKey,
     DateTimeField,
     FloatField,
@@ -125,7 +124,6 @@ class Tag(Model):
     name: CharField = CharField(
         unique=True,
         null=False,
-        constraints=[Check("name != ''")],
     )
     created: DateTimeField = DateTimeField(
         null=False, formats=[settings.internal_dt_format], default=get_default_time
