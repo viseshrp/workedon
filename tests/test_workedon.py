@@ -130,6 +130,14 @@ def test_save_work_creates_tags_from_option() -> None:
         assert WorkTag.select().count() == 1
 
 
+def test_save_work_ignores_empty_tag_option() -> None:
+    workedon.save_work(("build", "feature"), ("", "  ", "dev"), "")
+    with init_db():
+        assert Tag.select().where(Tag.name == "dev").exists()
+        assert Tag.select().where(Tag.name == "").count() == 0
+        assert WorkTag.select().count() == 1
+
+
 def test_save_work_raises_cannot_save_on_failure(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

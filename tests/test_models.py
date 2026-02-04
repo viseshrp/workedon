@@ -261,11 +261,6 @@ def test_tag_requires_unique_name() -> None:
             Tag.create(name="unique")
 
 
-def test_tag_rejects_empty_string_name() -> None:
-    with init_db(), pytest.raises(IntegrityError):
-        Tag.create(name="")
-
-
 def test_work_tag_cascade_delete() -> None:
     with init_db():
         work = Work.create(work="test work")
