@@ -30,6 +30,8 @@ def save_and_verify(runner: CliRunner, command: str, description: str) -> None:
     "options",
     [
         ["-h"],
+        ["--help"],
+        ["what", "-h"],
         ["what", "--help"],
     ],
 )
@@ -43,6 +45,7 @@ def test_help(runner: CliRunner, options: list[str]) -> None:
 @pytest.mark.parametrize(
     "options",
     [
+        ["-v"],
         ["--version"],
     ],
 )
@@ -97,6 +100,8 @@ def test_cli_import_filters_warnings_without_debug(monkeypatch: pytest.MonkeyPat
     "command, description",
     [
         ("washing the car", "washing the car"),
+        ("studying for the SAT @ 3pm friday", "studying for the SAT"),
+        ("pissing my wife off @ 2:30pm yesterday", "pissing my wife off"),
         ("writing tests @ 9 hours ago", "writing tests"),
     ],
 )
@@ -115,6 +120,7 @@ def test_save_and_fetch(runner: CliRunner, command: str, description: str) -> No
     "command, description, valid",
     [
         ("building workedon", "building workedon", True),
+        ("studying for the GRE", "studying for the GRE", True),
         ("talking to my brother @ 3pm 3 years ago", "talking to my brother", False),
     ],
 )
@@ -218,6 +224,7 @@ def test_timezone_option(
     "command, flag",
     [
         ("calling 911", ["--count", "1"]),  # 18
+        ("weights at the gym", ["--count", "1"]),  # 19
         ("yard work at home @ 3pm friday", ["--on", "friday"]),  # 20
         ("learning guitar @ 9pm friday", ["--at", "9pm friday"]),  # 21
         (
@@ -225,15 +232,24 @@ def test_timezone_option(
             ["--since", "August 1 1947", "-r", "-n", "1"],
         ),  # 22
         ("framing a photo @ 1:34pm yesterday", ["--yesterday"]),  # 23
+        ("taking pictures @ 12:34pm yesterday", ["-e"]),  # 24
         ("training for a 4k", ["--today"]),  # 25
+        ("training for a 10k", ["-o"]),  # 26
         ("setting up my homelab @ 1 hour ago", ["--past-day"]),  # 27
+        ("setting up my garden @ 2 hours ago", ["-d"]),  # 28
         ("setting up my garage @ 2pm 6 days ago", ["--past-week", "-r", "-n", "1"]),  # 29
+        ("setting up my kitchen @ 1pm 6 days ago", ["-w", "-r", "-n", "1"]),  # 30
         ("cleaning my car @ 2pm 27 days ago", ["--past-month", "-r", "-n", "1"]),  # 31
+        ("vacuuming my car @ 1pm 27 days ago", ["-m", "-r", "-n", "1"]),  # 32
         ("learning to make sushi @ 2pm 360 days ago", ["--past-year", "-r", "-n", "1"]),  # 33
+        ("learning to brew soy sauce @ 1pm 360 days ago", ["-y", "-r", "-n", "1"]),  # 34
         (
             "learning to drive @ 3pm June 3rd 2020",
             ["--from", "June 2nd 2020", "--to", "June 4th 2020"],
         ),  # 35
+        ("learning to cook @ 3pm yesterday", ["-f", "2 days ago", "-t", "3:05pm yesterday"]),  # 36
+        ("watching tv @ 9am", ["-g"]),  # 37
+        ("taking wife shopping @ 3pm", ["--no-page"]),  # 38
     ],
 )
 def test_save_and_fetch_others(runner: CliRunner, command: str, flag: list[str]) -> None:
@@ -280,7 +296,7 @@ def test_delete_empty(runner: CliRunner) -> None:
 # -- Text-only output -----------------------------------------------------------
 
 
-@pytest.mark.parametrize("flag", [["--text-only"]])
+@pytest.mark.parametrize("flag", [["-l"], ["--text-only"]])
 def test_text_only(runner: CliRunner, flag: list[str]) -> None:
     description = "vacuuming"
     save_and_verify(runner, f"{description} @ 2am", description)
@@ -432,8 +448,11 @@ def test_fetch_errors(runner: CliRunner, flags: list[str], detail: str) -> None:
     "input_text, expected_tags",
     [
         ("coding new feature #dev", {"dev"}),
+        ("daily standup #work #team", {"work", "team"}),
         ("writing unit tests #TDD #QA", {"tdd", "qa"}),
+        ("prepping lunch #Home #MealPrep", {"home", "mealprep"}),
         ("empty tag test #", set()),  # should be ignored
+        ("duplicate tags test #fun #fun #fun", {"fun"}),
     ],
 )
 def test_cli_tag_parsing_and_display(
@@ -454,9 +473,17 @@ def test_cli_tag_parsing_and_display(
     "input_text, expected_tags",
     [
         ("tag with dash #in-progress", {"in-progress"}),
+        ("tag with underscore #code_review", {"code_review"}),
+        ("numeric tag #123", {"123"}),
+        ("alphanumeric mix #r2d2", {"r2d2"}),
         ("non-word chars #cool! #$money", {"cool"}),  # `$money` ignored
         ("emoji tag #🔥", set()),  # emoji-only tag ignored
+        ("weird spacing # spaced", {"spaced"}),  # space after `#` ignored
         ("back-to-back #one#two#three", {"one", "two", "three"}),  # should catch all
+        ("URL in tag context #http123", {"http123"}),  # safe string
+        ("mixed case tags #Dev #DEV #dev", {"dev"}),  # normalized
+        ("invalid format tags ##double", {"double"}),  # invalid
+        ("edge #", set()),  # empty tag
     ],
 )
 def test_weird_tag_parsing(runner: CliRunner, input_text: str, expected_tags: set[str]) -> None:
@@ -478,7 +505,11 @@ def test_weird_tag_parsing(runner: CliRunner, input_text: str, expected_tags: se
     "save_cmd, tag_flag, expect_match",
     [
         ("working on #devtools", ["--tag", "devtools"], True),
+        ("#in-progress cleanup", ["--tag", "in-progress"], True),
         ("writing code #DEV", ["--tag", "dev"], True),  # case-insensitive
+        ("refactoring #code_review", ["--tag", "code_review"], True),
+        ("invalid ##doubletag", ["--tag", "doubletag"], True),
+        ("emoji #🔥", ["--tag", "🔥"], False),
         ("no tags here", ["--tag", "nothing"], False),
     ],
 )
@@ -513,7 +544,10 @@ def test_list_tags_outputs_saved_tags(runner: CliRunner) -> None:
     [
         ("doing taxes [1h]", "Duration: 1.0 hr", ["--duration-unit", "hr"]),
         ("filing returns [1.5hr]", "Duration: 90.0 min", ["--duration-unit", "min"]),
+        ("gym workout [90min]", "Duration: 1.5 hr", ["--duration-unit", "hr"]),
+        ("long call [2.25hours]", "Duration: 2.25 hr", ["--duration-unit", "hr"]),
         ("fast errand [45m] [90m]", "Duration: 0.75 hr", ["--duration-unit", "hr"]),
+        ("short nap [15MINS]", "Duration: 15.0 min", []),
     ],
 )
 def test_cli_duration_parsing_and_display(
@@ -529,8 +563,11 @@ def test_cli_duration_parsing_and_display(
     "input_text",
     [
         "broken input [3x]",
+        "missing unit [123]",
+        "non-numeric [abcmin]",
         "[1.2.3h]",
         "empty brackets []",
+        "only unit [hrs]",
     ],
 )
 def test_cli_malformed_durations_are_ignored(runner: CliRunner, input_text: str) -> None:
@@ -549,7 +586,10 @@ def test_cli_malformed_durations_are_ignored(runner: CliRunner, input_text: str)
         ("task1 [2h] @ 1pm", ["--duration", "=120m"], True),
         ("task2 [90m] @ 2pm", ["--duration", "<2h"], True),
         ("task3 [3h] @ 3pm", ["--duration", ">=3h"], True),
+        ("task4 [60m] @ 4pm", ["--duration", "<=1h"], True),
+        ("task5 [1.5h] @ 5pm", ["--duration", "=90m"], True),
         ("task6 [45m] @ 6pm", ["--duration", ">1h"], False),
+        ("task7 [2h] @ 7pm", ["--duration", "<2h"], False),
     ],
 )
 def test_cli_duration_filter(
@@ -569,6 +609,8 @@ def test_cli_duration_filter(
     "invalid_filter_flag",
     [
         ["--duration", "=>3h"],
+        ["--duration", "3hors"],
+        ["--duration", "3h<"],
         ["--duration", "3x"],
     ],
 )
