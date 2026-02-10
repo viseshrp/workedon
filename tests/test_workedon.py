@@ -138,6 +138,11 @@ def test_save_work_ignores_empty_tag_option() -> None:
         assert WorkTag.select().count() == 1
 
 
+def test_normalize_tags_trims_lowercases_dedupes_and_drops_empty() -> None:
+    result = workedon._normalize_tags([" Dev ", "DEV", "dev", "", "  "])
+    assert result == {"dev"}
+
+
 def test_save_work_raises_cannot_save_on_failure(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

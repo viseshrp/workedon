@@ -507,6 +507,7 @@ def test_weird_tag_parsing(runner: CliRunner, input_text: str, expected_tags: se
         ("working on #devtools", ["--tag", "devtools"], True),
         ("#in-progress cleanup", ["--tag", "in-progress"], True),
         ("writing code #DEV", ["--tag", "dev"], True),  # case-insensitive
+        ("writing code #DEV", ["--tag", " dev "], True),  # surrounding whitespace ignored
         ("refactoring #code_review", ["--tag", "code_review"], True),
         ("invalid ##doubletag", ["--tag", "doubletag"], True),
         ("emoji #🔥", ["--tag", "🔥"], False),

@@ -417,7 +417,10 @@ def workedon(stuff: tuple[str, ...], **kwargs: Any) -> None:
     multiple=True,
     required=False,
     type=click.STRING,
-    help="Tag to filter by. Can be used multiple times to filter by multiple tags.",
+    help=(
+        "Tag to filter by. Can be used multiple times to filter by multiple tags. "
+        "Tags are normalized (trimmed and lowercased)."
+    ),
 )
 @click.option(
     "--duration",
