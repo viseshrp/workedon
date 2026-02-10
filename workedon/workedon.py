@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Iterator
+from collections.abc import Iterable, Iterator
 import datetime
 import operator as op
 import re
@@ -23,6 +23,14 @@ from .parser import InputParser
 from .utils import now, to_internal_dt
 
 
+def _normalize_tags(tags: Iterable[str]) -> set[str]:
+    """
+    Normalize tags to lowercase and drop empty/whitespace-only values.
+    """
+    normalized = {tag.strip().lower() for tag in tags}
+    return {tag for tag in normalized if tag}
+
+
 def save_work(work: tuple[str, ...], tags_opt: tuple[str, ...], duration_opt: str) -> None:
     """
     Save work from user input
@@ -32,7 +40,7 @@ def save_work(work: tuple[str, ...], tags_opt: tuple[str, ...], duration_opt: st
     work_text, dt, duration, tags = parser.parse(work_desc)
     if tags_opt:
         tags.update(set(tags_opt))
-    tags = {tag.lower() for tag in tags}
+    tags = _normalize_tags(tags)
 
     if duration_opt:
         minutes = parser.parse_duration(f"[{duration_opt.strip()}]")
@@ -175,10 +183,11 @@ def fetch_work(
     else:
         # tag
         if tags:
-            normalized = [t.lower() for t in tags]
-            tag_ids = Tag.select(Tag.uuid).where(Tag.name.in_(normalized))
-            work_ids = WorkTag.select(WorkTag.work).where(WorkTag.tag.in_(tag_ids))
-            work_set = work_set.where(Work.uuid.in_(work_ids))
+            normalized_tags = _normalize_tags(tags)
+            if normalized_tags:
+                tag_ids = Tag.select(Tag.uuid).where(Tag.name.in_(normalized_tags))
+                work_ids = WorkTag.select(WorkTag.work).where(WorkTag.tag.in_(tag_ids))
+                work_set = work_set.where(Work.uuid.in_(work_ids))
         # duration
         if duration:
             # Match optional comparison operator and value (e.g., '>=3h', '<= 45min', '2h')
@@ -198,8 +207,7 @@ def fetch_work(
             work_set = work_set.where(op_map[comp_op](Work.duration, minutes))
         # date range
         start, end = _get_date_range(start_date, end_date, since, period, on, at)
-        if start and end:
-            work_set = work_set.where((Work.timestamp >= start) & (Work.timestamp <= end))
+        work_set = work_set.where((Work.timestamp >= start) & (Work.timestamp <= end))
         # order
         sort_order = Work.timestamp.asc() if reverse else Work.timestamp.desc()
         work_set = work_set.order_by(sort_order)

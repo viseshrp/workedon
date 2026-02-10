@@ -152,7 +152,8 @@ Options:
   -g, --no-page           Don't page the output.
   -l, --text-only         Output the work log text only.
   -T, --tag TEXT          Tag to filter by. Can be used multiple times to filter
-                          by multiple tags.
+                          by multiple tags. Tags are normalized (trimmed and
+                          lowercased).
   -D, --duration TEXT     Duration to filter by.  [default: ""]
   --date-format TEXT      Set the date format of the output. Must be a valid
                           Python strftime string.  [env var:
@@ -189,6 +190,7 @@ Options:
   - Tags can contain alphanumeric characters, underscores, and hyphens only.
 - Query logged work by tags using the `--tag/-T` option. Using it multiple times will match any
   of the specified tags.
+  - Filter tags are normalized the same way as saved tags (trimmed, lowercased, and empty values are ignored).
 - Specify duration while adding work.
   - Duration can be specified in two ways:
     - The `--duration/-D` option, e.g. `--duration 1h30m` or `--duration 90m`.

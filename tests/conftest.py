@@ -20,13 +20,10 @@ def runner() -> CliRunner:
 @pytest.fixture(autouse=True, scope="session")
 def freeze_clock_at_2359() -> Generator[None, None, None]:
     """
-    Freeze every test at today's date but at 23:59:00,
-    so relative date parsing (“yesterday”, “tomorrow”, etc.)
-    is always based off of 11:59 PM local time.
+    Freeze every test at a fixed date (23:59:00) so relative date parsing
+    (“yesterday”, “tomorrow”, etc.) is deterministic across runs.
     """
-    # capture now, then move to 23:59:00 of the same day
-    now = datetime.now()
-    target = now.replace(hour=23, minute=59, second=0, microsecond=0)
+    target = datetime(2024, 1, 10, 23, 59, 0)
     with freeze_time(target):
         yield
 

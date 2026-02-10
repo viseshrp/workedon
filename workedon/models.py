@@ -121,7 +121,10 @@ class Tag(Model):
     """
 
     uuid: CharField = CharField(primary_key=True, null=False, default=get_unique_hash)
-    name: CharField = CharField(unique=True, null=False)
+    name: CharField = CharField(
+        unique=True,
+        null=False,
+    )
     created: DateTimeField = DateTimeField(
         null=False, formats=[settings.internal_dt_format], default=get_default_time
     )
