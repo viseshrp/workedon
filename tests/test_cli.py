@@ -392,6 +392,13 @@ def test_fetch_errors(runner: CliRunner, flags: list[str], detail: str) -> None:
     assert detail in result.output
 
 
+def test_fetch_negative_count(runner: CliRunner) -> None:
+    save_and_verify(runner, "doing taxes @ 9pm yesterday", "doing taxes")
+    result = runner.invoke(cli.what, ["--no-page", "--count=-5"])
+    assert result.exit_code == 1
+    assert exceptions.CannotFetchWorkError.detail in result.output
+
+
 # -- Tagging ------------------------------------------------------------
 
 
