@@ -205,8 +205,8 @@ def fetch_work(
         work_set = work_set.order_by(sort_order)
         # limit
         if count is not None:
-            if count == 0:
-                raise CannotFetchWorkError(extra_detail="count must be non-zero")
+            if count < 1:
+                raise CannotFetchWorkError(extra_detail="count must be a positive integer")
             work_set = work_set.limit(count)
 
     # fetch from db now.
